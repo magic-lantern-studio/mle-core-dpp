@@ -1,0 +1,9 @@
+eclipse.preferences.version=1
+environment/project/org.eclipse.linuxtools.cdt.autotools.core.configuration.build.246456124/MLE_ROOT/delimiter=\:
+environment/project/org.eclipse.linuxtools.cdt.autotools.core.configuration.build.246456124/MLE_ROOT/operation=replace
+environment/project/org.eclipse.linuxtools.cdt.autotools.core.configuration.build.246456124/MLE_ROOT/value=/opt/MagicLantern
+environment/project/org.eclipse.linuxtools.cdt.autotools.core.configuration.build.246456124/TCL_HOME/delimiter=\:
+environment/project/org.eclipse.linuxtools.cdt.autotools.core.configuration.build.246456124/TCL_HOME/operation=append
+environment/project/org.eclipse.linuxtools.cdt.autotools.core.configuration.build.246456124/TCL_HOME/value=/home/msm/bin/ActiveTcl-8.6
+environment/project/org.eclipse.linuxtools.cdt.autotools.core.configuration.build.246456124/append=true
+environment/project/org.eclipse.linuxtools.cdt.autotools.core.configuration.build.246456124/appendContributed=true

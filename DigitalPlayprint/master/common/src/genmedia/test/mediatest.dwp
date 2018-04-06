@@ -1,0 +1,20 @@
+substituting Unknown item for bleah.
+#DWP 1.0 ascii 
+( Group g0 FwGroup
+	( HeaderFile fw/group.h )
+	( Actor actor0 MyActor 
+		( DelegateBinding BRenderDelegate forum0 ) 
+		( Property x ) 
+		( Property model ) 
+		( Property image ) 
+	) 
+	( Actor actor1 MyActor 
+		( Property x ) 
+		( DelegateBinding BRenderDelegate forum0 ) 
+	) 
+	( DelegateAttachment actor0 actor1 ) 
+	( bleah more random stuff
+		and a second line
+	) 
+) 
+( MediaRef TeapotModel /usr/share/src/brender/teapot.dat ) 

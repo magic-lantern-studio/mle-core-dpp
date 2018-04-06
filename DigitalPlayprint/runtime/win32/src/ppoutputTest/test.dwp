@@ -1,0 +1,59 @@
+#DWP 1.0 ascii
+( Include Mle3dForum.wpf )
+( Stage +win32 testStage MyTestStage
+	( Forum forum0 Mle3dForum
+		( Property position MlVector2 0 0 )
+		( Property size MlVector2 320 240 )
+	)
+)
+( Include MySpinnerActor.wpd )
+( Include Mle3dCameraActor.wpd )
+( Include MleEscapeActor.wpd )
+( Scene Scene1 MleScene
+	( HeaderFile mle/scene.h ) 
+	( Group g0 MleGroup 
+		( HeaderFile mle/group.h )
+		( Actor escapeKeyActor MleEscapeActor )
+		( Actor a0 MySpinnerActor
+			( Property +win32 model MediaRef teapot )
+			( Property +win32 texture MediaRef mandrill )
+			( Property position MlVector3 0 0 0 )
+			( Property orientation MlRotation 0 0 0 1 )
+			( Property scale MlVector3 1 1 1 )
+			( DelegateBinding Mle3dDelegate forum0 )
+		)
+		( Actor a1 Mle3dCameraActor
+			( Property position MlVector3 0.175095 1.34198 5.81336 )
+			( Property orientation MlRotation -0.135436 0.0179219 0.00180402 0.990622 )
+			( DelegateBinding Mle3dDelegate forum0 ) 
+		)
+	)
+)
+( MediaRef +win32 teapot Mle3dModelMediaRef
+	( MediaRefSource
+		( Media 0 geometry ../media/teapot.dat )
+	)
+	( MediaRefTarget +win32 0
+		( Media 0 geometry ..\\media\\teapot.dat )
+	)
+	( MediaRefTarget +sgi 0
+		( Media 0 geometry ../media/teapot.dat )
+	)
+	( MediaRefTarget +rehearsal 0 
+		( Media 0 geometry ../media/teapot.dat )
+	) 
+) 
+( MediaRef +win32 mandrill Mle3dTextureMapMediaRef 
+	( MediaRefSource 
+		( Media 0 texture ../media/mandrill.rgb ) 
+	) 
+	( MediaRefTarget +win32 0 
+		( Media 0 texture ..\\media\\mandrill.pix ) 
+	) 
+	( MediaRefTarget +sgi 0 
+		( Media 0 texture ../media/mandrill.rgb ) 
+	) 
+	( MediaRefTarget +rehearsal 0 
+		( Media 0 texture ../media/mandrill.rgb ) 
+	) 
+) 

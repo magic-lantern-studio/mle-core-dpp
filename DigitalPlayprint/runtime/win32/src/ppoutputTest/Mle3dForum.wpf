@@ -1,0 +1,6 @@
+#DWP 1.0 ascii 
+( ForumDef Mle3dForum 
+	( HeaderFile mle/3dfrm.h ) 
+	( PropertyDef position MlVector2 ) 
+	( PropertyDef size MlVector2 ) 
+) 

@@ -1,0 +1,80 @@
+%% HEADER_TOP
+/*
+ * This file contains the external definitions for the global
+ * symbols representing the Digital Playprint table of contents.
+ *
+ * Automatically generated code.
+ *      File: ${HEADER_FILENAME}
+ *      Date: ${DATE}
+ */
+
+%#----------------------------------------------------------------------
+%#
+%# This section defines the body of the header file.  This is used
+%# once for each playprint file processed.  If there is more than
+%# one playprint file in a script, this sequence is repeated several
+%# times.  The "%s" in the section name is replace by "MEDIA" or
+%# "GROUP" depending on the chunk type.
+%#
+%% HEADER_BODY
+/*
+ * These are the chunks defined in the Digital Playprint
+ * named "${PLAYPRINT_FILENAME}".
+ */
+
+${DO_TOC_SYMBOLS(TOC_%s_EXTERNS)}
+%%----------------------------------------------------------------------
+%% TOC_GROUP_EXTERNS
+extern int MleDppGroup_${NAME};${TAB(33)}/* Symbol for Group "${NAME}" */
+%% TOC_MEDIA_EXTERNS
+extern int MleDppMedia_${NAME};${TAB(33)}/* Symbol for Media "${NAME}" */
+%% TOC_SET_EXTERNS
+extern int MleDppSet_${NAME};${TAB(33)}/* Symbol for Set "${NAME}" */
+%% TOC_SCENE_EXTERNS
+extern int MleDppScene_${NAME};${TAB(33)}/* Symbol for Scene "${NAME}" */
+%% TOC_BOOT_SCENE_EXTERNS
+extern int MleDppBootScene;${TAB(33)}/* Symbol for distinguished boot scene */
+%%----------------------------------------------------------------------
+%% CODE_TOP
+/*
+ * This file contains the static initializations for the global
+ * symbols representing the Digital Playprint table of contents.
+ *
+ * Automatically generated code.
+ *      File: ${CODE_FILENAME}
+ *      Date: ${DATE}
+ */
+
+%%----------------------------------------------------------------------
+%% CODE_BODY
+/*
+ * These are the chunks defined in the Digital Playprint
+ * named "${PLAYPRINT_FILENAME}".
+ */
+
+${DO_TOC_SYMBOLS(TOC_%s_INITS)}
+
+/*
+ * This table gives the playprint chunk number for the corresponding
+ * Set in the mlRTSet table.
+ */ 
+
+${DO_SET_TO_CHUNK(SET_TO_CHUNK_%s)}
+
+%%----------------------------------------------------------------------
+%% TOC_GROUP_INITS
+int MleDppGroup_${NAME} = ${VALUE};
+%% TOC_MEDIA_INITS
+int MleDppMedia_${NAME} = ${VALUE};
+%% TOC_SET_INITS
+int MleDppSet_${NAME} = ${VALUE};
+%% TOC_SCENE_INITS
+int MleDppScene_${NAME} = ${VALUE};
+%% TOC_BOOT_SCENE_INITS
+int MleDppBootScene = ${VALUE};
+%% SET_TO_CHUNK_BEGIN
+int MleRTSetChunk${VALUE}
+%% SET_TO_CHUNK_ENTRY
+    MleDppSet_${NAME},
+%% SET_TO_CHUNK_END
+};

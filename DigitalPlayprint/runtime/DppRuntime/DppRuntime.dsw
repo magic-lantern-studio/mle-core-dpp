@@ -1,0 +1,131 @@
+Microsoft Developer Studio Workspace File, Format Version 6.00
+# WARNING: DO NOT EDIT OR DELETE THIS WORKSPACE FILE!
+
+###############################################################################
+
+Project: "chkfileTest"=..\win32\src\chkfileTest\chkfileTest.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name playprint
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mrefchkTest"=..\win32\src\mrefchkTest\mrefchkTest.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name playprint
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "playprint"=..\win32\src\playprint\playprint.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "playprintTest"=..\win32\src\playprintTest\playprintTest.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name playprint
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "ppTest"=..\win32\src\ppTest\ppTest.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name playprint
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "ppinputTest"=..\win32\src\ppinputTest\ppinputTest.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name playprint
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "ppoutputTest"=..\win32\src\ppoutputTest\ppoutputTest.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name playprint
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "runtime"=..\win32\src\runtime\runtime.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Global:
+
+Package=<5>
+{{{
+}}}
+
+Package=<3>
+{{{
+}}}
+
+###############################################################################
+

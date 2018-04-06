@@ -1,0 +1,5 @@
+#DWP 1.0 ascii 
+( ActorDef MleEscapeActor 
+	( HeaderFile mle/escapea.h ) 
+	( SourceFile escapea.cxx ) 
+) 

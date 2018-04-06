@@ -1,0 +1,73 @@
+%% CODE_TOP
+/*
+ * This file contains the static initializations for the global
+ * symbols representing the Digital Playprint table of contents.
+ *
+ * Automatically generated code.
+ *      File: ${CODE_FILENAME}
+ *      Date: ${DATE}
+ */
+
+// Declare package.
+package ${PACKAGE};
+
+// Import classes.
+import com.wizzer.mle.runtime.core.MleTables;
+
+%%----------------------------------------------------------------------
+%% CODE_BODY
+/**
+ * This class identifies the chunks defined in the Digital Playprint
+ * named "${PLAYPRINT_FILENAME}".
+ */
+public class DppTOC extends Object
+{
+${DO_TOC_SYMBOLS(TOC_%s_INITS)}
+
+    /**
+     * This table gives the playprint chunk number for the corresponding
+     * Set in the mlRTSet table.
+     */ 
+${DO_SET_TO_CHUNK(SET_TO_CHUNK_%s)}
+
+    // Load the generated tables into the Runtime Engine table registry.
+    static
+    {
+        MleTables.g_mleRTSetChunk = new int[mlRTSetChunk.length];
+        for (int i = 0; i < mlRTSetChunk.length; i++)
+            MleTables.g_mleRTSetChunk[i] = mlRTSetChunk[i];
+
+        // Set the Boot Scene;
+        MleTables.g_mleBootScene = MleDppBootScene;
+    };
+}
+%%----------------------------------------------------------------------
+%% TOC_GROUP_INITS
+    /** Symbol for Group "${NAME}" */
+    public static final int MleDppGroup_${NAME} = ${VALUE};
+%%----------------------------------------------------------------------
+%% TOC_MEDIA_INITS
+    /** Symbol for Media "${NAME}" */
+    public static final int MleDppMedia_${NAME} = ${VALUE};
+%%----------------------------------------------------------------------
+%% TOC_SET_INITS
+    /** Symbol for Set "${NAME}" */
+    public static final int MleDppSet_${NAME} = ${VALUE};
+%%----------------------------------------------------------------------
+%% TOC_SCENE_INITS
+    /** Symbol for Scene "${NAME}" */
+    public static final int MleDppScene_${NAME} = ${VALUE};
+%%----------------------------------------------------------------------
+%% TOC_BOOT_SCENE_INITS
+    /** Symbol for distinguished boot scene. */
+    public static final int MleDppBootScene = ${VALUE};
+%%----------------------------------------------------------------------
+%% SET_TO_CHUNK_BEGIN
+    public static final int mlRTSetChunk${VALUE}
+%%----------------------------------------------------------------------
+%% SET_TO_CHUNK_ENTRY
+        MleDppSet_${NAME},
+%%----------------------------------------------------------------------
+%% SET_TO_CHUNK_END
+        0
+    };

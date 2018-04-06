@@ -1,0 +1,333 @@
+%% RUNTIME_INDEX_TO_STRING
+/*
+ * This file contains the mastered tables for accessing Actor Types
+ * and their registered properties. It also contains tables for accessing
+ * Role Types and Set Instances
+ *
+ * Automatically generated code.
+ *      File: ${FILENAME}
+ *	Date: ${DATE}
+ */
+
+/* Include system header files. */
+#include <string.h>
+#ifdef WIN32
+#include <stddef.h>
+#endif /* WIN32 */
+
+/* Include Magic Lantern Runtime Engine header files. */
+#include "mle/mlTypes.h"
+#include "mle/MleActor.h"
+#include "mle/MleRole.h"
+#include "mle/MleSet.h"
+#include "mle/MleGroup.h"
+#include "mle/MleScene.h"
+#include "mle/MleMediaRef.h"
+#include "mle/MleTables.h"
+
+/*
+ * These includes are for the Actor classes and Set classes
+ * used in this title.  They are needed to calculate the
+ * Actor and Set properties offset entries in the 
+ * mlRTActorProperties and mlRTSetProperties tables.
+ */
+
+${DO_ACTORCLASS(TYPE_INCLUDES)}\
+${DO_SETCLASS(TYPE_INCLUDES)}\
+${DO_GROUPCLASS(TYPE_INCLUDES)}\
+${DO_SCENECLASS(TYPE_INCLUDES)}\
+
+/*
+ * Declare external Actor class constructor references
+ */
+
+${DO_ACTORCLASS(ACTOR_EXTERNS)}\
+
+/*
+ * Declare external Role class constructor references. These
+ * are used to access Role constructors.  There is one entry
+ * in this table for each Role class in this title, and the
+ * name usually used to access the Role constructor is an
+ * index into this table.
+ */
+
+${DO_ROLECLASS(ROLE_EXTERNS)}\
+
+/*
+ * Declare external Set class constructor references. These
+ * list the static constructors for the Sets and have a slot for
+ * the resulting pointer to the Set object. The name used to
+ * access a Set resolve to an index into this table.
+ */
+
+${DO_SETS(SET_EXTERNS)}\
+
+/*
+ * Declare external Group class constructor references. These
+ * are used to access Group constructors.  There is one entry
+ * in this table for each Group class in this title, and the
+ * name usually used to access the Group constructor is an
+ * index into this table.
+ */
+
+${DO_GROUPCLASS(GROUP_EXTERNS)}\
+
+/*
+ * Declare external Scene class constructor references. These
+ * are used to access Scene constructors.  There is one entry
+ * in this table for each Scene class in this title, and the
+ * name usually used to access the Scene constructor is an
+ * index into this table.
+ */
+
+${DO_SCENECLASS(SCENE_EXTERNS)}\
+
+/*
+ * Declare external MediaRef class constructor references. These
+ * are used to access MediaRef constructors.  There is one entry
+ * in this table for each MediaRef class, and the name usually
+ * used to access the constructor is an index into this table.
+ */
+
+${DO_MEDIAREFS(MEDIAREF_EXTERNS)}\
+
+/*
+ * Declare global property descriptors per Actor. This table
+ * maps an integer index into the struct offset of a particular
+ * property value in an Actor.  It is used when an Actor Group
+ * is loaded, to determine where to bcopy the property values
+ * into.  The index values into this table appear within the
+ * Group load byte code.
+ */
+
+MleRTPropertyEntry mlRTActorProperties[] = {
+${DO_ACTORPROPERTIES(PROPERTY_ENTRY)}\
+    { NULL }
+};
+
+#if defined(MLE_DEBUG)
+int mlRTActorPropertyLength = sizeof(mlRTActorProperties) / sizeof(mlRTActorProperties[0]);
+#endif /* MLE_DEBUG */
+
+/*
+ * Declare global title store of Actor types. This table contains:
+ *     The static constructor for the Actor.
+ *     The offset into the property table where this Actor's
+ *         properties begin.
+ * It is used to find the Actor constructors.  Actor Group chunks
+ * reference entries in this table by index.
+ */
+
+MleRTActorClassEntry mlRTActorClass[] = {
+#if defined(MLE_DEBUG)
+${DO_ACTORCLASS(ACTORCLASS_ENTRY_DEBUG)}\
+#else
+${DO_ACTORCLASS(ACTORCLASS_ENTRY)}\
+#endif /* MLE_DEBUG */
+    { NULL }
+};
+
+#if defined(MLE_DEBUG)
+int mlRTActorClassLength = sizeof(mlRTActorClass) / sizeof(mlRTActorClass[0]);
+#endif /* MLE_DEBUG */
+
+/*
+ * Declare global title store of Group types. This table contains:
+ *     The static constructor for the Group.
+ * It is used to find the Group constructors.  Group chunks
+ * reference entries in this table by index.
+ */
+
+MleRTGroupClassEntry mlRTGroupClass[] = {
+#if defined(MLE_DEBUG)
+${DO_GROUPCLASS(GROUPCLASS_ENTRY_DEBUG)}\
+#else
+${DO_GROUPCLASS(GROUPCLASS_ENTRY)}\
+#endif /* MLE_DEBUG */
+    { NULL }
+};
+
+#if defined(MLE_DEBUG)
+int mlRTGroupClassLength = sizeof(mlRTGroupClass) / sizeof(mlRTGroupClass[0]);
+#endif /* MLE_DEBUG */
+
+
+/*
+ * Declare global title store of Scene types. This table contains:
+ *     The static constructor for the Scene.
+ * It is used to find the scene constructors.  Scene chunks
+ * reference entries in this table by index.
+ */
+
+MleRTSceneClassEntry mlRTSceneClass[] = {
+#if defined(MLE_DEBUG)
+${DO_SCENECLASS(SCENECLASS_ENTRY_DEBUG)}\
+#else
+${DO_SCENECLASS(SCENECLASS_ENTRY)}\
+#endif /* MLE_DEBUG */
+    { NULL }
+};
+
+#if defined(MLE_DEBUG)
+int mlRTSceneClassLength = sizeof(mlRTSceneClass) / sizeof(mlRTSceneClass[0]);
+#endif /* MLE_DEBUG */
+
+
+/* Declare global title store of Role Types. */
+MleRTRoleClassEntry mlRTRoleClass[] = {
+#if defined(MLE_DEBUG)
+${DO_ROLECLASS(ROLECLASS_ENTRY_DEBUG)}\
+#else
+${DO_ROLECLASS(ROLECLASS_ENTRY)}\
+#endif /* MLE_DEBUG */
+    { NULL }
+};
+
+#if defined(MLE_DEBUG)
+int mlRTRoleClassLength = sizeof(mlRTRoleClass) / sizeof(mlRTRoleClass[0]);
+#endif /* MLE_DEBUG */
+
+/*
+ * Declare global property descriptors per Set. This table
+ * maps an integer index into the struct offset of a particular
+ * property value in a Set.  It is used when a Set
+ * is loaded, to determine where to bcopy the property values
+ * into.  The index values into this table appear within the
+ * Group load byte code.
+ */
+
+MleRTPropertyEntry mlRTSetProperties[] = {
+${DO_SETPROPERTIES(PROPERTY_ENTRY)}\
+    { NULL }
+};
+
+#if defined(MLE_DEBUG)
+int mlRTSetPropertyLength = sizeof(mlRTSetProperties) / sizeof(mlRTSetProperties[0]);
+#endif /* MLE_DEBUG */
+
+/*
+ * Declare global title store of Set types. This table contains:
+ *     The static constructor for the Set.
+ *     The offset into the property table where this Set's
+ *         properties begin.
+ * It is used to find the Set constructors.  Set chunks
+ * reference entries in this table by index.
+ */
+
+MleRTSetClassEntry mlRTSetClass[] = {
+#if defined(MLE_DEBUG)
+${DO_SETCLASS(SETCLASS_ENTRY_DEBUG)}\
+#else
+${DO_SETCLASS(SETCLASS_ENTRY)}\
+#endif /* MLE_DEBUG */
+    { NULL }
+};
+
+#if defined(MLE_DEBUG)
+int mlRTSetClassLength = sizeof(mlRTSetClass) / sizeof(mlRTSetClass[0]);
+#endif /* MLE_DEBUG */
+
+/*
+ * Declare global title store of Sets. This table maps a
+ * runtime set name (an index into this table) into a Set
+ * constructor and the pointer to its instance.
+ */
+
+MleRTSetEntry mlRTSet[] = {
+#if defined(MLE_DEBUG)
+${DO_SETS(SET_ENTRY)}\
+#else
+${DO_SETS(SET_ENTRY)}\
+#endif /* MLE_DEBUG */
+    { NULL }
+};
+
+#if defined(MLE_DEBUG)
+int mlRTSetLength = sizeof(mlRTSet) / sizeof(mlRTSet[0]);
+#endif /* MLE_DEBUG */
+
+/*
+ * Declare global title store of MediaRefs. This table maps a
+ * runtime MediaRef name (an index into this table) into a MediaRef
+ * constructor.
+ */
+
+MleRTMediaRefEntry mlRTMediaRef[] = {
+#if defined(MLE_DEBUG)
+${DO_MEDIAREFS(MEDIAREF_ENTRY)}\
+#else
+${DO_MEDIAREFS(MEDIAREF_ENTRY)}\
+#endif /* MLE_DEBUG */
+    { NULL }
+};
+
+#if defined(MLE_DEBUG)
+int mlRTMediaRefLength = sizeof(mlRTMediaRef) / sizeof(mlRTMediaRef[0]);
+#endif /* MLE_DEBUG */
+
+%%------------------------------------------------------------------
+%%TYPE_INCLUDES
+#include "${NAME_STRING}.h"
+%%------------------------------------------------------------------
+%%ACTOR_EXTERNS
+extern MleActor *_mlCreate${NAME_STRING}(void);
+%%------------------------------------------------------------------
+%%ROLE_EXTERNS
+extern MleRole *_mlCreate${NAME_STRING}(MleActor *a);
+%%------------------------------------------------------------------
+%%SET_EXTERNS
+extern MleSet *_mlCreate${NAME_STRING}(void);
+%%------------------------------------------------------------------
+%%GROUP_EXTERNS
+extern MleGroup *_mlCreate${NAME_STRING}(void);
+%%------------------------------------------------------------------
+%%SCENE_EXTERNS
+extern MleScene *_mlCreate${NAME_STRING}(void);
+%%------------------------------------------------------------------
+%%MEDIAREF_EXTERNS
+extern MleMediaRef *_mlCreate${NAME_STRING}(void);
+%%------------------------------------------------------------------
+%%ACTORCLASS_ENTRY
+    { _mlCreate${NAME_STRING}, ${PROPTBL_OFFSET} },
+%%------------------------------------------------------------------
+%%ACTORCLASS_ENTRY_DEBUG
+    { _mlCreate${NAME_STRING}, ${PROPTBL_OFFSET}, sizeof(${NAME_STRING}) },
+%%------------------------------------------------------------------
+%%ROLECLASS_ENTRY
+    { _mlCreate${NAME_STRING} },
+%%------------------------------------------------------------------
+%%ROLECLASS_ENTRY_DEBUG
+    { _mlCreate${NAME_STRING} },
+%%------------------------------------------------------------------
+%%PROPERTY_ENTRY
+    { MLE_PROPERTY_ENTRY(${NAME_STRING}, ${PROPERTY_NAME}) },
+%%------------------------------------------------------------------
+%%SET_ENTRY
+    { _mlCreate${NAME_STRING}, NULL },
+%%------------------------------------------------------------------
+%%SET_ENTRY_DEBUG
+    { _mlCreate${NAME_STRING}, NULL, sizeof(${NAME_STRING}) },
+%%------------------------------------------------------------------
+%%SETCLASS_ENTRY
+    { _mlCreate${NAME_STRING}, ${PROPTBL_OFFSET} },
+%%------------------------------------------------------------------
+%%SETCLASS_ENTRY_DEBUG
+    { _mlCreate${NAME_STRING}, ${PROPTBL_OFFSET}, sizeof(${NAME_STRING}) },
+%%------------------------------------------------------------------
+%%GROUPCLASS_ENTRY
+    { _mlCreate${NAME_STRING} },
+%%------------------------------------------------------------------
+%%GROUPCLASS_ENTRY_DEBUG
+    { _mlCreate${NAME_STRING}, sizeof(${NAME_STRING}) },
+%%------------------------------------------------------------------
+%%SCENECLASS_ENTRY
+    { _mlCreate${NAME_STRING} },
+%%------------------------------------------------------------------
+%%SCENECLASS_ENTRY_DEBUG
+    { _mlCreate${NAME_STRING}, sizeof(${NAME_STRING}) },
+%%------------------------------------------------------------------
+%%MEDIAREF_ENTRY
+    { _mlCreate${NAME_STRING} },
+%%------------------------------------------------------------------
+%%MEDIAREF_ENTRY_DEBUG
+    { _mlCreate${NAME_STRING}, sizeof(${NAME_STRING}) },

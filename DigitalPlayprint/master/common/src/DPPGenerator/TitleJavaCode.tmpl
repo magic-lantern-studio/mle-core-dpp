@@ -1,0 +1,224 @@
+%% RUNTIME_INDEX_TO_STRING
+/*
+ * This file contains the mastered tables for accessing Actor Types
+ * and their registered properties. It also contains tables for accessing
+ * Role Types, Set Types, Set Instances and thier registered properties.
+ * Finally, the tables for accessing Group and Scene Types are also
+ * generated here.
+ *
+ * Automatically generated code.
+ *      File: ${FILENAME}
+ *	Date: ${DATE}
+ */
+
+// Declare package.
+package ${PACKAGE};
+
+// Import standard Java packages.
+import java.util.Vector;
+
+// Import Magic Lantern Runtime Engine classes.
+import com.wizzer.mle.runtime.core.MleActor;
+import com.wizzer.mle.runtime.core.MleRole;
+import com.wizzer.mle.runtime.core.MleSet;
+import com.wizzer.mle.runtime.core.MleGroup;
+import com.wizzer.mle.runtime.core.MleScene;
+import com.wizzer.mle.runtime.core.MleMediaRef;
+import com.wizzer.mle.runtime.core.MleTables;
+import com.wizzer.mle.runtime.core.MleRuntimeException;
+
+/*
+ * These imports are for the Actor classes and Set classes
+ * used in this title.  They are needed to calculate the
+ * Actor and Set properties offset entries in the 
+ * mlRTActorProperties and mlRTSetProperties tables.
+ */
+
+${DO_ACTORCLASS(TYPE_INCLUDES)}\
+${DO_SETCLASS(TYPE_INCLUDES)}\
+${DO_GROUPCLASS(TYPE_INCLUDES)}\
+${DO_SCENECLASS(TYPE_INCLUDES)}\
+
+/**
+ * This class contains the elements in a Magic Lantern title
+ * that were generated while mastering a Digital Playprint.
+ */
+public class MleRuntimeTables extends Object
+{
+    // A flag to turn on debugging support.
+    private static boolean g_debug = false;
+
+    /**
+     * The constructor.
+     */
+    public MleRuntimeTables()
+    { super(); };
+
+    /*
+     * Declare global property descriptors per Actor. This table
+     * maps an integer index into the struct offset of a particular
+     * property value in an Actor.  It is used when an Actor Group
+     * is loaded, to determine where to copy the property values
+     * into.  The index values into this table appear within the
+     * Group load byte code.
+     */
+
+    public static MleTables.MleRTPropertyEntry mlRTActorProperties[] = {
+${DO_ACTORPROPERTIES(PROPERTY_ENTRY)}\
+        null
+    };
+
+    /*
+     * Declare global title store of Actor types. This table contains:
+     *     The static constructor for the Actor.
+     *     The offset into the property table where this Actor's
+     *         properties begin.
+     * It is used to find the Actor constructors.  Actor Group chunks
+     * reference entries in this table by index.
+     */
+
+    public static MleTables.MleRTActorClassEntry mlRTActorClass[] = {
+${DO_ACTORCLASS(ACTORCLASS_ENTRY)}\
+        null
+    };
+
+    /*
+     * Declare global title store of Group types. This table contains:
+     *     The static constructor for the Group.
+     * It is used to find the Group constructors.  Group chunks
+     * reference entries in this table by index.
+     */
+
+    public static MleTables.MleRTGroupClassEntry mlRTGroupClass[] = {
+${DO_GROUPCLASS(GROUPCLASS_ENTRY)}\
+        null
+    };
+
+    /*
+     * Declare global title store of Scene types. This table contains:
+     *     The static constructor for the Scene.
+     * It is used to find the scene constructors.  Scene chunks
+     * reference entries in this table by index.
+     */
+
+    public static MleTables.MleRTSceneClassEntry mlRTSceneClass[] = {
+${DO_SCENECLASS(SCENECLASS_ENTRY)}\
+        null
+    };
+
+    /*
+     * Declare global title store of Role Types.
+     */
+
+    public static MleTables.MleRTRoleClassEntry mlRTRoleClass[] = {
+${DO_ROLECLASS(ROLECLASS_ENTRY)}\
+        null
+    };
+
+    /*
+     * Declare global property descriptors per Set. This table
+     * maps an integer index into the struct offset of a particular
+     * property value in a Set.  It is used when a Set
+     * is loaded, to determine where to copy the property values
+     * into.  The index values into this table appear within the
+     * Group load byte code.
+     */
+
+    public static MleTables.MleRTPropertyEntry mlRTSetProperties[] = {
+${DO_SETPROPERTIES(PROPERTY_ENTRY)}\
+        null
+    };
+
+    /*
+     * Declare global title store of Set types. This table contains:
+     *     The static constructor for the Set.
+     *     The offset into the property table where this Set's
+     *         properties begin.
+     * It is used to find the Set constructors.  Set chunks
+     * reference entries in this table by index.
+     */
+
+    public static MleTables.MleRTSetClassEntry mlRTSetClass[] = {
+${DO_SETCLASS(SETCLASS_ENTRY)}\
+        null
+    };
+
+    /*
+     * Declare global title store of Sets. This table maps a
+     * runtime set name (an index into this table) into a Set
+     * constructor and the pointer to its instance.
+     */
+
+    public static MleTables.MleRTSetEntry mlRTSet[] = {
+${DO_SETS(SET_ENTRY)}\
+        null
+    };
+
+    /*
+     * Declare global title store of MediaRefs. This table maps a
+     * runtime MediaRef name (an index into this table) into a MediaRef
+     * constructor.
+     */
+
+    public static MleTables.MleRTMediaRefEntry mlRTMediaRef[] = {
+${DO_MEDIAREFS(MEDIAREF_ENTRY)}\
+        null
+    };
+
+    // Load the generated tables into the Runtime Engine table registry.
+    static
+    {
+        try
+        {
+            for (int i = 0; i < (mlRTActorProperties.length - 1); i++)
+                MleTables.getInstance().addActorProperty(mlRTActorProperties[i]);
+            for (int i = 0; i < (mlRTActorClass.length - 1); i++)
+                MleTables.getInstance().addActorClass(mlRTActorClass[i]);
+            for (int i = 0; i < (mlRTGroupClass.length - 1); i++)
+                MleTables.getInstance().addGroupClass(mlRTGroupClass[i]);
+            for (int i = 0; i < (mlRTSceneClass.length - 1); i++)
+                MleTables.getInstance().addSceneClass(mlRTSceneClass[i]);
+            for (int i = 0; i < (mlRTRoleClass.length - 1); i++)
+                MleTables.getInstance().addRoleClass(mlRTRoleClass[i]);
+            for (int i = 0; i < (mlRTSetProperties.length - 1); i++)
+                MleTables.getInstance().addSetProperty(mlRTSetProperties[i]);
+            for (int i = 0; i < (mlRTSetClass.length - 1); i++)
+                MleTables.getInstance().addSetClass(mlRTSetClass[i]);
+            for (int i = 0; i < (mlRTSet.length - 1); i++)
+                MleTables.getInstance().addSet(mlRTSet[i]);
+            for (int i = 0; i < (mlRTMediaRef.length - 1); i++)
+                MleTables.getInstance().addMediaRef(mlRTMediaRef[i]);
+        } catch (MleRuntimeException ex)
+        {
+            System.out.println("Unable to load Magic Lantern Runtime Engine table registry.");
+        }
+    };
+}
+
+%%------------------------------------------------------------------
+%%TYPE_INCLUDES
+import ${PACKAGE}.${NAME_STRING};
+%%------------------------------------------------------------------
+%%ACTORCLASS_ENTRY
+        new MleTables.MleRTActorClassEntry("${PACKAGE}.${NAME_STRING}", ${PROPTBL_OFFSET}),
+%%------------------------------------------------------------------
+%%ROLECLASS_ENTRY
+        new MleTables.MleRTRoleClassEntry("${PACKAGE}.${NAME_STRING}"),
+%%------------------------------------------------------------------
+%%PROPERTY_ENTRY
+        new MleTables.MleRTPropertyEntry("${NAME_STRING}", "${PROPERTY_NAME}"),
+%%------------------------------------------------------------------
+%%SET_ENTRY
+        new MleTables.MleRTSetEntry("${NAME_STRING}", null),
+%%------------------------------------------------------------------
+%%SETCLASS_ENTRY
+        new MleTables.MleRTSetClassEntry("${PACKAGE}.${NAME_STRING}", ${PROPTBL_OFFSET}),
+%%------------------------------------------------------------------
+%%GROUPCLASS_ENTRY
+        new MleTables.MleRTGroupClassEntry("${PACKAGE}.${NAME_STRING}"),
+%%------------------------------------------------------------------
+%%SCENECLASS_ENTRY
+        new MleTables.MleRTSceneClassEntry("${PACKAGE}.${NAME_STRING}"),
+%%------------------------------------------------------------------
+%%MEDIAREF_ENTRY
+        new MleTables.MleRTMediaRefEntry("${PACKAGE}.${NAME_STRING}"),

@@ -1,0 +1,131 @@
+Microsoft Developer Studio Workspace File, Format Version 6.00
+# WARNING: DO NOT EDIT OR DELETE THIS WORKSPACE FILE!
+
+###############################################################################
+
+Project: "chkfileTest"=.\chkfileTest.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name playprint
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mrefchkTest"=.\mrefchkTest.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name playprint
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "playprint"=.\playprint.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "playprintTest"=.\playprintTest.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name playprint
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "ppTest"=.\ppTest.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name playprint
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "ppinputTest"=.\ppinputTest.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name playprint
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "ppoutputTest"=.\ppoutputTest.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name playprint
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "runtime"=.\runtime.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Global:
+
+Package=<5>
+{{{
+}}}
+
+Package=<3>
+{{{
+}}}
+
+###############################################################################
+

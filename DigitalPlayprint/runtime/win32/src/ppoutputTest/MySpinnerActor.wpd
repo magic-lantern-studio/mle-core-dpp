@@ -1,0 +1,16 @@
+#DWP 1.0 ascii 
+( ActorDef MySpinnerActor 
+	( HeaderFile spinnera.h ) 
+	( SourceFile spinnera.cxx ) 
+	( DSOFile SpinnerActor.so ) 
+	( PropertyDef +win32 model MediaRef 
+		( MediaRefClass model Mle3dModelMediaRef ) 
+	) 
+	( PropertyDef +win32 texture MediaRef 
+		( MediaRefClass texture Mle3dTextureMapMediaRef ) 
+	) 
+	( PropertyDef position MlVector3 ) 
+	( PropertyDef orientation MlRotation ) 
+	( PropertyDef scale MlVector3 ) 
+	( DelegateForumMapping Mle3dDelegate Mle3dForum ) 
+) 
