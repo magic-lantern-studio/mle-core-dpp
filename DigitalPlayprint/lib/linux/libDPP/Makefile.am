@@ -53,9 +53,9 @@ libDPP_la_CPPFLAGS = \
 	-DMLE_NOT_DLL \
 	-I$(top_srcdir)/include \
 	-I$(top_srcdir)/../common/include \
-	-I$(top_srcdir)/../../../DigitalWorkprint/lib/common/include \
-	-I$(top_srcdir)/../../../DigitalWorkprint/lib/linux/include \
-	-I$(top_srcdir)/../../../Core/util/common/include \
-	-I$(top_srcdir)/../../../Core/util/linux/include \
-	-I$(top_srcdir)/../../../Core/math/common/include
+	-I$(MLE_HOME)/DigitalWorkprint/lib/common/include \
+	-I$(MLE_HOME)/DigitalWorkprint/lib/linux/include \
+	-I$(MLE_HOME)/Core/util/common/include \
+	-I$(MLE_HOME)/Core/util/linux/include \
+	-I$(MLE_HOME)/Core/math/common/include
 
