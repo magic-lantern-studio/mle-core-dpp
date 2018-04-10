@@ -30,7 +30,7 @@ libplayprint_la_CPPFLAGS = \
 	-I$(top_srcdir)/../common/include \
 	-I$(top_srcdir)/../../lib/common/include \
 	-I$(top_srcdir)/../../lib/linux/include \
-	-I$(top_srcdir)/../../../DigitalWorkprint/lib/common/include \
-	-I$(top_srcdir)/../../../DigitalWorkprint/lib/linux/include \
-	-I$(top_srcdir)/../../../Core/util/common/include \
-	-I$(top_srcdir)/../../../Core/util/linux/include
+	-I$(MLE_HOME)/DigitalWorkprint/lib/common/include \
+	-I$(MLE_HOME)/DigitalWorkprint/lib/linux/include \
+	-I$(MLE_HOME)/Core/util/common/include \
+	-I$(MLE_HOME)/Core/util/linux/include
