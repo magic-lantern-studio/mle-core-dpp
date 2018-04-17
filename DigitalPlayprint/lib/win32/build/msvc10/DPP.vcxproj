@@ -112,7 +112,6 @@
 copy Win32\Debug\DPPd.lib $(MLE_HOME)\lib\tools\DPPd.lib
 mkdir $(MLE_HOME)\include\mle
 xcopy /y $(MLE_HOME)\DigitalPlayprint\lib\common\include\mle\* $(MLE_HOME)\include\mle
-xcopy /y $(MLE_HOME)\DigitalPlayprint\lib\win32\include\mle\* $(MLE_HOME)\include\mle
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -150,7 +149,6 @@ xcopy /y $(MLE_HOME)\DigitalPlayprint\lib\win32\include\mle\* $(MLE_HOME)\includ
 copy Win32\Release\DPP.lib $(MLE_HOME)\lib\tools\DPP.lib
 mkdir $(MLE_HOME)\include\mle
 xcopy /y $(MLE_HOME)\DigitalPlayprint\lib\common\include\mle\* $(MLE_HOME)\include\mle
-xcopy /y $(MLE_HOME)\DigitalPlayprint\lib\win32\include\mle\* $(MLE_HOME)\include\mle
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -192,7 +190,6 @@ xcopy /y $(MLE_HOME)\DigitalPlayprint\lib\win32\include\mle\* $(MLE_HOME)\includ
 copy x64\Debug\DPPd.lib $(MLE_HOME)\lib64\tools\DPPd.lib
 mkdir $(MLE_HOME)\include\mle
 xcopy /y $(MLE_HOME)\DigitalPlayprint\lib\common\include\mle\* $(MLE_HOME)\include\mle
-xcopy /y $(MLE_HOME)\DigitalPlayprint\lib\win32\include\mle\* $(MLE_HOME)\include\mle
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -233,7 +230,6 @@ xcopy /y $(MLE_HOME)\DigitalPlayprint\lib\win32\include\mle\* $(MLE_HOME)\includ
 copy x64\Release\DPP.lib $(MLE_HOME)\lib64\tools\DPP.lib
 mkdir $(MLE_HOME)\include\mle
 xcopy /y $(MLE_HOME)\DigitalPlayprint\lib\common\include\mle\* $(MLE_HOME)\include\mle
-xcopy /y $(MLE_HOME)\DigitalPlayprint\lib\win32\include\mle\* $(MLE_HOME)\include\mle
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
