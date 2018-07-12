@@ -8,7 +8,8 @@ gengroup_LDADD = \
 	$(MLE_ROOT)/lib/libDWP.so \
 	$(MLE_ROOT)/lib/libplayprint.so \
 	$(MLE_ROOT)/lib/libmlutil.so \
-	$(MLE_ROOT)/lib/libmlmath.so
+	$(MLE_ROOT)/lib/libmlmath.so \
+	-ldl
 
 gengroup_CPPFLAGS = \
 	-DMLE_NOT_DLL \
