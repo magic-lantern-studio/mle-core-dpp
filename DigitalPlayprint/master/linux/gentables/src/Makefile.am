@@ -19,3 +19,6 @@ gentables_CPPFLAGS = \
 	-I$(MLE_HOME)/DigitalPlayprint/lib/linux/include \
 	-I$(MLE_HOME)/Core/util/common/include \
 	-I$(MLE_HOME)/Core/util/linux/include
+
+gentables_LDFLAGS = \
+	-Wl,-rpath=$(MLE_ROOT)/lib

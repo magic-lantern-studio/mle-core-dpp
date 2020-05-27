@@ -13,7 +13,7 @@
 
 // COPYRIGHT_BEGIN
 //
-// Copyright (c) 2015 Wizzer Works
+// Copyright (c) 2015-2020 Wizzer Works
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -96,7 +96,7 @@ typedef struct _ArgStruct
 
 static MlBoolean g_bigEndian;
 
-char *usage_str = "\
+const char *usage_str = "\
 Syntax:   dumpgroup  [-b|-l] [-v] <group_chunk_file>\n\
 \n\
           -b                   Use Big Endian byte ordering (default)\n\

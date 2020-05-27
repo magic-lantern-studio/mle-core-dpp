@@ -16,7 +16,7 @@
 
 // COPYRIGHT_BEGIN
 //
-// Copyright (c) 2015 Wizzer Works
+// Copyright (c) 2015-2020 Wizzer Works
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -120,7 +120,7 @@ typedef struct _ArgStruct
 } ArgStruct;
 
 
-char *usage_str = "\
+const char *usage_str = "\
 Syntax:   genppscript [-d <directory>] <tags> <workprint> <playprint> <script> <index filename>\n\
           -d <directory>       Directory where files are generated\n\
           <tags>               Digital Workprint tags\n\

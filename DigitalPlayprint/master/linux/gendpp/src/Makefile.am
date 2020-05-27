@@ -26,9 +26,11 @@ gendpp_CPPFLAGS = \
 	-I$(MLE_HOME)/Core/math/common/include \
 	-I$(MLE_HOME)/Core/math/linux/include
 
+gendpp_LDFLAGS = \
+	-Wl,-rpath=$(MLE_ROOT)/lib
+
 if TCL_HOME_SET
 ## Add Tcl header files
-##gendpp_CPPFLAGS += 	-I/home/msm/bin/ActiveTcl-8.6/include
 gendpp_CPPFLAGS += 	-I$(TCL_HOME)/include
 else
 ## Report error

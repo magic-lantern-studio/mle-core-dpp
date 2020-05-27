@@ -13,7 +13,7 @@
 
 // COPYRIGHT_BEGIN
 //
-// Copyright (c) 2015 Wizzer Works
+// Copyright (c) 2015-2020 Wizzer Works
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -75,7 +75,7 @@ typedef struct _ArgStruct
 } ArgStruct;
 
 
-char *usage_str = "\
+const char *usage_str = "\
 Syntax:   dumpmedia <chunk file> ...\n\
           <chunk file>          MediaRef Chunk File\n\
 \n\

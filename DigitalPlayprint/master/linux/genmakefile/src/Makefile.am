@@ -23,3 +23,6 @@ genmakefile_CPPFLAGS = \
 	-I$(MLE_HOME)/Core/util/linux/include \
 	-I$(MLE_HOME)/Core/math/common/include \
 	-I$(MLE_HOME)/Core/math/linux/include
+
+genmakefile_LDFLAGS = \
+	-Wl,-rpath=$(MLE_ROOT)/lib
