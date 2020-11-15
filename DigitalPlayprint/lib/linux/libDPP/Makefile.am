@@ -45,7 +45,7 @@ libDPP_la_SOURCES = \
 	../../common/src/DPPModel/DppSet.cpp
 
 # Linker options libTestProgram
-libDPP_la_LDFLAGS =
+libDPP_la_LDFLAGS = -version-info 1:0:0
 
 # Compiler options. Here we are adding the include directory
 # to be searched for headers included in the source code.

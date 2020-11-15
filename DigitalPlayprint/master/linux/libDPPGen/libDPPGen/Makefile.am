@@ -13,7 +13,7 @@ libDPPGen_la_SOURCES = \
 	../../../common/src/DPPGenerator/DppGenMakefile.cpp
 
 # Linker options libTestProgram
-libDPPGen_la_LDFLAGS = 
+libDPPGen_la_LDFLAGS = -version-info 1:0:0
 
 # Compiler options. Here we are adding the include directory
 # to be searched for headers included in the source code.
