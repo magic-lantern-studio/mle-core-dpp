@@ -27,6 +27,12 @@ HEADERS += \
         $$PWD/../../common/include/mle/DppGenCode.h
         $$PWD/../../common/include/mle/DppGenMakefile.h
 
+TEMPLATES = \
+        $$PWD/../../common/src/DPPGenerator/TitleCppCode.tmpl \
+        $$PWD/../../common/src/DPPGenerator/TitleJavaCode.tmpl \
+        $$PWD/../../common/src/layout/TOCCppGlobals.tmpl \
+        $$PWD/../../common/src/layout/TOCJavaGlobals.tmpl
+
 unix {
     LIBS += -L/opt/MagicLantern/lib -lDPP -lDWP -lmlmath -lmlutil
 }
@@ -36,6 +42,8 @@ unix {
     target.path = /opt/MagicLantern/lib
     headers.path = /opt/MagicLantern/include/mle
     headers.files = $$HEADERS
-    INSTALLS += target headers
+    templates.path = /opt/MagicLantern/lib
+    templates.files = $$TEMPLATES
+    INSTALLS += target headers templates
 }
 !isEmpty(target.path): INSTALLS += target
