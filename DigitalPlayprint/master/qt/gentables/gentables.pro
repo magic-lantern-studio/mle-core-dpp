@@ -21,7 +21,7 @@ SOURCES += \
         $$PWD/../../common/src/gentables/gentables.cpp
 
 unix {
-    LIBS += -L/opt/MagicLantern/lib -lDPPGen -lDPP -lDWP -lmlmath -lmlutil
+    LIBS += -L/opt/MagicLantern/lib -lDPPGen -lDPP -lDWP -lmlmath -lmlutil -Wl,--no-as-needed -ldl
 }
 
 # Default rules for deployment.
