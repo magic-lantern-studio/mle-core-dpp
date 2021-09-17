@@ -21,8 +21,12 @@ SOURCES += \
         $$PWD/../../common/src/layout/pymain.cpp \
         $$PWD/../../common/src/layout/dppmodule.cpp
 
-unix {
-    LIBS += -lpython -L/opt/MagicLantern/lib -lDPPGen -lDPP -lDWP -lplayprint -lmlmath -lmlutil
+unix:!macx {
+    LIBS += -L/opt/MagicLantern/lib -lDPPGen -lDPP -lDWP -lplayprint -lmlmath -lmlutil -Wl,--no-as-needed -ldl
+}
+
+macx {
+    LIBS += -L/opt/MagicLantern/lib -lDPPGen -lDPP -lDWP -lplayprint -lmlmath -lmlutil
 }
 
 # Default rules for deployment.

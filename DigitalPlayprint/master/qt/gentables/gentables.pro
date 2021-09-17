@@ -20,8 +20,12 @@ INCLUDEPATH += $$PWD/../../common/include $$PWD/../../linux/include /opt/MagicLa
 SOURCES += \
         $$PWD/../../common/src/gentables/gentables.cpp
 
-unix {
+unix:!macx {
     LIBS += -L/opt/MagicLantern/lib -lDPPGen -lDPP -lDWP -lmlmath -lmlutil -Wl,--no-as-needed -ldl
+}
+
+macx {
+    LIBS += -L/opt/MagicLantern/lib -lDPPGen -lDPP -lDWP -lmlmath -lmlutil
 }
 
 # Default rules for deployment.
