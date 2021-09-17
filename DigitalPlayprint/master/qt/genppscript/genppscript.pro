@@ -21,7 +21,7 @@ SOURCES += \
         $$PWD/../../common/src/layout/genppscript.cpp
 
 unix {
-    LIBS += -L/opt/MagicLantern/lib -lDPPGen -lDPP -lDWP -lplayprint -lmlmath -lmlutil
+    LIBS += -L/opt/MagicLantern/lib -lDPPGen -lDPP -lDWP -lplayprint -lmlmath -lmlutil -Wl,--no-as-needed -ldl
 }
 
 # Default rules for deployment.
