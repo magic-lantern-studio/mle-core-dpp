@@ -102,6 +102,9 @@ necessary for locating the location of each chunk in the playprint.\n";
 // Declare forward references to local procedures.
 static char *readFileToMemory(char *, int *);
 
+// Declare external references.
+extern "C" PyObject *PyInit_dpp(void);
+
 //
 // Get a canonical path definition for the specified input.
 //
@@ -232,18 +235,28 @@ int main(int argc, char *argv[])
     if (scriptFile != NULL)
         delete scriptFile;
 
-    // Start interpreting the script...
+    // Setup Python and execute sript...
+    // Add the built-in module, before Py_Initialize.
+    if (PyImport_AppendInittab("dpp", PyInit_dpp) == -1) {
+        fprintf(stderr, "Error: could not extend in-built modules table.\n");
+        exit(1);
+    }
 
     // Initialize Python interpreter.
     Py_Initialize();
 
-    // Call python commands.
+    // Call python command script.
     //PyRun_SimpleString("print('Hello World from Embedded Python!!!')");
     FILE *fp = _Py_fopen(state.m_scriptfile, "r");
     PyRun_SimpleFile(fp, state.m_scriptfile);
     
     // Terminate Python interpreter.
     Py_Finalize();
+
+    mlFree(state.m_tags);
+    mlFree(state.m_workprint);
+    mlFree(state.m_scriptfile);
+    mlFree(script);
     
     return 0;
 }
