@@ -48,7 +48,11 @@
 
 
 // Include Python header files.
+#if defined(__linux__)
+#include <Python.h>
+#else
 #include <Python/Python.h>
+#endif
 
 // Include system header files.
 #ifdef WIN32
@@ -222,8 +226,8 @@ int main(int argc, char *argv[])
 #endif
 
     if ((script = readFileToMemory((char *)scriptFile->getPlatformPath(), NULL)) == NULL ) {
-            perror(state.m_scriptfile);
-            exit(2);
+        perror(state.m_scriptfile);
+        exit(2);
     }
     if (scriptFile != NULL)
         delete scriptFile;
@@ -235,7 +239,7 @@ int main(int argc, char *argv[])
 
     // Call python commands.
     //PyRun_SimpleString("print('Hello World from Embedded Python!!!')");
-    FILE fp = _Py_fopen(state.m_scriptfile, "r");
+    FILE *fp = _Py_fopen(state.m_scriptfile, "r");
     PyRun_SimpleFile(fp, state.m_scriptfile);
     
     // Terminate Python interpreter.

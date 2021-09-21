@@ -1,5 +1,9 @@
 #define PY_SSIZE_T_CLEAN
+#if defined(__linux__)
+#include <Python.h>
+#else
 #include <Python/Python.h>
+#endif
 
 static PyObject *
 dpp_system(PyObject *self, PyObject *args)

@@ -11,6 +11,15 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 DEFINES += MLE_NOT_DLL DEBUG
 
+
+unix:!macx {
+    INCLUDEPATH += /usr/include/python3.6
+}
+
+macx {
+    INCLUDEPATH += /Library/Frameworks/Python.framework/Versions/Current/include/python3.6
+}
+
 INCLUDEPATH += $$PWD/../../common/include $$PWD/../../linux/include /opt/MagicLantern/include
 
 # You can make your code fail to compile if it uses deprecated APIs.
@@ -22,11 +31,14 @@ SOURCES += \
         $$PWD/../../common/src/layout/dppmodule.cpp
 
 unix:!macx {
-    LIBS += -L/opt/MagicLantern/lib -lDPPGen -lDPP -lDWP -lplayprint -lmlmath -lmlutil -Wl,--no-as-needed -ldl
+    LIBS += -L/opt/MagicLantern/lib -lDPPGen -lDPP -lDWP -lplayprint -lmlmath -lmlutil
+    LIBS += -L/usr/lib/python3.6/config-3.6m-x86_64-linux-gnu -L/usr/lib -lpython3.6m
+    LIBS += -Wl,--no-as-needed -ldl
 }
 
 macx {
     LIBS += -L/opt/MagicLantern/lib -lDPPGen -lDPP -lDWP -lplayprint -lmlmath -lmlutil
+    LIBS += -L/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/config/ -lpython3.6
 }
 
 # Default rules for deployment.
