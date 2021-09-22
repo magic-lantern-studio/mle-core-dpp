@@ -27,8 +27,13 @@ INCLUDEPATH += $$PWD/../../common/include $$PWD/../../linux/include /opt/MagicLa
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+        $$PWD/../../common/src/layout/DppLayoutManager.cpp \
+        $$PWD/../../common/src/layout/gencode.cpp \
         $$PWD/../../common/src/layout/pymain.cpp \
-        $$PWD/../../common/src/layout/dppmodule.cpp
+        $$PWD/../../common/src/layout/dppmodule.cpp \
+
+HEADERS += \
+        $$PWD/../../common/src/layout/DppLayoutManager.h
 
 unix:!macx {
     LIBS += -L/opt/MagicLantern/lib -lDPPGen -lDPP -lDWP -lplayprint -lmlmath -lmlutil
@@ -56,3 +61,4 @@ QMAKE_EXTRA_TARGETS += first copydata
 
 DISTFILES += \
     test/dpptest.py
+

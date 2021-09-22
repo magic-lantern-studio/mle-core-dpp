@@ -8,15 +8,12 @@
  *
  * This module generates the statically initialized global title symbols
  * and map chunk names into TOC indices.
- *
- * @author Mark S. Millard
- * @date September 15, 2004
  */
 
 
 // COPYRIGHT_BEGIN
 //
-// Copyright (c) 2015-2018 Wizzer Works
+// Copyright (c) 2015-2021 Wizzer Works
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal

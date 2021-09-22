@@ -78,6 +78,7 @@
 #include <mle/MlePath.h>
 
 #include "pplayout.h"
+#include "DppLayoutManager.h"
 
 const char *usage_str = "\
 Syntax:   gendpp  [-b|-l] [-j <package> | -c] [-d <dir>] [-s <dir>]\n\
@@ -86,7 +87,7 @@ Syntax:   gendpp  [-b|-l] [-j <package> | -c] [-d <dir>] [-s <dir>]\n\
           -b            Use Big Endian byte ordering\n\
           -l            Use Little Endian byte ordering\n\
           -c            Generate C++ compliant files (default)\n\
-          -j <package>  Gerneate Java compliant files\n\
+          -j <package>  Generate Java compliant files\n\
           -d <dir>      Directory where ouput is generated\n\
           -s <dir>      Directory where resources can be found,\n\
                         relative to script commands\n\
@@ -104,6 +105,7 @@ static char *readFileToMemory(char *, int *);
 
 // Declare external references.
 extern "C" PyObject *PyInit_dpp(void);
+extern void endPlayprint();
 
 //
 // Get a canonical path definition for the specified input.
@@ -178,10 +180,10 @@ static int parseArgs(int argc, char *argv[], LayoutState *state)
     }
 
     // If there is no specified tags or scriptfile, complain.
-    if (state->m_tags == NULL ||
-        state->m_workprint == NULL ||
-        state->m_scriptfile == NULL ||
-        ((state->m_language == TRUE) && (state->m_package == NULL)))
+    if (state->m_tags == nullptr ||
+        state->m_workprint == nullptr ||
+        state->m_scriptfile == nullptr ||
+        ((state->m_language == TRUE) && (state->m_package == nullptr)))
     {
         fprintf(stderr,"%s\n", usage_str);
         return FALSE;
@@ -195,28 +197,34 @@ static int parseArgs(int argc, char *argv[], LayoutState *state)
 //
 int main(int argc, char *argv[])
 {
-    LayoutState state;
+    LayoutState *state;
     char *script;
 
     // Initialize the playprint layout state.
-    state.m_commandName = argv[0];
-    state.m_byteOrder = FALSE;
-    state.m_workprint = NULL;
-    state.m_playprint = NULL;
-    state.m_outputDir = NULL;
-    state.m_inputDir = NULL;
-    state.m_codefile = NULL;
-    state.m_chunks = new MleDppChunkTable();
-    state.m_scriptfile = NULL;
-    state.m_root = NULL;
-    state.m_tags = NULL;
-    state.m_language = FALSE;
-    state.m_package = NULL;
+    state = (LayoutState *)mlMalloc(sizeof(LayoutState));
+    state->m_commandName = argv[0];
+    state->m_byteOrder = FALSE;
+    state->m_workprint = nullptr;
+    state->m_playprint = nullptr;
+    state->m_outputDir = nullptr;
+    state->m_inputDir = nullptr;
+    state->m_codefile = nullptr;
+    state->m_chunks = new MleDppChunkTable();
+    state->m_scriptfile = nullptr;
+    state->m_root = nullptr;
+    state->m_tags = nullptr;
+    state->m_language = FALSE;
+    state->m_package = nullptr;
+
+    DppLayoutManager *mgr = DppLayoutManager::getInstance();
+    mgr->setState(state);
 
     // Parse arguments.
-    if (! parseArgs(argc, argv, &state) ) {
+    if (! parseArgs(argc, argv, state) ) {
         exit(1);
     }
+    if (state->m_outputDir == nullptr)
+        state->m_outputDir = strdup(".");
 
     //__asm int 3h
 
@@ -225,11 +233,11 @@ int main(int argc, char *argv[])
 #if WIN32
     scriptFile = new MleWin32Path((MlChar *)state.m_scriptfile, true);
 #else /* ! WIN32 */
-    scriptFile = new MleLinuxPath((MlChar *)state.m_scriptfile, true);;
+    scriptFile = new MleLinuxPath((MlChar *)state->m_scriptfile, true);;
 #endif
 
     if ((script = readFileToMemory((char *)scriptFile->getPlatformPath(), NULL)) == NULL ) {
-        perror(state.m_scriptfile);
+        perror(state->m_scriptfile);
         exit(2);
     }
     if (scriptFile != NULL)
@@ -247,15 +255,28 @@ int main(int argc, char *argv[])
 
     // Call python command script.
     //PyRun_SimpleString("print('Hello World from Embedded Python!!!')");
-    FILE *fp = _Py_fopen(state.m_scriptfile, "r");
-    PyRun_SimpleFile(fp, state.m_scriptfile);
+    FILE *fp = _Py_fopen(state->m_scriptfile, "r");
+    PyRun_SimpleFile(fp, state->m_scriptfile);
     
     // Terminate Python interpreter.
     Py_Finalize();
 
-    mlFree(state.m_tags);
-    mlFree(state.m_workprint);
-    mlFree(state.m_scriptfile);
+    // Todo: validate python script completion.
+
+    // Check for more chunks cached.  This would happen if the script
+    // ommitted a final endplayprint command, or simply used the -o
+    // option to specify the output file.
+
+    if (state->m_chunks->getUsed() > 0) {
+        endPlayprint();
+    }
+
+    // Clean up state.
+    if (state->m_root != nullptr) delete state->m_root;
+    if (state->m_tags != nullptr) mlFree(state->m_tags);
+    if (state->m_workprint != nullptr) mlFree(state->m_workprint);
+    if (state->m_scriptfile != nullptr) mlFree(state->m_scriptfile);
+    if (state != nullptr) mlFree(state);
     mlFree(script);
     
     return 0;
