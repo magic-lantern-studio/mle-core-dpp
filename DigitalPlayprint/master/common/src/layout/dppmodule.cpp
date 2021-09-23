@@ -66,9 +66,14 @@
 extern int gencodeStart(LayoutState *, char *, char *);
 extern void gencodeTables(LayoutState *);
 
-// An Exception object for the dpp module.
+/*
+ * An Exception object for the dpp module.
+ */
 static PyObject *DppError;
 
+/*
+ * Python method "system" - make a system call.
+ */
 static PyObject *
 dpp_system(PyObject *self, PyObject *args)
 {
@@ -89,6 +94,9 @@ dpp_system(PyObject *self, PyObject *args)
     return PyLong_FromLong(sts);
 }
 
+/*
+ * Python method "beginplayprint" - start a new Digital Playprint file.
+ */
 static PyObject *
 dpp_beginPlayprint(PyObject *self, PyObject *args)
 {
@@ -158,6 +166,13 @@ dpp_beginPlayprint(PyObject *self, PyObject *args)
     Py_RETURN_NONE;
 }
 
+/*
+ * Python method "endplayprint" - this is where the chunks actually get written.
+ *   generate the table of contents.
+ *   write out the TOC.
+ *   write out the chunks.
+ *   wrap up the playprint.
+ */
 static PyObject *
 dpp_endPlayprint(PyObject *self, PyObject *args)
 {
@@ -210,6 +225,10 @@ dpp_endPlayprint(PyObject *self, PyObject *args)
     Py_RETURN_NONE;
 }
 
+/*
+ * Python method "codefile" - initialize code generation. The generated code
+ * is index references into the Digital Playprint.
+ */
 static PyObject *
 dpp_codeFile(PyObject *self, PyObject *args)
 {
@@ -234,19 +253,23 @@ dpp_codeFile(PyObject *self, PyObject *args)
         }
     }
 
-    char *codefilename, *headerfilename;
+    char *codefilename = nullptr;
+    char *headerfilename = nullptr;
     if (state->m_language) {
         // Java code generation.
         state->m_codefile = strdup(codefile);
         codefilename = new char[strlen(state->m_codefile) + strlen(JAVA_CODE_FILENAME_EXT) + 1];
-        strcpy(codefilename, state->m_codefile); strcat(codefilename, JAVA_CODE_FILENAME_EXT);
+        strcpy(codefilename, state->m_codefile);
+        strcat(codefilename, JAVA_CODE_FILENAME_EXT);
     } else {
         // C/C++ code generation.
         state->m_codefile = strdup(codefile);
         codefilename = new char[strlen(state->m_codefile) + strlen(CPP_CODE_FILENAME_EXT) + 1];
-        strcpy(codefilename, state->m_codefile); strcat(codefilename, CPP_CODE_FILENAME_EXT);
+        strcpy(codefilename, state->m_codefile);
+        strcat(codefilename, CPP_CODE_FILENAME_EXT);
         headerfilename = new char[strlen(state->m_codefile) + strlen(CPP_HEADER_FILENAME_EXT) + 1];
-        strcpy(headerfilename, state->m_codefile); strcat(headerfilename, CPP_HEADER_FILENAME_EXT);
+        strcpy(headerfilename, state->m_codefile);
+        strcat(headerfilename, CPP_HEADER_FILENAME_EXT);
     }
 
     if (state->m_outputDir != NULL) {
@@ -254,7 +277,7 @@ dpp_codeFile(PyObject *self, PyObject *args)
         char *tmpFilename = new char[strlen(state->m_outputDir) + strlen(codefilename) + 2];
         strcpy(tmpFilename,state->m_outputDir);
         strcat(tmpFilename,"\\");
-        strcat(tmpFilename,codefilename);
+        strcat(tmpFilename, codefilename);
 
         MlePath *tmpSourcePath;
         tmpSourcePath = new MleWin32Path((MlChar *)tmpFilename,true);
@@ -273,7 +296,7 @@ dpp_codeFile(PyObject *self, PyObject *args)
             MlePath *tmpHeaderPath;
             tmpHeaderPath = new MleWin32Path((MlChar *)tmpFilename,true);
             delete [] headerfilename;
-             headerfilename = (char *)tmpHeaderPath->getPlatformPath();
+            headerfilename = (char *)tmpHeaderPath->getPlatformPath();
         } else {
             headerfilename = NULL;
         }
@@ -310,6 +333,7 @@ dpp_codeFile(PyObject *self, PyObject *args)
     if (state->m_language) {
         // Generating code for Java.
         if ((state->m_codefd = mlFOpen(codefilename, "w")) == NULL) {
+            delete [] codefilename;
             char errmsg[BUFSIZ];
             sprintf(errmsg, "%s: %s", codefile, strerror(errno));
             PyErr_SetString(DppError, errmsg);
@@ -321,6 +345,8 @@ dpp_codeFile(PyObject *self, PyObject *args)
          if ((state->m_codefd = mlFOpen(codefilename, "w")) == NULL ||
              (state->m_headerfd = mlFOpen(headerfilename, "w")) == NULL )
          {
+             delete [] codefilename;
+             delete [] headerfilename;
              char errmsg[BUFSIZ];
              sprintf(errmsg, "%s: %s", codefile, strerror(errno));
              PyErr_SetString(DppError, errmsg);
@@ -337,6 +363,301 @@ dpp_codeFile(PyObject *self, PyObject *args)
     Py_RETURN_NONE;
 }
 
+/*
+ * Python method "addgroup" - add a Group chunk to the Digital Playprint.
+ */
+static PyObject *
+dpp_addGroup(PyObject *self, PyObject *args)
+{
+    LayoutState *state;
+    const char *filename;
+    const char *name;
+
+    DppLayoutManager *mgr = DppLayoutManager::getInstance();
+    state = mgr->getState();
+
+    // Parse python command arguments
+    if (! PyArg_ParseTuple(args, "s", &filename))
+        return NULL;
+    if (! PyArg_ParseTuple(args, "s", &name))
+        return NULL;
+
+    char *chunkfile;
+    if (state->m_inputDir != NULL) {
+#if defined(WIN32)
+        char *tmpFile = (char *)mlMalloc(strlen(state->m_inputDir) + strlen(filename) + 2);
+        strcpy(tmpFile,state->m_inputDir);
+        strcat(tmpFile,"\\");
+        strcat(tmpFile, filename);
+
+        MlePath *chunkpath;
+        chunkpath = new MleWin32Path((MlChar *)tmpFile,true);
+        chunkfile = (char *)chunkpath->getPlatformPath();
+
+        mlFree(tmpFile);
+#else /* ! WIN32 */
+        char *tmpFile = (char *)mlMalloc(strlen(state->m_inputDir) + strlen(filename) + 2);
+        strcpy(tmpFile,state->m_inputDir);
+        strcat(tmpFile,"/");
+        strcat(tmpFile, filename);
+
+        MlePath *chunkpath;
+        chunkpath = new MleLinuxPath((MlChar *)tmpFile,true);
+        chunkfile = (char *)chunkpath->getPlatformPath();
+
+        mlFree(tmpFile);
+#endif
+    } else {
+        chunkfile = (char *)filename;
+    }
+
+    if (access(chunkfile, R_OK) < 0) {
+        char errmsg[BUFSIZ];
+        sprintf(errmsg, "%s: %s", filename, strerror(errno));
+        PyErr_SetString(DppError, errmsg);
+        return NULL;
+    }
+
+    // Add this entry to the chunks table, to be processed during
+    // the endplayprint command.
+    // Check for sufficient storage first.
+
+    state->m_chunks->addEntry(CHUNK_GROUP, chunkfile, (char *)name);
+
+    // Return success.
+    Py_RETURN_NONE;
+}
+
+/*
+ * Python method "addmedia" - add a Media Reference chunk to the Digital Playprint.
+ */
+static PyObject *
+dpp_addMedia(PyObject *self, PyObject *args)
+{
+    LayoutState *state;
+    const char *filename;
+    const char *name;
+
+    DppLayoutManager *mgr = DppLayoutManager::getInstance();
+    state = mgr->getState();
+
+    // Parse python command arguments
+    if (! PyArg_ParseTuple(args, "s", &filename))
+        return NULL;
+    if (! PyArg_ParseTuple(args, "s", &name))
+        return NULL;
+
+    char *chunkfile;
+    if (state->m_inputDir != NULL) {
+#if defined(WIN32)
+        char *tmpFile = (char *)mlMalloc(strlen(state->m_inputDir) + strlen(filename) + 2);
+        strcpy(tmpFile,state->m_inputDir);
+        strcat(tmpFile,"\\");
+        strcat(tmpFile, filename);
+
+        MlePath *chunkpath;
+        chunkpath = new MleWin32Path((MlChar *)tmpFile,true);
+        chunkfile = (char *)chunkpath->getPlatformPath();
+
+        mlFree(tmpFile);
+#else /* ! WIN32 */
+        char *tmpFile = (char *)mlMalloc(strlen(state->m_inputDir) + strlen(filename) + 2);
+        strcpy(tmpFile,state->m_inputDir);
+        strcat(tmpFile,"/");
+        strcat(tmpFile, filename);
+
+        MlePath *chunkpath;
+        chunkpath = new MleLinuxPath((MlChar *)tmpFile,true);
+        chunkfile = (char *)chunkpath->getPlatformPath();
+
+        mlFree(tmpFile);
+#endif
+    } else {
+        chunkfile = (char *)filename;
+    }
+
+    if (access(chunkfile, R_OK) < 0) {
+        char errmsg[BUFSIZ];
+        sprintf(errmsg, "%s: %s", filename, strerror(errno));
+        PyErr_SetString(DppError, errmsg);
+        return NULL;
+    }
+
+    // Add this entry to the chunks table, to be processed during
+    // the endplayprint command.
+    // Check for sufficient storage first.
+
+    state->m_chunks->addEntry(CHUNK_MEDIA, chunkfile, (char *)name);
+
+    // Return success.
+    Py_RETURN_NONE;
+}
+
+/*
+ * Python method "addset" - add a Set chunk to the Digital Playprint
+ */
+static PyObject *
+dpp_addSet(PyObject *self, PyObject *args)
+{
+    LayoutState *state;
+    const char *filename;
+    const char *name;
+
+    DppLayoutManager *mgr = DppLayoutManager::getInstance();
+    state = mgr->getState();
+
+    // Parse python command arguments
+    if (! PyArg_ParseTuple(args, "s", &filename))
+        return NULL;
+    if (! PyArg_ParseTuple(args, "s", &name))
+        return NULL;
+
+    char *chunkfile;
+    if (state->m_inputDir != NULL) {
+#if defined(WIN32)
+        char *tmpFile = (char *)mlMalloc(strlen(state->m_inputDir) + strlen(filename) + 2);
+        strcpy(tmpFile,state->m_inputDir);
+        strcat(tmpFile,"\\");
+        strcat(tmpFile, filename);
+
+        MlePath *chunkpath;
+        chunkpath = new MleWin32Path((MlChar *)tmpFile,true);
+        chunkfile = (char *)chunkpath->getPlatformPath();
+
+        mlFree(tmpFile);
+#else /* ! WIN32 */
+        char *tmpFile = (char *)mlMalloc(strlen(state->m_inputDir) + strlen(filename) + 2);
+        strcpy(tmpFile,state->m_inputDir);
+        strcat(tmpFile,"/");
+        strcat(tmpFile, filename);
+
+        MlePath *chunkpath;
+        chunkpath = new MleLinuxPath((MlChar *)tmpFile,true);
+        chunkfile = (char *)chunkpath->getPlatformPath();
+
+        mlFree(tmpFile);
+#endif
+    } else {
+        chunkfile = (char *)filename;
+    }
+
+    if (access(chunkfile, R_OK) < 0) {
+        char errmsg[BUFSIZ];
+        sprintf(errmsg, "%s: %s", filename, strerror(errno));
+        PyErr_SetString(DppError, errmsg);
+        return NULL;
+    }
+
+    // Add this entry to the chunks table, to be processed during
+    // the endplayprint command.
+    // Check for sufficient storage first.
+
+    state->m_chunks->addEntry(CHUNK_SET, chunkfile, (char *)name);
+
+    // Return success.
+    Py_RETURN_NONE;
+}
+
+/*
+ * Python method "addscene" - add a Scene chunk to the Digital Playprint
+ */
+static PyObject *
+dpp_addScene(PyObject *self, PyObject *args)
+{
+    LayoutState *state;
+    const char *filename;
+    const char *name;
+
+    DppLayoutManager *mgr = DppLayoutManager::getInstance();
+    state = mgr->getState();
+
+    // Parse python command arguments
+    if (! PyArg_ParseTuple(args, "s", &filename))
+        return NULL;
+    if (! PyArg_ParseTuple(args, "s", &name))
+        return NULL;
+
+    char *chunkfile;
+    if (state->m_inputDir != NULL) {
+#if defined(WIN32)
+        char *tmpFile = (char *)mlMalloc(strlen(state->m_inputDir) + strlen(filename) + 2);
+        strcpy(tmpFile,state->m_inputDir);
+        strcat(tmpFile,"\\");
+        strcat(tmpFile, filename);
+
+        MlePath *chunkpath;
+        chunkpath = new MleWin32Path((MlChar *)tmpFile,true);
+        chunkfile = (char *)chunkpath->getPlatformPath();
+
+        mlFree(tmpFile);
+#else /* ! WIN32 */
+        char *tmpFile = (char *)mlMalloc(strlen(state->m_inputDir) + strlen(filename) + 2);
+        strcpy(tmpFile,state->m_inputDir);
+        strcat(tmpFile,"/");
+        strcat(tmpFile, filename);
+
+        MlePath *chunkpath;
+        chunkpath = new MleLinuxPath((MlChar *)tmpFile,true);
+        chunkfile = (char *)chunkpath->getPlatformPath();
+
+        mlFree(tmpFile);
+#endif
+    } else {
+        chunkfile = (char *)filename;
+    }
+
+    if (access(chunkfile, R_OK) < 0) {
+        char errmsg[BUFSIZ];
+        sprintf(errmsg, "%s: %s", filename, strerror(errno));
+        PyErr_SetString(DppError, errmsg);
+        return NULL;
+    }
+
+    // Add this entry to the chunks table, to be processed during
+    // the endplayprint command.
+    // Check for sufficient storage first.
+
+    state->m_chunks->addEntry(CHUNK_SCENE, chunkfile, (char *)name);
+
+    // Return success.
+    Py_RETURN_NONE;
+}
+
+static PyObject *
+dpp_beginList(PyObject *self, PyObject *args)
+{
+    //LayoutState *state;
+    const char *listname;
+
+    //DppLayoutManager *mgr = DppLayoutManager::getInstance();
+    //state = mgr->getState();
+
+    // Parse python command arguments
+    if (! PyArg_ParseTuple(args, "s", &listname))
+        return NULL;
+
+    PyErr_SetString(DppError, "Command not implemented yet");
+    return NULL;
+}
+
+static PyObject *
+dpp_endList(PyObject *self, PyObject *args)
+{
+    //LayoutState *state;
+    const char *listname;
+
+    //DppLayoutManager *mgr = DppLayoutManager::getInstance();
+    //state = mgr->getState();
+
+    // Parse python command arguments
+    if (! PyArg_ParseTuple(args, "s", &listname))
+        return NULL;
+
+    PyErr_SetString(DppError, "Command not implemented yet");
+    return NULL;
+}
+
+
 static PyMethodDef DppMethods[] = {
     {"system",  dpp_system, METH_VARARGS,
      "Execute a shell command."},
@@ -345,7 +666,15 @@ static PyMethodDef DppMethods[] = {
     {"endplayprint",  dpp_endPlayprint, METH_VARARGS,
      "Terminate a Digital Playprint."},
     {"codefile",  dpp_codeFile, METH_VARARGS,
-     "Terminate a Digital Playprint."},
+     "Specify the name of the generated code."},
+    {"addgroup",  dpp_addGroup, METH_VARARGS,
+     "Add a Group to the Digital Playprint."},
+    {"addmedia",  dpp_addMedia, METH_VARARGS,
+     "Add Media Reference to the Digital Playprint."},
+    {"addset",  dpp_addSet, METH_VARARGS,
+     "Add a Set to the Digital Playprint."},
+    {"addscene",  dpp_addScene, METH_VARARGS,
+     "Add a Scene to the Digital Playprint."},
     {NULL, NULL, 0, NULL}        /* Sentinel */
 };
 
@@ -355,7 +684,8 @@ static struct PyModuleDef dppmodule = {
     NULL,    /* module documentation, may be NULL */
     -1,      /* size of per-interpreter state of the module,
                 or -1 if the module keeps state in global variables. */
-    DppMethods
+    DppMethods,
+    NULL, NULL, NULL, NULL
 };
 
 PyMODINIT_FUNC
