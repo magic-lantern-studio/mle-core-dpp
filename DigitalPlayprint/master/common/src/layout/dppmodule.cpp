@@ -377,9 +377,7 @@ dpp_addGroup(PyObject *self, PyObject *args)
     state = mgr->getState();
 
     // Parse python command arguments
-    if (! PyArg_ParseTuple(args, "s", &filename))
-        return NULL;
-    if (! PyArg_ParseTuple(args, "s", &name))
+    if (! PyArg_ParseTuple(args, "ss", &filename, &name))
         return NULL;
 
     char *chunkfile;
@@ -442,9 +440,7 @@ dpp_addMedia(PyObject *self, PyObject *args)
     state = mgr->getState();
 
     // Parse python command arguments
-    if (! PyArg_ParseTuple(args, "s", &filename))
-        return NULL;
-    if (! PyArg_ParseTuple(args, "s", &name))
+    if (! PyArg_ParseTuple(args, "ss", &filename, &name))
         return NULL;
 
     char *chunkfile;
@@ -507,9 +503,7 @@ dpp_addSet(PyObject *self, PyObject *args)
     state = mgr->getState();
 
     // Parse python command arguments
-    if (! PyArg_ParseTuple(args, "s", &filename))
-        return NULL;
-    if (! PyArg_ParseTuple(args, "s", &name))
+    if (! PyArg_ParseTuple(args, "ss", &filename, &name))
         return NULL;
 
     char *chunkfile;
@@ -572,9 +566,7 @@ dpp_addScene(PyObject *self, PyObject *args)
     state = mgr->getState();
 
     // Parse python command arguments
-    if (! PyArg_ParseTuple(args, "s", &filename))
-        return NULL;
-    if (! PyArg_ParseTuple(args, "s", &name))
+    if (! PyArg_ParseTuple(args, "ss", &filename, &name))
         return NULL;
 
     char *chunkfile;
