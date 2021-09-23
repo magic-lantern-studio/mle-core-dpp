@@ -122,12 +122,14 @@ int gencodeStart(LayoutState *state, char *headerfilename, char *codefilename)
 
 	// Open the workprint.
     int status = wp->openFile(wpFile);
+    // Todo: Log the status so that we know if the wpFile failed because it was invalid.
     MLE_ASSERT(status == 0);
 
     /*
      * Read in the workprint.
      */
     state->m_root = MleDwpItem::readAll(wp);
+    // Todo: Log the status so that we know if the wp failed because it was invalid.
     MLE_ASSERT(state->m_root);
 
 	if (state->m_workprint == NULL)
