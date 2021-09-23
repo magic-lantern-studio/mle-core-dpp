@@ -9,7 +9,7 @@ CONFIG -= app_bundle
 # deprecated API in order to know how to port your code away from it.
 DEFINES += QT_DEPRECATED_WARNINGS
 
-DEFINES += MLE_NOT_DLL DEBUG
+DEFINES += USE_PYTHON MLE_NOT_DLL MLE_DEBUG DEBUG
 
 INCLUDEPATH += $$PWD/../../common/include $$PWD/../../linux/include /opt/MagicLantern/include
 
