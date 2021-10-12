@@ -17,7 +17,8 @@ unix:!macx {
 }
 
 macx {
-    INCLUDEPATH += /Library/Frameworks/Python.framework/Versions/Current/include/python3.6
+#    INCLUDEPATH += /System/Library/Frameworks/Python.framework/Versions/Current/include/python3.6
+    INCLUDEPATH += /usr/local/Cellar/python\@3.9/3.9.1_6/Frameworks/Python.framework/Versions/Current/include/python3.9
 }
 
 INCLUDEPATH += $$PWD/../../common/include $$PWD/../../linux/include /opt/MagicLantern/include
@@ -43,7 +44,8 @@ unix:!macx {
 
 macx {
     LIBS += -L/opt/MagicLantern/lib -lDPPGen -lDPP -lDWP -lplayprint -lmlmath -lmlutil
-    LIBS += -L/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/config/ -lpython3.6
+#    LIBS += -L/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/config/ -lpython3.6
+    LIBS += -L/usr/local/Cellar/python\@3.9/3.9.1_6/Frameworks/Python.framework/Versions/Current/lib/ -lpython3.9
 }
 
 # Default rules for deployment.

@@ -30,11 +30,7 @@
 // COPYRIGHT_END
 
 #define PY_SSIZE_T_CLEAN
-#if defined(__linux__)
 #include <Python.h>
-#else
-#include <Python/Python.h>
-#endif
 
 // Include system header files.
 #if defined(WIN32)

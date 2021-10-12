@@ -48,11 +48,7 @@
 
 
 // Include Python header files.
-#if defined(__linux__)
 #include <Python.h>
-#else
-#include <Python/Python.h>
-#endif
 
 // Include system header files.
 #ifdef WIN32
