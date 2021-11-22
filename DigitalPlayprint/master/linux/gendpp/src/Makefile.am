@@ -1,8 +1,13 @@
 bin_PROGRAMS = gendpp
 
 gendpp_SOURCES = \
-	../../../common/src/layout/main.cpp \
-	../../../common/src/layout/gencode.cpp
+	../../../common/src/layout/pymain.cpp \
+	../../../common/src/layout/gencode.cpp \
+	../../../common/src/layout/dppmodule.cpp \
+	../../../common/src/layout/DppLayoutManager.cpp
+
+#gendpp_HEADERS = \
+#    ../../../common/src/layout/DppLayoutManager.h
 
 gendpp_LDADD = \
 	$(MLE_ROOT)/lib/libDPPGen.so \
@@ -11,7 +16,8 @@ gendpp_LDADD = \
 	$(MLE_ROOT)/lib/libplayprint.so \
 	$(MLE_ROOT)/lib/libmlutil.so \
 	$(MLE_ROOT)/lib/libmlmath.so \
-	$(TCL_HOME)/lib/libtcl8.6.a -ldl -lz -lpthread
+	-L/usr/lib/python3.6/config-3.6m-x86_64-linux-gnu -lpython3.6m \
+	-ldl -lz -lpthread
 
 gendpp_CPPFLAGS = \
 	-DMLE_NOT_DLL \
@@ -24,7 +30,8 @@ gendpp_CPPFLAGS = \
 	-I$(MLE_HOME)/Core/util/common/include \
 	-I$(MLE_HOME)/Core/util/linux/include \
 	-I$(MLE_HOME)/Core/math/common/include \
-	-I$(MLE_HOME)/Core/math/linux/include
+	-I$(MLE_HOME)/Core/math/linux/include \
+	-I/usr/include/python3.6
 
 gendpp_LDFLAGS = \
 	-Wl,-rpath=$(MLE_ROOT)/lib
