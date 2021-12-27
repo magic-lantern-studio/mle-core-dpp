@@ -36,10 +36,3 @@ gendpp_CPPFLAGS = \
 gendpp_LDFLAGS = \
 	-Wl,-rpath=$(MLE_ROOT)/lib
 
-if TCL_HOME_SET
-## Add Tcl header files
-gendpp_CPPFLAGS += 	-I$(TCL_HOME)/include
-else
-## Report error
-Error: TCL_HOME environment variable must be set.
-endif
