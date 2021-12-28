@@ -14,6 +14,7 @@ genppscript_LDADD = \
 
 genppscript_CPPFLAGS = \
 	-DMLE_NOT_DLL \
+	-DUSE_PYTHON \
 	-I$(top_srcdir)/../../common/include \
 	-I$(top_srcdir)/../../../runtime/common/include \
 	-I$(MLE_HOME)/DigitalWorkprint/lib/common/include \
