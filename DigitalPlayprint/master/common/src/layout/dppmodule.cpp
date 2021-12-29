@@ -176,6 +176,8 @@ dpp_endPlayprint(PyObject *self, PyObject *args)
 
     DppLayoutManager *mgr = DppLayoutManager::getInstance();
     state = mgr->getState();
+    // If m_dpp is null, then the playprint has already been completed.
+    if (state->m_dpp == nullptr) Py_RETURN_NONE;
 
     // Generate the TOC...
     state->m_dpp->beginTOC(state->m_chunks->getUsed());
