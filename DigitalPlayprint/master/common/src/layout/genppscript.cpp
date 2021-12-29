@@ -305,7 +305,7 @@ processAddSet(FILE *scriptOut, MleDwpItem *root)
 	{
 		name = items[i]->getName();
 #if defined(USE_PYTHON)
-        fprintf(scriptOut, "dpp.addset(%s.chk, %s)\n", name, name);
+        fprintf(scriptOut, "dpp.addset(\"%s.chk\", \"%s\")\n", name, name);
 #else
 		fprintf(scriptOut, "addset %s.chk %s\n", name, name);
 #endif
@@ -489,7 +489,7 @@ main(int argc, char **argv)
 	{
         name = groupItems[i]->getName();
 #if defined(USE_PYTHON)
-        fprintf(scriptOut, "dpp.addgroup(\"%s.chk, %s\")\n", name, name);
+        fprintf(scriptOut, "dpp.addgroup(\"%s.chk\", \"%s\")\n", name, name);
 #else
 		fprintf(scriptOut, "addgroup %s.chk %s\n", name, name);
 #endif
@@ -510,7 +510,7 @@ main(int argc, char **argv)
 	{
         name = mediaRefItems[i]->getName();
 #if defined(USE_PYTHON)
-        fprintf(scriptOut, "dpp.addmedia(\"%s.chk, %s\")\n", name, name);
+        fprintf(scriptOut, "dpp.addmedia(\"%s.chk\", \"%s\")\n", name, name);
 #else
 		fprintf(scriptOut, "addmedia %s.chk %s\n", name, name);
 #endif
@@ -534,7 +534,7 @@ main(int argc, char **argv)
 	{
         name = sceneItems[i]->getName();
 #if defined(USE_PYTHON)
-        fprintf(scriptOut, "dpp.addscene(\"%s.chk, %s\")\n", name, name);
+        fprintf(scriptOut, "dpp.addscene(\"%s.chk\", \"%s\")\n", name, name);
 #else
 		fprintf(scriptOut, "addscene %s.chk %s\n", name, name);
 #endif
