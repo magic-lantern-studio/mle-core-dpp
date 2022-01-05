@@ -20,7 +20,9 @@ libplayprint_la_SOURCES = \
 	../../common/src/scenechk.cxx
 
 # Linker options libTestProgram
-libplayprint_la_LDFLAGS = -version-info 1:0:0
+libplayprint_la_LDFLAGS = \
+    -L/opt/MagicLantern/lib -lDWP -lmlmath -lmlutil \
+    -version-info 1:0:0
 
 # Compiler options. Here we are adding the include directory
 # to be searched for headers included in the source code.
