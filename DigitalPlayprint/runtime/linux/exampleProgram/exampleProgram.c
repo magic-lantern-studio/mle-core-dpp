@@ -1,6 +1,6 @@
 // COPYRIGHT_BEGIN
 //
-// Copyright (c) 2015 Wizzer Works
+// Copyright (c) 2015-2022 Wizzer Works
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -29,7 +29,6 @@
 //
 // COPYRIGHT_END
 
-#include "libplayprint.h"
 
 int main(void) {
     // TBD - Show how to use playprint library here.
