@@ -29,8 +29,10 @@
 //
 // COPYRIGHT_END
 
+#include <stdio.h>
 
 int main(void) {
     // TBD - Show how to use playprint library here.
+	printf("TBD - example needs to be implemented.");
     return 0;
 }
