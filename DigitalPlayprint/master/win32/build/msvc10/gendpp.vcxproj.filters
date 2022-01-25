@@ -18,12 +18,21 @@
     <ClCompile Include="..\..\..\common\src\layout\gencode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\common\src\layout\main.cpp">
+    <ClCompile Include="..\..\..\common\src\layout\DppLayoutManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\common\src\layout\pymain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\common\src\layout\dppmodule.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\common\src\layout\pplayout.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\common\src\layout\DppLayoutManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
