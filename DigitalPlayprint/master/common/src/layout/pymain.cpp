@@ -227,7 +227,7 @@ int main(int argc, char *argv[])
     // Read in the script file...
     MlePath *scriptFile;
 #if WIN32
-    scriptFile = new MleWin32Path((MlChar *)state.m_scriptfile, true);
+    scriptFile = new MleWin32Path((MlChar *)(state->m_scriptfile), true);
 #else /* ! WIN32 */
     scriptFile = new MleLinuxPath((MlChar *)state->m_scriptfile, true);;
 #endif
