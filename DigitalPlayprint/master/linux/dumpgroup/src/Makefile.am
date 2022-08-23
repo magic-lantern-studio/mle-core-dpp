@@ -8,7 +8,8 @@ dumpgroup_LDADD = \
 	$(MLE_ROOT)/lib/libDWP.so \
 	$(MLE_ROOT)/lib/libplayprint.so \
 	$(MLE_ROOT)/lib/libmlutil.so \
-	$(MLE_ROOT)/lib/libmlmath.so
+	$(MLE_ROOT)/lib/libmlmath.so \
+	-ldl
 
 dumpgroup_CPPFLAGS = \
 	-DMLE_NOT_DLL \
@@ -24,4 +25,5 @@ dumpgroup_CPPFLAGS = \
 	-I$(MLE_HOME)/Core/math/linux/include
 
 dumpgroup_LDFLAGS = \
-	-Wl,-rpath=$(MLE_ROOT)/lib
+	-Wl,-rpath=$(MLE_ROOT)/lib \
+	-Wl,--no-as-needed

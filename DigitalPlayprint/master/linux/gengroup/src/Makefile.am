@@ -25,4 +25,5 @@ gengroup_CPPFLAGS = \
 	-I$(MLE_HOME)/Core/math/linux/include
 
 gengroup_LDFLAGS = \
-	-Wl,-rpath=$(MLE_ROOT)/lib
+	-Wl,-rpath=$(MLE_ROOT)/lib \
+	-Wl,--no-as-needed

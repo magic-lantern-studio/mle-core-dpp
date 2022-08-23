@@ -10,7 +10,8 @@ dumpmedia_LDADD = \
 	$(MLE_ROOT)/lib/libDWP.a \
 	$(MLE_ROOT)/lib/libplayprint.a \
 	$(MLE_ROOT)/lib/libmlutil.a \
-	$(MLE_ROOT)/lib/libmlmath.a
+	$(MLE_ROOT)/lib/libmlmath.a \
+	-ldl
 
 dumpmedia_CPPFLAGS = \
 	-DMLE_NOT_DLL \
@@ -26,4 +27,5 @@ dumpmedia_CPPFLAGS = \
 	-I$(MLE_HOME)/Core/math/linux/include
 
 dumpmedia_LDFLAGS = \
-	-Wl,-rpath=$(MLE_ROOT)/lib
+	-Wl,-rpath=$(MLE_ROOT)/lib \
+	-Wl,--no-as-needed

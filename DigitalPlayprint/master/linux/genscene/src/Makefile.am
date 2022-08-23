@@ -25,4 +25,5 @@ genscene_CPPFLAGS = \
 	-I$(MLE_HOME)/Core/math/linux/include
 
 genscene_LDFLAGS = \
-	-Wl,-rpath=$(MLE_ROOT)/lib
+	-Wl,-rpath=$(MLE_ROOT)/lib \
+	-Wl,--no-as-needed

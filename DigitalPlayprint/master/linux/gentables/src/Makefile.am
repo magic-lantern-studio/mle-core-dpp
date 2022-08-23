@@ -21,4 +21,5 @@ gentables_CPPFLAGS = \
 	-I$(MLE_HOME)/Core/util/linux/include
 
 gentables_LDFLAGS = \
-	-Wl,-rpath=$(MLE_ROOT)/lib
+	-Wl,-rpath=$(MLE_ROOT)/lib \
+	-Wl,--no-as-needed

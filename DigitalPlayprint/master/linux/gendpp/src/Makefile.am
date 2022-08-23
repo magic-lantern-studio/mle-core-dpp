@@ -34,5 +34,6 @@ gendpp_CPPFLAGS = \
 	-I/usr/include/python3.6
 
 gendpp_LDFLAGS = \
-	-Wl,-rpath=$(MLE_ROOT)/lib
+	-Wl,-rpath=$(MLE_ROOT)/lib \
+	-Wl,--no-as-needed
 
