@@ -27,3 +27,16 @@ gengroup_CPPFLAGS = \
 gengroup_LDFLAGS = \
 	-Wl,-rpath=$(MLE_ROOT)/lib \
 	-Wl,--no-as-needed
+
+if HAVE_LOG4CXX
+#gengroup_SOURCES += \
+#    source.h \
+#    source.cpp
+	
+gengroup_CPPFLAGS += $(LOG4CXX_CFLAGS)
+#gengroup_CPPFLAGS += -DLINUX -D_REENTRANT -D_GNU_SOURCE -I/usr/local/include -I/usr/include/apr-1.0
+
+gengroup_LDFLAGS += -Wl,-rpath=/usr/local/lib
+gengroup_LDADD += $(LOG4CXX_LIBS)
+#gengroup_LDADD += -L/usr/local/lib -llog4cxx
+endif

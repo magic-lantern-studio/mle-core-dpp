@@ -29,3 +29,16 @@ dumpmedia_CPPFLAGS = \
 dumpmedia_LDFLAGS = \
 	-Wl,-rpath=$(MLE_ROOT)/lib \
 	-Wl,--no-as-needed
+	
+if HAVE_LOG4CXX
+#dumpmedia_SOURCES += \
+#    source.h \
+#    source.cpp
+	
+dumpmedia_CPPFLAGS += $(LOG4CXX_CFLAGS)
+#dumpmedia_CPPFLAGS += -DLINUX -D_REENTRANT -D_GNU_SOURCE -I/usr/local/include -I/usr/include/apr-1.0
+
+dumpmedia_LDFLAGS += -Wl,-rpath=/usr/local/lib
+dumpmedia_LDADD += $(LOG4CXX_LIBS)
+#dumpmedia_LDADD += -L/usr/local/lib -llog4cxx
+endif

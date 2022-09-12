@@ -27,3 +27,16 @@ dumpscene_CPPFLAGS = \
 dumpscene_LDFLAGS = \
 	-Wl,-rpath=$(MLE_ROOT)/lib \
 	-Wl,--no-as-needed
+
+if HAVE_LOG4CXX
+#dumpscene_SOURCES += \
+#    source.h \
+#    source.cpp
+	
+dumpscene_CPPFLAGS += $(LOG4CXX_CFLAGS)
+#dumpscene_CPPFLAGS += -DLINUX -D_REENTRANT -D_GNU_SOURCE -I/usr/local/include -I/usr/include/apr-1.0
+
+dumpscene_LDFLAGS += -Wl,-rpath=/usr/local/lib
+dumpscene_LDADD += $(LOG4CXX_LIBS)
+#dumpscene_LDADD += -L/usr/local/lib -llog4cxx
+endif

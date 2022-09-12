@@ -29,3 +29,16 @@ dumpdpp_CPPFLAGS = \
 dumpdpp_LDFLAGS = \
 	-Wl,-rpath=$(MLE_ROOT)/lib \
 	-Wl,--no-as-needed
+
+if HAVE_LOG4CXX
+#dumpdpp_SOURCES += \
+#    source.h \
+#    source.cpp
+	
+dumpdpp_CPPFLAGS += $(LOG4CXX_CFLAGS)
+#dumpdpp_CPPFLAGS += -DLINUX -D_REENTRANT -D_GNU_SOURCE -I/usr/local/include -I/usr/include/apr-1.0
+
+dumpdpp_LDFLAGS += -Wl,-rpath=/usr/local/lib
+dumpdpp_LDADD += $(LOG4CXX_LIBS)
+#gentables_LDADD += -L/usr/local/lib -llog4cxx
+endif

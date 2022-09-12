@@ -133,7 +133,7 @@
                                 								
                                 <option defaultValue="CFLAGS=-g -O0" id="org.eclipse.linuxtools.cdt.autotools.core.option.configure.user.1628500501" name="User-specified configuration options" superClass="org.eclipse.linuxtools.cdt.autotools.core.option.configure.user" valueType="string"/>
                                 								
-                                <option id="org.eclipse.linuxtools.cdt.autotools.core.option.configure.name.769550709" superClass="org.eclipse.linuxtools.cdt.autotools.core.option.configure.name" value="org.eclipse.linuxtools.cdt.autotools.core.configuration.build.debug.2111542979" valueType="string"/>
+                                <option id="org.eclipse.linuxtools.cdt.autotools.core.option.configure.name.769550709" name="Name" superClass="org.eclipse.linuxtools.cdt.autotools.core.option.configure.name" value="org.eclipse.linuxtools.cdt.autotools.core.configuration.build.debug.2111542979" valueType="string"/>
                                 							
                             </tool>
                             							

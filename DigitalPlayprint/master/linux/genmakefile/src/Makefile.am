@@ -27,3 +27,16 @@ genmakefile_CPPFLAGS = \
 genmakefile_LDFLAGS = \
 	-Wl,-rpath=$(MLE_ROOT)/lib \
 	-Wl,--no-as-needed
+
+if HAVE_LOG4CXX
+#genmakefile_SOURCES += \
+#    source.h \
+#    source.cpp
+	
+genmakefile_CPPFLAGS += $(LOG4CXX_CFLAGS)
+#genmakefile_CPPFLAGS += -DLINUX -D_REENTRANT -D_GNU_SOURCE -I/usr/local/include -I/usr/include/apr-1.0
+
+genmakefile_LDFLAGS += -Wl,-rpath=/usr/local/lib
+genmakefile_LDADD += $(LOG4CXX_LIBS)
+#genmakefile_LDADD += -L/usr/local/lib -llog4cxx
+endif
