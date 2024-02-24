@@ -12,7 +12,7 @@
 
 // COPYRIGHT_BEGIN
 //
-// Copyright (c) 2015-2018 Wizzer Works
+// Copyright (c) 2015-2024 Wizzer Works
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -102,13 +102,14 @@ int MleDppInput::readTOC(MleDppCallback func,void *clientData)
     if (tocInfo.m_chunk.m_tag == mlDppMakeTag('t','o','c',' '))
 	{
         // Read number of TOC entries.
-        mlFRead(&numEntries,sizeof(MlUInt),1,getFp());
+    	size_t nBytes;
+        nBytes = mlFRead(&numEntries,sizeof(MlUInt),1,getFp());
         beginTOC(numEntries);
 
         // Read each TOC entry.
         for (MlUInt i = 0; i < numEntries; i++)
 		{
-            mlFRead(&entry,sizeof(MleDppTocEntry),1,getFp());
+            nBytes = mlFRead(&entry,sizeof(MleDppTocEntry),1,getFp());
             addTOCEntry(entry.m_label,entry.m_offset);
         }
 
@@ -188,8 +189,9 @@ int MleDppInput::readGroup(MleDppCallback func,void *clientData)
 	{
         if (func)
 		{
+        	size_t nBytes;
             callData = mlMalloc(groupInfo.m_chunk.m_size);
-            mlFRead(callData,groupInfo.m_chunk.m_size,1,getFp());
+            nBytes = mlFRead(callData,groupInfo.m_chunk.m_size,1,getFp());
 
             status = func(clientData,callData);
 
@@ -217,8 +219,9 @@ int MleDppInput::readScene(MleDppCallback func,void *clientData)
 	{
         if (func)
 		{
+        	size_t nBytes;
             callData = mlMalloc(sceneInfo.m_chunk.m_size);
-            mlFRead(callData,sceneInfo.m_chunk.m_size,1,getFp());
+            nBytes = mlFRead(callData,sceneInfo.m_chunk.m_size,1,getFp());
 
             status = func(clientData,callData);
 
@@ -246,8 +249,9 @@ int MleDppInput::readSet(MleDppCallback func,void *clientData)
 	{
         if (func)
 		{
+        	size_t nBytes;
             callData = mlMalloc(setInfo.m_chunk.m_size);
-            mlFRead(callData,setInfo.m_chunk.m_size,1,getFp());
+            nBytes = mlFRead(callData,setInfo.m_chunk.m_size,1,getFp());
 
             status = func(clientData,callData);
 
@@ -354,7 +358,8 @@ MlBoolean MleDppInput::readMrefInfo(MleMediaRefInfoChunk *chunkData)
     if (mediaInfo.m_chunk.m_tag == mlDppMakeTag('i','n','f','o'))
 	{
         // Read the 'info' data.
-        mlFRead(chunkData,mediaInfo.m_chunk.m_size,1,getFp());
+    	size_t nBytes;
+        nBytes = mlFRead(chunkData,mediaInfo.m_chunk.m_size,1,getFp());
 
         if (getSwapRead())
 		{
@@ -384,7 +389,8 @@ MlBoolean MleDppInput::readMref(MleMediaRefChunk *chunkData)
     if (mediaInfo.m_chunk.m_tag == mlDppMakeTag('m','r','e','f'))
 	{
         // Read the 'mref' data.
-        mlFRead(chunkData,MEDIAREF_CHUNK_SIZE,1,getFp());
+    	size_t nBytes;
+        nBytes = mlFRead(chunkData,MEDIAREF_CHUNK_SIZE,1,getFp());
 
         if (getSwapRead())
 		{
@@ -398,7 +404,7 @@ MlBoolean MleDppInput::readMref(MleMediaRefChunk *chunkData)
             chunkData->m_data = (char *)mlMalloc(chunkData->m_size + 1);
         else
             chunkData->m_data = (char *)mlMalloc(chunkData->m_size);
-        mlFRead(chunkData->m_data,chunkData->m_size,1,getFp());
+        nBytes = mlFRead(chunkData->m_data,chunkData->m_size,1,getFp());
 
         if (chunkData->m_flags == 0)
 		{

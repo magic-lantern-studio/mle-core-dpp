@@ -12,7 +12,7 @@
 
 // COPYRIGHT_BEGIN
 //
-// Copyright (c) 2015-2018 Wizzer Works
+// Copyright (c) 2015-2024 Wizzer Works
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -133,7 +133,8 @@ MlBoolean MleChunkFile::readHeader(MleChunkFileHeader *chunkData)
         if (hdrInfo.m_chunk.m_tag == mlDppMakeTag('h','d','r',' '))
 		{
             // Read the chunk file header.
-            mlFRead(chunkData,hdrInfo.m_chunk.m_size,1,getFp());
+        	size_t nBytes;
+            nBytes = mlFRead(chunkData,hdrInfo.m_chunk.m_size,1,getFp());
 
             if (m_swapRead)
 			{

@@ -12,7 +12,7 @@
 
 // COPYRIGHT_BEGIN
 //
-// Copyright (c) 2015-2018 Wizzer Works
+// Copyright (c) 2015-2024 Wizzer Works
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -636,9 +636,10 @@ int mlDppCheckFormat(FILE *fp)
     long offset;
 
     /* Read first 4 bytes in file. */
+    size_t nBytes;
     offset = mlFTell(fp);
     mlFSeek(fp,0L,SEEK_SET);
-    mlFRead(&chunkFileTag,sizeof(MlDppTag),1,fp);
+    nBytes = mlFRead(&chunkFileTag,sizeof(MlDppTag),1,fp);
     mlFSeek(fp,offset,SEEK_SET);
 
 #if BYTE_ORDER == BIG_ENDIAN

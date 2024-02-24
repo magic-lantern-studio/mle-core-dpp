@@ -21,12 +21,8 @@ libDPPGen_la_CPPFLAGS = \
 	-DMLE_NOT_DLL \
 	-I$(top_srcdir)/include \
 	-I$(top_srcdir)/../../common/include \
-	-I$(MLE_HOME)/DigitalWorkprint/lib/common/include \
-	-I$(MLE_HOME)/DigitalWorkprint/lib/linux/include \
-	-I$(MLE_HOME)/DigitalPlayprint/lib/common/include \
-	-I$(MLE_HOME)/DigitalPlayprint/lib/linux/include \
-	-I$(MLE_HOME)/Core/util/common/include \
-	-I$(MLE_HOME)/Core/util/linux/include
+	-I$(MLE_ROOT)/include \
+	-std=c++17
 
 #templates_dir = $(pkgdatadir)/lib
 templates_dir = $(prefix)/lib

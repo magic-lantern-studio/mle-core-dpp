@@ -12,7 +12,7 @@
 
 // COPYRIGHT_BEGIN
 //
-// Copyright (c) 2015-2018 Wizzer Works
+// Copyright (c) 2015-2024 Wizzer Works
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -118,7 +118,8 @@ MleMrefChunkFile::readInfo(MleMediaRefInfoChunk *chunkData)
         if (mediaInfo.m_chunk.m_tag == mlDppMakeTag('i','n','f','o'))
 		{
             // Read the 'info' data.
-            mlFRead(chunkData,mediaInfo.m_chunk.m_size,1,getFp());
+        	size_t nBytes;
+            nBytes = mlFRead(chunkData,mediaInfo.m_chunk.m_size,1,getFp());
 
             if (getSwapRead())
 			{
@@ -187,7 +188,8 @@ MleMrefChunkFile::readData(MleMediaRefChunk *chunkData)
         if (mediaInfo.m_chunk.m_tag == mlDppMakeTag('m','r','e','f'))
 		{
             // Read the 'mref' data.
-            mlFRead(chunkData,MEDIAREF_CHUNK_SIZE,1,getFp());
+        	size_t nBytes;
+            nBytes = mlFRead(chunkData,MEDIAREF_CHUNK_SIZE,1,getFp());
 
             if (getSwapRead())
 			{
@@ -200,7 +202,7 @@ MleMrefChunkFile::readData(MleMediaRefChunk *chunkData)
 			// be required by an EXTERNAL media reference. XXX - fix this
 			// for INTERNAL media references; may be a non-issue.
             chunkData->m_data = (char *)mlMalloc(chunkData->m_size + 1);
-            mlFRead(chunkData->m_data,chunkData->m_size,1,getFp());
+            nBytes = mlFRead(chunkData->m_data,chunkData->m_size,1,getFp());
 			chunkData->m_data[chunkData->m_size] = '\0';
         }
 
@@ -336,8 +338,9 @@ MleMrefChunkFile::processMediaRef(MleMediaRefChunk *chunkData)
             }
             
             // Read media data.
+            size_t nBytes;
             chunkData->m_data = (char *)mlMalloc(file_info.st_size);
-            mlFRead(chunkData->m_data,file_info.st_size,1,mediaFp);
+            nBytes = mlFRead(chunkData->m_data,file_info.st_size,1,mediaFp);
 
             // Close media file and clean up.
             mlFClose(mediaFp);

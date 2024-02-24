@@ -147,7 +147,7 @@ MlBoolean MleDppGenMakefile::generateMakefile()
 
     // Generate quark to string mapping utilities.
     MleTemplateProcess *pProcess;
-    char *pfilename = "Makefile.target";
+    const char *pfilename = "Makefile.target";
     FILE *fd;
     if ( (fd = fopen(pfilename, "w")) == NULL )
 	{

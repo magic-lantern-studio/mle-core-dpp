@@ -12,7 +12,7 @@
 
 // COPYRIGHT_BEGIN
 //
-// Copyright (c) 2015 Wizzer Works
+// Copyright (c) 2015-2024 Wizzer Works
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -141,7 +141,8 @@ MleDppActorSet::write(MleDppActorGroupOutput *out)
 
     // Sort the actors by name.
 	if (numActors > 0) {
-		MleDwpActor **actorRegistry = new (MleDwpActor(*[numActors]));
+		//MleDwpActor **actorRegistry = new (MleDwpActor(*[numActors]));
+		MleDwpActor **actorRegistry = new MleDwpActor *[numActors];
 		MleDwpActor **actorRegistryPtr = actorRegistry;
 		qsort(actors, numActors, sizeof(actors[0]), CompareActors);
 		if (numAttachments < numActors)
@@ -230,8 +231,8 @@ MleDppActorSet::write(MleDppActorGroupOutput *out)
 			MleDwpActor **registryPtr = actorRegistry;
 			while (registryPtr < actorRegistryPtr)
 			{
-				fprintf(out->m_actorid, "#define FwPPActor_%s %d\n", (*registryPtr)->getName(),
-					registryPtr - actorRegistry + out->m_actorCount);
+				fprintf(out->m_actorid, "#define FwPPActor_%s %ld\n", (*registryPtr)->getName(),
+					(registryPtr - actorRegistry) + out->m_actorCount);
 				registryPtr++;
 			}
 			out->m_actorCount += registryPtr - actorRegistry;

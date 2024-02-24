@@ -3,6 +3,7 @@
 includedir = $(prefix)/include/mle
 
 include_HEADERS = \
+	$(top_srcdir)/../common/include/mle/agopcode.h \
 	$(top_srcdir)/../common/include/mle/Dpp.h \
 	$(top_srcdir)/../common/include/mle/DppActorGroupOutput.h \
 	$(top_srcdir)/../common/include/mle/DppActor.h \

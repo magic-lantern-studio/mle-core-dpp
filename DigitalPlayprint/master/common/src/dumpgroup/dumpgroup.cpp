@@ -13,7 +13,7 @@
 
 // COPYRIGHT_BEGIN
 //
-// Copyright (c) 2015-2020 Wizzer Works
+// Copyright (c) 2015-2024 Wizzer Works
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -265,7 +265,7 @@ static void parseStream(unsigned char*& contents, int size)
 	printf("Group Id: %d\n",groupId);
 
 	long numActors = readIndex(contents);
-	printf("Number of Actors: %d\n\n",numActors);
+	printf("Number of Actors: %ld\n\n",numActors);
     
     while ( contents < contentsEnd )
 	{
@@ -339,7 +339,7 @@ static void parseStream(unsigned char*& contents, int size)
 
 		  case setPropertyLengthOpcode:
 			propertyLength = readIndex(contents);
-			printf("%04x %03d SetPropertyLength length=%d\n",
+			printf("%04x %03ld SetPropertyLength length=%ld\n",
 			   opcode, propertyLength, propertyLength );
 			break;
 
@@ -404,7 +404,7 @@ static void parseStream(unsigned char*& contents, int size)
 					{
 						charbuf[8] = 0;
 						printf("    # \"%s\"\n", charbuf);
-						sprintf(charbuf, "%*.*s", sizeof charbuf-1, sizeof charbuf-1, " ");
+						sprintf(charbuf, "%*.*s", (int)(sizeof charbuf-1), (int)(sizeof charbuf-1), " ");
 					}
 				}
 				if ( i%8 != 0 )
@@ -428,7 +428,7 @@ static void parseStream(unsigned char*& contents, int size)
 		  case createSetOpcode:
 			{
 				long set = readIndex(contents);
-				printf("%04x %03d CreateSet set=%d\n", opcode, set, set);
+				printf("%04x %03ld CreateSet set=%ld\n", opcode, set, set);
 			}
 			break;
 

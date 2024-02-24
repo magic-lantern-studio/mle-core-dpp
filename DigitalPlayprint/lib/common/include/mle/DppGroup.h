@@ -12,7 +12,7 @@
 
 // COPYRIGHT_BEGIN
 //
-// Copyright (c) 2015 Wizzer Works
+// Copyright (c) 2015-2024 Wizzer Works
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -63,7 +63,7 @@ class MleDppGroup : public MleDwpGroup, public MleDppItem
 	 * Set a reasonable default value for the runtime class type of the group.
 	 * Any subclass should override this.
 	 */
-	MleDppGroup(char *className = "MlGroup");
+	MleDppGroup(char *className = (char *)"MlGroup");
 
 	virtual ~MleDppGroup();
 

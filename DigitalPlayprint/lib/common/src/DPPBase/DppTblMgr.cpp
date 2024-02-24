@@ -15,7 +15,7 @@
 //
 // The MIT License (MIT)
 //
-// Copyright (c) 2015 Wizzer Works
+// Copyright (c) 2015-2024 Wizzer Works
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -685,7 +685,7 @@ MlBoolean MleDppTblMgr::buildIndexTables(MleDwpItem *root)
 	  
 	  if ( actorDef == NULL )
 	  {
-        fprintf(stderr,"warning: ActorDef for %s not found.\n",
+        fprintf(stderr,"warning: ActorDef for %p not found.\n",
 		  actorClassDictIter.getKey());
 	  } else
 	  {
@@ -813,7 +813,7 @@ MlBoolean MleDppTblMgr::buildIndexTables(MleDwpItem *root)
 			  //   Sometimes a NULL binding may be specified in order to
 			  //   have MleSet::currentSet available to an actor.  In
 			  //   this case, we need to avoid declaring a creation function.
-			  if ( className && strcmp(className,"NULL") != NULL )
+			  if ( className && strcmp(className,"NULL") != 0 )
 				  saveRoleClass((char *)className,headerFile,package,&m_roleClassTable);
 		  }
 	  }
@@ -966,7 +966,7 @@ MlBoolean MleDppTblMgr::buildIndexTables(MleDwpItem *root)
 	  char *package = NULL;
 	  
 	  if ( setDef == NULL )
-	    fprintf(stderr,"warning: SetDef for %s not found.\n",
+	    fprintf(stderr,"warning: SetDef for %p not found.\n",
 		    setClassDictIter.getKey());
 	  else
 	  {

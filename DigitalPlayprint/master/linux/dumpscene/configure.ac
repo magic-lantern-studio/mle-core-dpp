@@ -6,13 +6,14 @@ AC_INIT(dumpscene, 1.0)
 AC_PREFIX_DEFAULT(/opt/MagicLantern)
 
 AC_CANONICAL_SYSTEM
-AM_INIT_AUTOMAKE()
+AM_INIT_AUTOMAKE([subdir-objects])
 
 AC_PROG_CXX
 
 AC_SUBST([LOG4CXX_CFLAGS])
 AC_SUBST([LOG4CXX_LIBS])
 
+dnl Check if we are using log4cxx
 AC_ARG_WITH([log4cxx],
 	[AS_HELP_STRING([--with-log4cxx], [enable log4cxx logging])],
 	[],

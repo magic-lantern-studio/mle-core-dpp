@@ -12,7 +12,7 @@
 
 // COPYRIGHT_BEGIN
 //
-// Copyright (c) 2015-2018 Wizzer Works
+// Copyright (c) 2015-2024 Wizzer Works
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -328,8 +328,9 @@ MleDppOutput::writeSet(char *chunkFilename)
      * file the size).  Read in the rest of set chunk file and close it
      * after finish reading.
      */
-    mlFRead(&size, 4, 1, setChunkFilePtr);
-    mlFRead(ppSetChunk, ppSetChunkLength, 1, setChunkFilePtr);
+    size_t nBytes;
+    nBytes = mlFRead(&size, 4, 1, setChunkFilePtr);
+    nBytes = mlFRead(ppSetChunk, ppSetChunkLength, 1, setChunkFilePtr);
     mlFClose(setChunkFilePtr);
 
     /*

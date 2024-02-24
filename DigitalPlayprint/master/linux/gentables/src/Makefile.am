@@ -13,12 +13,8 @@ gentables_LDADD = \
 gentables_CPPFLAGS = \
 	-DMLE_NOT_DLL \
 	-I$(top_srcdir)/../../common/include \
-	-I$(MLE_HOME)/DigitalWorkprint/lib/common/include \
-	-I$(MLE_HOME)/DigitalWorkprint/lib/linux/include \
-	-I$(MLE_HOME)/DigitalPlayprint/lib/common/include \
-	-I$(MLE_HOME)/DigitalPlayprint/lib/linux/include \
-	-I$(MLE_HOME)/Core/util/common/include \
-	-I$(MLE_HOME)/Core/util/linux/include
+	-I$(MLE_ROOT)/include \
+	-std=c++17
 
 gentables_LDFLAGS = \
 	-Wl,-rpath=$(MLE_ROOT)/lib \

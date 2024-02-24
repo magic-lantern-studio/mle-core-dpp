@@ -13,7 +13,7 @@
 
 // COPYRIGHT_BEGIN
 //
-// Copyright (c) 2017 Wizzer Works
+// Copyright (c) 2017-2024 Wizzer Works
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -238,7 +238,7 @@ static int dumpHeader(void *clientdata, void *calldata)
 
 	MleDppHeader *header = (MleDppHeader *) calldata;
 
-	fprintf(stdout,"\t%s: %ld\n","Version", header->m_version);
+	fprintf(stdout,"\t%s: %d\n","Version", header->m_version);
 
 	char *datestamp = ctime((time_t *)&header->m_date);
 	fprintf(stdout,"\t%s: %s\n","Creation Date", datestamp);
@@ -257,7 +257,7 @@ static int dumpTOC(void *clientdata, void *calldata)
 		// Process TOC entry.
 		MlDppQuark label = nextEntry->m_entry.m_label;
 		unsigned long offset = nextEntry->m_entry.m_offset;
-		fprintf(stdout, "\tProcessing next entry: quark = %lu: offset = %lu.\n", label, offset);
+		fprintf(stdout, "\tProcessing next entry: quark = %u: offset = %lu.\n", label, offset);
 	    nextEntry = nextEntry->m_next;
 	}
 	fprintf(stdout, "\n");
@@ -523,7 +523,7 @@ static void parseStream(unsigned char*& contents, int size)
                     {
                         charbuf[8] = 0;
                         printf("    # \"%s\"\n", charbuf);
-                        sprintf(charbuf, "%*.*s", sizeof charbuf-1, sizeof charbuf-1, " ");
+                        sprintf(charbuf, "%*.*s", (int)(sizeof charbuf-1), (int)(sizeof charbuf-1), " ");
                     }
                 }
                 if ( i%8 != 0 )

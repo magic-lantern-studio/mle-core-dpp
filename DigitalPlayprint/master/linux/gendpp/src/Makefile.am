@@ -16,22 +16,18 @@ gendpp_LDADD = \
 	$(MLE_ROOT)/lib/libplayprint.so \
 	$(MLE_ROOT)/lib/libmlutil.so \
 	$(MLE_ROOT)/lib/libmlmath.so \
-	-L/usr/lib/python3.6/config-3.6m-x86_64-linux-gnu -lpython3.6m \
 	-ldl -lz -lpthread
+
+# 	-L/usr/lib/python3.6/config-3.6m-x86_64-linux-gnu -lpython3.6m
 
 gendpp_CPPFLAGS = \
 	-DMLE_NOT_DLL \
 	-I$(top_srcdir)/../../common/include \
 	-I$(top_srcdir)/../../../runtime/common/include \
-	-I$(MLE_HOME)/DigitalWorkprint/lib/common/include \
-	-I$(MLE_HOME)/DigitalWorkprint/lib/linux/include \
-	-I$(MLE_HOME)/DigitalPlayprint/lib/common/include \
-	-I$(MLE_HOME)/DigitalPlayprint/lib/linux/include \
-	-I$(MLE_HOME)/Core/util/common/include \
-	-I$(MLE_HOME)/Core/util/linux/include \
-	-I$(MLE_HOME)/Core/math/common/include \
-	-I$(MLE_HOME)/Core/math/linux/include \
-	-I/usr/include/python3.6
+	-I$(MLE_ROOT)/include \
+	-std=c++17
+
+# -I/usr/include/python3.6
 
 gendpp_LDFLAGS = \
 	-Wl,-rpath=$(MLE_ROOT)/lib \
@@ -48,4 +44,10 @@ gendpp_CPPFLAGS += $(LOG4CXX_CFLAGS)
 gendpp_LDFLAGS += -Wl,-rpath=/usr/local/lib
 gendpp_LDADD += $(LOG4CXX_LIBS)
 #gendpp_LDADD += -L/usr/local/lib -llog4cxx
+endif
+
+if HAVE_PYTHON
+gendpp_CPPFLAGS += $(PYTHON_CPPFLAGS)
+gendpp_LDFLAGS += $(PYTHON_LDFLAGS)
+gendpp_LDADD += $(PYTHON_LIBS)
 endif

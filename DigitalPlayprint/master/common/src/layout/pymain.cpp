@@ -17,7 +17,7 @@
 
 // COPYRIGHT_BEGIN
 //
-// Copyright (c) 2021 Wizzer Works
+// Copyright (c) 2021-2024 Wizzer Works
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -251,7 +251,8 @@ int main(int argc, char *argv[])
 
     // Call python command script.
     //PyRun_SimpleString("print('Hello World from Embedded Python!!!')");
-    FILE *fp = _Py_fopen(state->m_scriptfile, "r");
+    //FILE *fp = _Py_fopen(state->m_scriptfile, "r");
+    FILE *fp = mlFOpen(state->m_scriptfile, "r");
     PyRun_SimpleFile(fp, state->m_scriptfile);
     
     // Terminate Python interpreter.
