@@ -5,6 +5,7 @@
 **/*.o
 **/*.lo
 **/*.la
+**/*.dirstamp
 **/m4
 **/autom4te.cache
 **/config.guess

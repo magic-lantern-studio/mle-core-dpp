@@ -40,8 +40,8 @@ AC_ARG_ENABLE([python-integration],[AS_HELP_STRING([--enable-python-integration]
 
 dnl Verify that we have a valid version of Python (>= version 2.5).
 VALID_PYTHON=
-dnl AM_PATH_PYTHON([2.5],, [:])
-AM_PATH_PYTHON([2.5],[PYTHON_FOUND=true],[PYTHON_FOUND=false])
+dnl AM_PATH_PYTHON([3.6],, [:])
+AM_PATH_PYTHON([3.6],[PYTHON_FOUND=true],[PYTHON_FOUND=false])
 if test "x$PYTHON_FOUND" = xtrue ; then
     PYTHON_CPPFLAGS=
     PYTHON_LDFLAGS=
