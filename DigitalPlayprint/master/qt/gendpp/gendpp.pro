@@ -13,7 +13,7 @@ DEFINES += MLE_NOT_DLL MLE_DEBUG DEBUG
 
 
 unix:!macx {
-    INCLUDEPATH += /usr/include/python3.6
+    INCLUDEPATH += /usr/include/python3.10
 }
 
 macx {
@@ -38,7 +38,7 @@ HEADERS += \
 
 unix:!macx {
     LIBS += -L/opt/MagicLantern/lib -lDPPGen -lDPP -lDWP -lplayprint -lmlmath -lmlutil
-    LIBS += -L/usr/lib/python3.6/config-3.6m-x86_64-linux-gnu -L/usr/lib -lpython3.6m
+    LIBS += -L/usr/lib/python3.6/config-3.6m-x86_64-linux-gnu -L/usr/lib -lpython3.10
     LIBS += -Wl,--no-as-needed -ldl
 }
 
