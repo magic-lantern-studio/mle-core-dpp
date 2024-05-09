@@ -83,7 +83,7 @@
 
 // Declare external routines.
 //extern MlBoolean mlVerifyTargetWorkprint(MleDwpItem *root,char *tags);
-MlBoolean mlVerifyTargetWorkprint(MleDwpItem *root,char *tags)
+MlBoolean mlVerifyTargetWorkprint(MleDwpItem * /*root*/,char * /*tags*/)
 {
 	return TRUE;
 }
@@ -509,8 +509,8 @@ main(int argc,char **argv)
     if (inventoryOut != NULL)
         mlFClose(inventoryOut);
 
-	// Cleanup and exit.
-	delete g_outputDir;
+    // Cleanup and exit.
+    delete g_outputDir;
 
     return 0;
 }

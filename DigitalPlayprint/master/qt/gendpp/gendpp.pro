@@ -11,7 +11,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 DEFINES += MLE_NOT_DLL MLE_DEBUG DEBUG
 
-
 unix:!macx {
     INCLUDEPATH += /usr/include/python3.10
 }
@@ -36,6 +35,10 @@ SOURCES += \
 HEADERS += \
         $$PWD/../../common/src/layout/DppLayoutManager.h
 
+unix: QMAKE_LFLAGS_RPATH=
+unix: QMAKE_LFLAGS += \
+    "-Wl,-rpath,/opt/MagicLantern/lib"
+
 unix:!macx {
     LIBS += -L/opt/MagicLantern/lib -lDPPGen -lDPP -lDWP -lplayprint -lmlmath -lmlutil
     LIBS += -L/usr/lib/python3.6/config-3.6m-x86_64-linux-gnu -L/usr/lib -lpython3.10
@@ -53,7 +56,7 @@ unix {
     target.path = /opt/MagicLantern/bin
     INSTALLS += target
 }
-!isEmpty(target.path): INSTALLS += target
+#!isEmpty(target.path): INSTALLS += target
 
 copydata.commands = $(COPY_DIR) \"$$PWD/test\" \"$$OUT_PWD\"
 first.depends = $(first) copydata

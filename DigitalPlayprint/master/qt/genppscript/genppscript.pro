@@ -20,6 +20,10 @@ INCLUDEPATH += $$PWD/../../common/include $$PWD/../../linux/include /opt/MagicLa
 SOURCES += \
         $$PWD/../../common/src/layout/genppscript.cpp
 
+unix: QMAKE_LFLAGS_RPATH=
+unix: QMAKE_LFLAGS += \
+    "-Wl,-rpath,/opt/MagicLantern/lib"
+
 unix:!macx {
     LIBS += -L/opt/MagicLantern/lib -lDPPGen -lDPP -lDWP -lplayprint -lmlmath -lmlutil -Wl,--no-as-needed -ldl
 }
@@ -33,4 +37,4 @@ unix {
     target.path = /opt/MagicLantern/bin
     INSTALLS += target
 }
-!isEmpty(target.path): INSTALLS += target
+#!isEmpty(target.path): INSTALLS += target
