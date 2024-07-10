@@ -87,7 +87,8 @@ static char *getCanonicalPath(char *path)
 {
 	char *cpath = NULL;
 	MleWin32Path *wpath = new MleWin32Path((MlChar *)path, true);
-    cpath = strdup((char *)wpath->getPath());
+    //cpath = strdup((char *)wpath->getPath());
+	cpath = _strdup((char *)wpath->getPath());
 	delete wpath;
 	return cpath;
 }
@@ -162,16 +163,19 @@ int parseArgs(int argc, char *argv[], ArgStruct *args)
 	{
         if (! args->tags)
 		{
-            args->tags = strdup(argv[optind]);
+            //args->tags = strdup(argv[optind]);
+			args->tags = _strdup(argv[optind]);
         } else if (! args->workprint)
 		{
             args->workprint = getCanonicalPath(argv[optind]);
         } else if (! args->playprint)
 		{
-            args->playprint = strdup(argv[optind]);
+            //args->playprint = strdup(argv[optind]);
+			args->playprint = _strdup(argv[optind]);
         } else if (! args->script)
 		{
-            args->script = strdup(argv[optind]);
+            //args->script = strdup(argv[optind]);
+			args->script = _strdup(argv[optind]);
         } else if (! args->chunkIndexFile)
 		{
             args->chunkIndexFile = strdup(argv[optind]);

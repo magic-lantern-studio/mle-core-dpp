@@ -70,15 +70,15 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Platform)\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Platform)\$(Configuration)\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Platform)\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Platform)\$(Configuration)\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\</IntDir>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectName)</TargetName>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Platform)\$(Configuration)\DPP\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Platform)\$(Configuration)\DPP\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Platform)\$(Configuration)\DPP\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Platform)\$(Configuration)\DPP\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\DPP\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\DPP\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\DPP\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\DPP\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">DPPd</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">DPPd</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectName)</TargetName>
   </PropertyGroup>
@@ -90,10 +90,10 @@
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)/DPP.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>$(Platform)\$(Configuration)\</AssemblerListingLocation>
-      <ObjectFileName>$(Platform)\$(Configuration)\</ObjectFileName>
-      <ProgramDataBaseFileName>$(Platform)\$(Configuration)\</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)\DPP\DPP.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(Platform)\$(Configuration)\DPP\</AssemblerListingLocation>
+      <ObjectFileName>$(Platform)\$(Configuration)\DPP\</ObjectFileName>
+      <ProgramDataBaseFileName>$(Platform)\$(Configuration)\DPP\</ProgramDataBaseFileName>
       <BrowseInformation>true</BrowseInformation>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -104,17 +104,17 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>$(Platform)\$(Configuration)\DPPd.lib</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)\DPP\DPPd.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>$(Platform)\$(Configuration)/DPPd.bsc</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)\DPP\DPPd.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
       <Message>Install Library</Message>
       <Command>mkdir $(MLE_HOME)\lib\tools
-copy Win32\Debug\DPPd.lib $(MLE_HOME)\lib\tools\DPPd.lib
+copy Win32\Debug\DPP\DPPd.lib $(MLE_HOME)\lib\tools\DPPd.lib
 mkdir $(MLE_HOME)\include\mle
 xcopy /y $(MLE_HOME)\DigitalPlayprint\lib\common\include\mle\* $(MLE_HOME)\include\mle
 </Command>
@@ -129,10 +129,10 @@ xcopy /y $(MLE_HOME)\DigitalPlayprint\lib\common\include\mle\* $(MLE_HOME)\inclu
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)/DPP.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>$(Platform)\$(Configuration)\</AssemblerListingLocation>
-      <ObjectFileName>$(Platform)\$(Configuration)\</ObjectFileName>
-      <ProgramDataBaseFileName>$(Platform)\$(Configuration)\</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)\DPP\DPP.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(Platform)\$(Configuration)\DPP\</AssemblerListingLocation>
+      <ObjectFileName>$(Platform)\$(Configuration)\DPP\</ObjectFileName>
+      <ProgramDataBaseFileName>$(Platform)\$(Configuration)\DPP\</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </ClCompile>
@@ -141,17 +141,17 @@ xcopy /y $(MLE_HOME)\DigitalPlayprint\lib\common\include\mle\* $(MLE_HOME)\inclu
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>$(Platform)\$(Configuration)\DPP.lib</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)\DPP\DPP.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>$(Platform)\$(Configuration)/DPP.bsc</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)\DPP\DPP.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
       <Message>Install Library</Message>
       <Command>mkdir $(MLE_HOME)\lib\tools
-copy Win32\Release\DPP.lib $(MLE_HOME)\lib\tools\DPP.lib
+copy Win32\Release\DPP\DPP.lib $(MLE_HOME)\lib\tools\DPP.lib
 mkdir $(MLE_HOME)\include\mle
 xcopy /y $(MLE_HOME)\DigitalPlayprint\lib\common\include\mle\* $(MLE_HOME)\include\mle
 </Command>
@@ -168,10 +168,10 @@ xcopy /y $(MLE_HOME)\DigitalPlayprint\lib\common\include\mle\* $(MLE_HOME)\inclu
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)/DPP.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>$(Platform)\$(Configuration)\</AssemblerListingLocation>
-      <ObjectFileName>$(Platform)\$(Configuration)\</ObjectFileName>
-      <ProgramDataBaseFileName>$(Platform)\$(Configuration)\</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)\DPP\DPP.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(Platform)\$(Configuration)\DPP\</AssemblerListingLocation>
+      <ObjectFileName>$(Platform)\$(Configuration)\DPP\</ObjectFileName>
+      <ProgramDataBaseFileName>$(Platform)\$(Configuration)\DPP\</ProgramDataBaseFileName>
       <BrowseInformation>true</BrowseInformation>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -182,17 +182,17 @@ xcopy /y $(MLE_HOME)\DigitalPlayprint\lib\common\include\mle\* $(MLE_HOME)\inclu
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>$(Platform)\$(Configuration)\DPPd.lib</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)\DPP\DPPd.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>$(Platform)\$(Configuration)/DPPd.bsc</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)\DPP\DPPd.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
       <Message>Install Library</Message>
       <Command>mkdir $(MLE_HOME)\lib64\tools
-copy x64\Debug\DPPd.lib $(MLE_HOME)\lib64\tools\DPPd.lib
+copy x64\Debug\DPP\DPPd.lib $(MLE_HOME)\lib64\tools\DPPd.lib
 mkdir $(MLE_HOME)\include\mle
 xcopy /y $(MLE_HOME)\DigitalPlayprint\lib\common\include\mle\* $(MLE_HOME)\include\mle
 </Command>
@@ -210,10 +210,10 @@ xcopy /y $(MLE_HOME)\DigitalPlayprint\lib\common\include\mle\* $(MLE_HOME)\inclu
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)/DPP.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>$(Platform)\$(Configuration)\</AssemblerListingLocation>
-      <ObjectFileName>$(Platform)\$(Configuration)\</ObjectFileName>
-      <ProgramDataBaseFileName>$(Platform)\$(Configuration)\</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)\DPP\DPP.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(Platform)\$(Configuration)\DPP\</AssemblerListingLocation>
+      <ObjectFileName>$(Platform)\$(Configuration)\DPP\</ObjectFileName>
+      <ProgramDataBaseFileName>$(Platform)\$(Configuration)\DPP\</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </ClCompile>
@@ -222,17 +222,17 @@ xcopy /y $(MLE_HOME)\DigitalPlayprint\lib\common\include\mle\* $(MLE_HOME)\inclu
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>$(Platform)\$(Configuration)\DPP.lib</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)\DPP\DPP.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>$(Platform)\$(Configuration)/DPP.bsc</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)\DPP\DPP.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
       <Message>Install Library</Message>
       <Command>mkdir $(MLE_HOME)\lib64\tools
-copy x64\Release\DPP.lib $(MLE_HOME)\lib64\tools\DPP.lib
+copy x64\Release\DPP\DPP.lib $(MLE_HOME)\lib64\tools\DPP.lib
 mkdir $(MLE_HOME)\include\mle
 xcopy /y $(MLE_HOME)\DigitalPlayprint\lib\common\include\mle\* $(MLE_HOME)\include\mle
 </Command>

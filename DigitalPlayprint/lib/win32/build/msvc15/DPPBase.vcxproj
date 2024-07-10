@@ -69,15 +69,15 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Platform)\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Platform)\$(Configuration)\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Platform)\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Platform)\$(Configuration)\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\</IntDir>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectName)</TargetName>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Platform)\$(Configuration)\DPPBase\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Platform)\$(Configuration)\DPPBase\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Platform)\$(Configuration)\DPPBase\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Platform)\$(Configuration)\DPPBase\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\DPPBase\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\DPPBase\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\DPPBase/</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\DPPBase/</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">DPPBased</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">DPPBased</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectName)</TargetName>
   </PropertyGroup>
@@ -90,10 +90,10 @@
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)/DPPBase.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>$(Platform)\$(Configuration)\</AssemblerListingLocation>
-      <ObjectFileName>$(Platform)\$(Configuration)\</ObjectFileName>
-      <ProgramDataBaseFileName>$(Platform)\$(Configuration)\</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)\DPPBase\DPPBase.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(Platform)\$(Configuration)\DPPBase\</AssemblerListingLocation>
+      <ObjectFileName>$(Platform)\$(Configuration)\DPPBase\</ObjectFileName>
+      <ProgramDataBaseFileName>$(Platform)\$(Configuration)\DPPBase\</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </ClCompile>
@@ -102,17 +102,17 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>$(Platform)\$(Configuration)\DPPBase.lib</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)\DPPBase\DPPBase.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>$(Platform)\$(Configuration)/DPPBase.bsc</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)\DPPBase\DPPBase.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
       <Message>Install Library</Message>
       <Command>mkdir $(MLE_HOME)\lib\tools
-copy Win32\Release\DPPBase.lib $(MLE_HOME)\lib\tools\DPPBase.lib
+copy Win32\Release\DPPBase\DPPBase.lib $(MLE_HOME)\lib\tools\DPPBase.lib
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -124,10 +124,10 @@ copy Win32\Release\DPPBase.lib $(MLE_HOME)\lib\tools\DPPBase.lib
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)/DPPBase.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>$(Platform)\$(Configuration)\</AssemblerListingLocation>
-      <ObjectFileName>$(Platform)\$(Configuration)\</ObjectFileName>
-      <ProgramDataBaseFileName>$(Platform)\$(Configuration)\</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)\DPPBase\DPPBase.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(Platform)\$(Configuration)\DPPBase\</AssemblerListingLocation>
+      <ObjectFileName>$(Platform)\$(Configuration)\DPPBase\</ObjectFileName>
+      <ProgramDataBaseFileName>$(Platform)\$(Configuration)\DPPBase\</ProgramDataBaseFileName>
       <BrowseInformation>true</BrowseInformation>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -138,17 +138,17 @@ copy Win32\Release\DPPBase.lib $(MLE_HOME)\lib\tools\DPPBase.lib
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>$(Platform)\$(Configuration)\DPPBased.lib</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)\DPPBase\DPPBased.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>$(Platform)\$(Configuration)/DPPBased.bsc</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)\DPPBase\DPPBased.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
       <Message>Install Library</Message>
       <Command>mkdir $(MLE_HOME)\lib\tools
-copy Win32\Debug\DPPBased.lib $(MLE_HOME)\lib\tools\DPPBased.lib
+copy Win32\Debug\DPPBase\DPPBased.lib $(MLE_HOME)\lib\tools\DPPBased.lib
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -164,10 +164,10 @@ copy Win32\Debug\DPPBased.lib $(MLE_HOME)\lib\tools\DPPBased.lib
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)/DPPBase.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>$(Platform)\$(Configuration)\</AssemblerListingLocation>
-      <ObjectFileName>$(Platform)\$(Configuration)\</ObjectFileName>
-      <ProgramDataBaseFileName>$(Platform)\$(Configuration)\</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)\DPPBase\DPPBase.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(Platform)\$(Configuration)\DPPBase\</AssemblerListingLocation>
+      <ObjectFileName>$(Platform)\$(Configuration)\DPPBase\</ObjectFileName>
+      <ProgramDataBaseFileName>$(Platform)\$(Configuration)\DPPBase\</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </ClCompile>
@@ -176,17 +176,17 @@ copy Win32\Debug\DPPBased.lib $(MLE_HOME)\lib\tools\DPPBased.lib
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>$(Platform)\$(Configuration)\DPPBase.lib</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)\DPPBase\DPPBase.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>$(Platform)\$(Configuration)/DPPBase.bsc</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)\DPPBase\DPPBase.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
       <Message>Install Library</Message>
       <Command>mkdir $(MLE_HOME)\lib64\tools
-copy x64\Release\DPPBase.lib $(MLE_HOME)\lib64\tools\DPPBase.lib
+copy x64\Release\DPPBase\DPPBase.lib $(MLE_HOME)\lib64\tools\DPPBase.lib
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -201,10 +201,10 @@ copy x64\Release\DPPBase.lib $(MLE_HOME)\lib64\tools\DPPBase.lib
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)/DPPBase.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>$(Platform)\$(Configuration)\</AssemblerListingLocation>
-      <ObjectFileName>$(Platform)\$(Configuration)\</ObjectFileName>
-      <ProgramDataBaseFileName>$(Platform)\$(Configuration)\</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)\DPPBase\DPPBase.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(Platform)\$(Configuration)\DPPBase\</AssemblerListingLocation>
+      <ObjectFileName>$(Platform)\$(Configuration)\DPPBase\</ObjectFileName>
+      <ProgramDataBaseFileName>$(Platform)\$(Configuration)\DPPBase\</ProgramDataBaseFileName>
       <BrowseInformation>true</BrowseInformation>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -215,17 +215,17 @@ copy x64\Release\DPPBase.lib $(MLE_HOME)\lib64\tools\DPPBase.lib
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>$(Platform)\$(Configuration)\DPPBased.lib</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)\DPPBase\DPPBased.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>$(Platform)\$(Configuration)/DPPBased.bsc</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)\DPPBase\DPPBased.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
       <Message>Install Library</Message>
       <Command>mkdir $(MLE_HOME)\lib64\tools
-copy x64\Debug\DPPBased.lib $(MLE_HOME)\lib64\tools\DPPBased.lib
+copy x64\Debug\DPPBase\DPPBased.lib $(MLE_HOME)\lib64\tools\DPPBased.lib
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>

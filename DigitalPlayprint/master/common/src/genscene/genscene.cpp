@@ -90,7 +90,8 @@ static char *getCanonicalPath(char *path)
 {
 	char *cpath = NULL;
 	MleWin32Path *wpath = new MleWin32Path((MlChar *)path, true);
-    cpath = strdup((char *)wpath->getPath());
+    //cpath = strdup((char *)wpath->getPath());
+	cpath = _strdup((char *)wpath->getPath());
 	delete wpath;
 	return cpath;
 }
@@ -202,13 +203,15 @@ int parseArgs(int argc, char *argv[], ArgStruct *args)
 	{
 		if (! args->tags)
 		{
-			args->tags = strdup(argv[optind]);
+			//args->tags = strdup(argv[optind]);
+			args->tags = _strdup(argv[optind]);
 		} else if (! args->workprint)
 		{
 			args->workprint = getCanonicalPath(argv[optind]);
 		} else if (! args->sceneid)
 		{
-			args->sceneid = strdup(argv[optind]);
+			//args->sceneid = strdup(argv[optind]);
+			args->sceneid = _strdup(argv[optind]);
 		} else
 		{
 			fprintf(stderr,"%s\n",usage_str);

@@ -70,16 +70,19 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Platform)\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Platform)\$(Configuration)\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Platform)\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Platform)\$(Configuration)\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Platform)\$(Configuration)\DPPGen\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Platform)\$(Configuration)\DPPGen\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Platform)\$(Configuration)\DPPGen\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Platform)\$(Configuration)\DPPGen\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\DPPGen\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\DPPGen\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\DPPGen\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\DPPGen\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">DPPGend</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectName)</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <TargetName>DPPGend</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -89,10 +92,10 @@
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)/DPPGen.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>$(Platform)\$(Configuration)/</AssemblerListingLocation>
-      <ObjectFileName>$(Platform)\$(Configuration)/</ObjectFileName>
-      <ProgramDataBaseFileName>$(Platform)\$(Configuration)/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)\DPPGen\DPPGen.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(Platform)\$(Configuration)\DPPGen/</AssemblerListingLocation>
+      <ObjectFileName>$(Platform)\$(Configuration)\DPPGen/</ObjectFileName>
+      <ProgramDataBaseFileName>$(Platform)\$(Configuration)\DPPGen/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
@@ -102,17 +105,17 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>$(Platform)\$(Configuration)\DPPGend.lib</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)\DPPGen\DPPGend.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>$(Platform)\$(Configuration)/DPPGen.bsc</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)\DPPGen\DPPGen.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
       <Message>Install Library</Message>
       <Command>mkdir $(MLE_HOME)\lib\tools
-copy Win32\Debug\DPPGend.lib $(MLE_HOME)\lib\tools\DPPGend.lib
+copy Win32\Debug\DPPGen\DPPGend.lib $(MLE_HOME)\lib\tools\DPPGend.lib
 xcopy /y ..\..\..\common\src\DPPGenerator\*.tmpl $(MLE_HOME)\lib
 </Command>
     </PostBuildEvent>
@@ -126,10 +129,10 @@ xcopy /y ..\..\..\common\src\DPPGenerator\*.tmpl $(MLE_HOME)\lib
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)/DPPGen.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>$(Platform)\$(Configuration)/</AssemblerListingLocation>
-      <ObjectFileName>$(Platform)\$(Configuration)/</ObjectFileName>
-      <ProgramDataBaseFileName>$(Platform)\$(Configuration)/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)\DPPGen\DPPGen.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(Platform)\$(Configuration)\DPPGen/</AssemblerListingLocation>
+      <ObjectFileName>$(Platform)\$(Configuration)\DPPGen/</ObjectFileName>
+      <ProgramDataBaseFileName>$(Platform)\$(Configuration)\DPPGen/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </ClCompile>
@@ -138,17 +141,17 @@ xcopy /y ..\..\..\common\src\DPPGenerator\*.tmpl $(MLE_HOME)\lib
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>$(Platform)\$(Configuration)\DPPGen.lib</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)\DPPGen\DPPGen.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>$(Platform)\$(Configuration)/DPPGen.bsc</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)\DPPGen\DPPGen.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
       <Message>Install Library</Message>
       <Command>mkdir $(MLE_HOME)\lib\tools
-copy Win32\Release\DPPGen.lib $(MLE_HOME)\lib\tools\DPPGen.lib
+copy Win32\Release\DPPGen\DPPGen.lib $(MLE_HOME)\lib\tools\DPPGen.lib
 xcopy /y ..\..\..\common\src\DPPGenerator\*.tmpl $(MLE_HOME)\lib
 </Command>
     </PostBuildEvent>
@@ -164,10 +167,10 @@ xcopy /y ..\..\..\common\src\DPPGenerator\*.tmpl $(MLE_HOME)\lib
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)/DPPGen.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>$(Platform)\$(Configuration)/</AssemblerListingLocation>
-      <ObjectFileName>$(Platform)\$(Configuration)/</ObjectFileName>
-      <ProgramDataBaseFileName>$(Platform)\$(Configuration)/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)\DPPGen\DPPGen.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(Platform)\$(Configuration)\DPPGen/</AssemblerListingLocation>
+      <ObjectFileName>$(Platform)\$(Configuration)\DPPGen/</ObjectFileName>
+      <ProgramDataBaseFileName>$(Platform)\$(Configuration)\DPPGen/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -177,17 +180,17 @@ xcopy /y ..\..\..\common\src\DPPGenerator\*.tmpl $(MLE_HOME)\lib
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>$(Platform)\$(Configuration)\DPPGend.lib</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)\DPPGen\DPPGend.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>$(Platform)\$(Configuration)/DPPGen.bsc</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)\DPPGen\DPPGen.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
       <Message>Install Library</Message>
       <Command>mkdir $(MLE_HOME)\lib64\tools
-copy x64\Debug\DPPGend.lib $(MLE_HOME)\lib64\tools\DPPGend.lib
+copy x64\Debug\DPPGen\DPPGend.lib $(MLE_HOME)\lib64\tools\DPPGend.lib
 xcopy /y ..\..\..\common\src\DPPGenerator\*.tmpl $(MLE_HOME)\lib
 </Command>
     </PostBuildEvent>
@@ -204,10 +207,10 @@ xcopy /y ..\..\..\common\src\DPPGenerator\*.tmpl $(MLE_HOME)\lib
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)/DPPGen.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>$(Platform)\$(Configuration)/</AssemblerListingLocation>
-      <ObjectFileName>$(Platform)\$(Configuration)/</ObjectFileName>
-      <ProgramDataBaseFileName>$(Platform)\$(Configuration)/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)\DPPGen\DPPGen.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(Platform)\$(Configuration)\DPPGen/</AssemblerListingLocation>
+      <ObjectFileName>$(Platform)\$(Configuration)\DPPGen/</ObjectFileName>
+      <ProgramDataBaseFileName>$(Platform)\$(Configuration)\DPPGen/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </ClCompile>
@@ -216,17 +219,17 @@ xcopy /y ..\..\..\common\src\DPPGenerator\*.tmpl $(MLE_HOME)\lib
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>$(Platform)\$(Configuration)\DPPGen.lib</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)\DPPGen\DPPGen.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>$(Platform)\$(Configuration)/DPPGen.bsc</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)\DPPGen\DPPGen.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
       <Message>Install Library</Message>
       <Command>mkdir $(MLE_HOME)\lib64\tools
-copy x64\Release\DPPGen.lib $(MLE_HOME)\lib64\tools\DPPGen.lib
+copy x64\Release\DPPGen\DPPGen.lib $(MLE_HOME)\lib64\tools\DPPGen.lib
 xcopy /y ..\..\..\common\src\DPPGenerator\*.tmpl $(MLE_HOME)\lib
 </Command>
     </PostBuildEvent>

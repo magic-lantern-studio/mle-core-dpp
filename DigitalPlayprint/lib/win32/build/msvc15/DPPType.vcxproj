@@ -69,15 +69,15 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Platform)\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Platform)\$(Configuration)\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Platform)\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Platform)\$(Configuration)\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\</IntDir>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectName)</TargetName>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Platform)\$(Configuration)\DPPType\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Platform)\$(Configuration)\DPPType\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Platform)\$(Configuration)\DPPType\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Platform)\$(Configuration)\DPPType\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\DPPType\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\DPPType\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\DPPType\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\DPPType\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">DPPTyped</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">DPPTyped</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectName)</TargetName>
   </PropertyGroup>
@@ -90,10 +90,10 @@
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)/DPPType.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>$(Platform)\$(Configuration)\</AssemblerListingLocation>
-      <ObjectFileName>$(Platform)\$(Configuration)\</ObjectFileName>
-      <ProgramDataBaseFileName>$(Platform)\$(Configuration)\</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)\DPPType\DPPType.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(Platform)\$(Configuration)\DPPType\</AssemblerListingLocation>
+      <ObjectFileName>$(Platform)\$(Configuration)\DPPType\</ObjectFileName>
+      <ProgramDataBaseFileName>$(Platform)\$(Configuration)\DPPType\</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </ClCompile>
@@ -102,17 +102,17 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>$(Platform)\$(Configuration)\DPPType.lib</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)\DPPType\DPPType.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>$(Platform)\$(Configuration)/DPPType.bsc</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)\DPPType\DPPType.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
       <Message>Install Library</Message>
       <Command>mkdir $(MLE_HOME)\lib\tools
-copy Win32\Release\DPPType.lib $(MLE_HOME)\lib\tools\DPPType.lib
+copy Win32\Release\DPPType\DPPType.lib $(MLE_HOME)\lib\tools\DPPType.lib
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -124,10 +124,10 @@ copy Win32\Release\DPPType.lib $(MLE_HOME)\lib\tools\DPPType.lib
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)/DPPType.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>$(Platform)\$(Configuration)\</AssemblerListingLocation>
-      <ObjectFileName>$(Platform)\$(Configuration)\</ObjectFileName>
-      <ProgramDataBaseFileName>$(Platform)\$(Configuration)\</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)\DPPType\DPPType.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(Platform)\$(Configuration)\DPPType\</AssemblerListingLocation>
+      <ObjectFileName>$(Platform)\$(Configuration)\DPPType\</ObjectFileName>
+      <ProgramDataBaseFileName>$(Platform)\$(Configuration)\DPPType\</ProgramDataBaseFileName>
       <BrowseInformation>true</BrowseInformation>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -138,17 +138,17 @@ copy Win32\Release\DPPType.lib $(MLE_HOME)\lib\tools\DPPType.lib
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>$(Platform)\$(Configuration)\DPPTyped.lib</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)\DPPType\DPPTyped.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>$(Platform)\$(Configuration)/DPPTyped.bsc</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)\DPPType\DPPTyped.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
       <Message>Install Library</Message>
       <Command>mkdir $(MLE_HOME)\lib\tools
-copy Win32\Debug\DPPTyped.lib $(MLE_HOME)\lib\tools\DPPTyped.lib
+copy Win32\Debug\DPPType\DPPTyped.lib $(MLE_HOME)\lib\tools\DPPTyped.lib
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -164,10 +164,10 @@ copy Win32\Debug\DPPTyped.lib $(MLE_HOME)\lib\tools\DPPTyped.lib
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)/DPPType.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>$(Platform)\$(Configuration)\</AssemblerListingLocation>
-      <ObjectFileName>$(Platform)\$(Configuration)\</ObjectFileName>
-      <ProgramDataBaseFileName>$(Platform)\$(Configuration)\</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)\DPPType\DPPType.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(Platform)\$(Configuration)\DPPType\</AssemblerListingLocation>
+      <ObjectFileName>$(Platform)\$(Configuration)\DPPType\</ObjectFileName>
+      <ProgramDataBaseFileName>$(Platform)\$(Configuration)\DPPType\</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </ClCompile>
@@ -176,17 +176,17 @@ copy Win32\Debug\DPPTyped.lib $(MLE_HOME)\lib\tools\DPPTyped.lib
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>$(Platform)\$(Configuration)\DPPType.lib</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)\DPPType\DPPType.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>$(Platform)\$(Configuration)/DPPType.bsc</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)\DPPType\DPPType.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
       <Message>Install Library</Message>
       <Command>mkdir $(MLE_HOME)\lib64\tools
-copy x64\Release\DPPType.lib $(MLE_HOME)\lib64\tools\DPPType.lib
+copy x64\Release\DPPType\DPPType.lib $(MLE_HOME)\lib64\tools\DPPType.lib
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -201,10 +201,10 @@ copy x64\Release\DPPType.lib $(MLE_HOME)\lib64\tools\DPPType.lib
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)/DPPType.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>$(Platform)\$(Configuration)\</AssemblerListingLocation>
-      <ObjectFileName>$(Platform)\$(Configuration)\</ObjectFileName>
-      <ProgramDataBaseFileName>$(Platform)\$(Configuration)\</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)\DPPType\DPPType.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(Platform)\$(Configuration)\DPPType\</AssemblerListingLocation>
+      <ObjectFileName>$(Platform)\$(Configuration)\DPPType\</ObjectFileName>
+      <ProgramDataBaseFileName>$(Platform)\$(Configuration)\DPPType\</ProgramDataBaseFileName>
       <BrowseInformation>true</BrowseInformation>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -215,17 +215,17 @@ copy x64\Release\DPPType.lib $(MLE_HOME)\lib64\tools\DPPType.lib
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>$(Platform)\$(Configuration)\DPPTyped.lib</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)\DPPType\DPPTyped.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>$(Platform)\$(Configuration)/DPPTyped.bsc</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)\DPPType\DPPTyped.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
       <Message>Install Library</Message>
       <Command>mkdir $(MLE_HOME)\lib64\tools
-copy x64\Debug\DPPTyped.lib $(MLE_HOME)\lib64\tools\DPPTyped.lib
+copy x64\Debug\DPPType\DPPTyped.lib $(MLE_HOME)\lib64\tools\DPPTyped.lib
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>

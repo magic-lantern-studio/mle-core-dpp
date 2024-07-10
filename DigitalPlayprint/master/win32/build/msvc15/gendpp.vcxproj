@@ -79,8 +79,8 @@
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Platform)\$(Configuration)\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\gentables\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\gentables\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -109,10 +109,10 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>$(TCL_HOME)/lib/tcl86.lib;$(Platform)\$(Configuration)/DPPGen.lib;DPP.lib;DPPBase.lib;DPPModel.lib;DPPType.lib;DWP.lib;DWPBase.lib;DWPModel.lib;DWPType.lib;playprint.lib;util.lib;mlmath.lib;odbc32.lib;odbccp32.lib;psapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(Platform)\$(Configuration)/DPPGen.lib;DPP.lib;DPPBase.lib;DPPModel.lib;DPPType.lib;DWP.lib;DWPBase.lib;DWPModel.lib;DWPType.lib;playprint.lib;util.lib;mlmath.lib;odbc32.lib;odbccp32.lib;psapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(Platform)\$(Configuration)/gendpp.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(MLE_HOME)/lib/tools;$(MLE_HOME)/Core/util/win32/lib;$(PYTHON_HOME/libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(MLE_HOME)/lib/tools;$(MLE_HOME)/Core/util/win32/lib;$(PYTHON_HOME)/libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ProgramDatabaseFile>$(Platform)\$(Configuration)/gendpp.pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
@@ -156,7 +156,7 @@ xcopy /y ..\..\..\common\src\layout\*.tmpl $(MLE_HOME)\lib
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>$(TCL_HOME)/lib/tcl86.lib;$(Platform)\$(Configuration)/DPPGen.lib;DPP.lib;DPPBase.lib;DPPModel.lib;DPPType.lib;DWP.lib;DWPBase.lib;DWPModel.lib;DWPType.lib;playprint.lib;util.lib;mlmath.lib;odbc32.lib;odbccp32.lib;psapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(Platform)\$(Configuration)/DPPGen.lib;DPP.lib;DPPBase.lib;DPPModel.lib;DPPType.lib;DWP.lib;DWPBase.lib;DWPModel.lib;DWPType.lib;playprint.lib;util.lib;mlmath.lib;odbc32.lib;odbccp32.lib;psapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(Platform)\$(Configuration)/gendpp.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>$(MLE_HOME)/lib64/tools;$(MLE_HOME)/Core/util/win32/lib64;$(PYTHON_HOME)/libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -203,7 +203,7 @@ xcopy /y ..\..\..\common\src\layout\*.tmpl $(MLE_HOME)\lib
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>$(TCL_HOME)/lib/tcl86.lib;$(Platform)\$(Configuration)/DPPGend.lib;DPPd.lib;DPPBased.lib;DPPModeld.lib;DPPTyped.lib;DWPd.lib;DWPBased.lib;DWPModeld.lib;DWPTyped.lib;playprintd.lib;utild.lib;mlmathd.lib;odbc32.lib;odbccp32.lib;psapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(Platform)\$(Configuration)/DPPGend.lib;DPPd.lib;DPPBased.lib;DPPModeld.lib;DPPTyped.lib;DWPd.lib;DWPBased.lib;DWPModeld.lib;DWPTyped.lib;playprintd.lib;utild.lib;mlmathd.lib;odbc32.lib;odbccp32.lib;psapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(Platform)\$(Configuration)/gendpp.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>$(MLE_HOME)/lib/tools;$(MLE_HOME)/Core/util/win32/lib;$(PYTHON_HOME)/libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -252,7 +252,7 @@ xcopy /y ..\..\..\common\src\layout\*.tmpl $(MLE_HOME)\lib
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>$(TCL_HOME)/lib/tcl86.lib;$(Platform)\$(Configuration)/DPPGend.lib;DPPd.lib;DPPBased.lib;DPPModeld.lib;DPPTyped.lib;DWPd.lib;DWPBased.lib;DWPModeld.lib;DWPTyped.lib;playprintd.lib;utild.lib;mlmathd.lib;odbc32.lib;odbccp32.lib;psapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(Platform)\$(Configuration)/DPPGend.lib;DPPd.lib;DPPBased.lib;DPPModeld.lib;DPPTyped.lib;DWPd.lib;DWPBased.lib;DWPModeld.lib;DWPTyped.lib;playprintd.lib;utild.lib;mlmathd.lib;odbc32.lib;odbccp32.lib;psapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(Platform)\$(Configuration)/gendpp.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>$(MLE_HOME)/lib64/tools;$(MLE_HOME)/Core/util/win32/lib64;$(PYTHON_HOME)/libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
