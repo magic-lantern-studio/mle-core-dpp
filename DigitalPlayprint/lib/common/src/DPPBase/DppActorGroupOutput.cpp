@@ -83,7 +83,8 @@ static char *getCanonicalPath(char *path)
 {
 	char *cpath = NULL;
 	MleWin32Path *wpath = new MleWin32Path((MlChar *)path, true);
-    cpath = strdup((char *)wpath->getPath());
+    //cpath = strdup((char *)wpath->getPath());
+	cpath = _strdup((char *)wpath->getPath());
 	delete wpath;
 	return cpath;
 }

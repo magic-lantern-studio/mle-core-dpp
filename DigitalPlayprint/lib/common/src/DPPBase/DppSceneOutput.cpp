@@ -113,7 +113,8 @@ MleDppSceneOutput::MleDppSceneOutput(
 {
 	if (m_language)
 	{
-		m_package = strdup(package);
+		//m_package = strdup(package);
+		m_package = _strdup(package);
 	}
 }
 
