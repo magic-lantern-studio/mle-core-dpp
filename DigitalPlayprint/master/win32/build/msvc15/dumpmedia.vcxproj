@@ -69,17 +69,17 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Platform)\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Platform)\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Platform)\$(Configuration)\dumpmedia\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Platform)\$(Configuration)\dumpmedia\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\dumpmedia\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\dumpmedia\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Platform)\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Platform)\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Platform)\$(Configuration)\dumpmedia\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Platform)\$(Configuration)\dumpmedia\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\dumpmedia\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\dumpmedia\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -96,10 +96,10 @@
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)/dumpmedia.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>$(Platform)\$(Configuration)/</AssemblerListingLocation>
-      <ObjectFileName>$(Platform)\$(Configuration)/</ObjectFileName>
-      <ProgramDataBaseFileName>$(Platform)\$(Configuration)/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)\dumpmedia\dumpmedia.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(Platform)\$(Configuration)\dumpmedia/</AssemblerListingLocation>
+      <ObjectFileName>$(Platform)\$(Configuration)\dumpmedia/</ObjectFileName>
+      <ProgramDataBaseFileName>$(Platform)\$(Configuration)\dumpmedia/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </ClCompile>
@@ -108,22 +108,22 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>$(Platform)\$(Configuration)/DPPGen.lib;DPP.lib;DWP.lib;playprint.lib;util.lib;mlmath.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(Platform)\$(Configuration)/dumpmedia.exe</OutputFile>
+      <AdditionalDependencies>$(Platform)\$(Configuration)\DPPGen\DPPGen.lib;DPP.lib;DWP.lib;playprint.lib;util.lib;mlmath.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(Platform)\$(Configuration)\dumpmedia\dumpmedia.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>$(MLE_HOME)/lib/tools;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ProgramDatabaseFile>.\Release/dumpmedia.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>$(Platform)\$(Configuration)\dumpmedia\dumpmedia.pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>$(Platform)\$(Configuration)/dumpmedia.bsc</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)\dumpmedia\dumpmedia.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
       <Message>Install Executable</Message>
       <Command>mkdir $(MLE_HOME)\bin
-copy Win32\Release\dumpmedia.exe $(MLE_HOME)\bin\dumpmedia.exe
+copy Win32\Release\dumpmedia\dumpmedia.exe $(MLE_HOME)\bin\dumpmedia.exe
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -142,10 +142,10 @@ copy Win32\Release\dumpmedia.exe $(MLE_HOME)\bin\dumpmedia.exe
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)/dumpmedia.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>$(Platform)\$(Configuration)/</AssemblerListingLocation>
-      <ObjectFileName>$(Platform)\$(Configuration)/</ObjectFileName>
-      <ProgramDataBaseFileName>$(Platform)\$(Configuration)/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)\dumpmedia\dumpmedia.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(Platform)\$(Configuration)\dumpmedia/</AssemblerListingLocation>
+      <ObjectFileName>$(Platform)\$(Configuration)\dumpmedia/</ObjectFileName>
+      <ProgramDataBaseFileName>$(Platform)\$(Configuration)\dumpmedia/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </ClCompile>
@@ -154,22 +154,22 @@ copy Win32\Release\dumpmedia.exe $(MLE_HOME)\bin\dumpmedia.exe
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>$(Platform)\$(Configuration)/DPPGen.lib;DPP.lib;DWP.lib;playprint.lib;util.lib;mlmath.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(Platform)\$(Configuration)/dumpmedia.exe</OutputFile>
+      <AdditionalDependencies>$(Platform)\$(Configuration)\DPPGen\DPPGen.lib;DPP.lib;DWP.lib;playprint.lib;util.lib;mlmath.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(Platform)\$(Configuration)\dumpmedia\dumpmedia.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>$(MLE_HOME)/lib64/tools;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ProgramDatabaseFile>.\Release/dumpmedia.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>$(Platform)\$(Configuration)\dumpmedia\dumpmedia.pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>$(Platform)\$(Configuration)/dumpmedia.bsc</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)\dumpmedia\dumpmedia.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
       <Message>Install Executable</Message>
       <Command>mkdir $(MLE_HOME)\bin64
-copy x64\Release\dumpmedia.exe $(MLE_HOME)\bin64\dumpmedia.exe
+copy x64\Release\dumpmedia\dumpmedia.exe $(MLE_HOME)\bin64\dumpmedia.exe
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -186,10 +186,10 @@ copy x64\Release\dumpmedia.exe $(MLE_HOME)\bin64\dumpmedia.exe
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)/dumpmedia.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>$(Platform)\$(Configuration)/</AssemblerListingLocation>
-      <ObjectFileName>$(Platform)\$(Configuration)/</ObjectFileName>
-      <ProgramDataBaseFileName>$(Platform)\$(Configuration)/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)\dumpmedia\dumpmedia.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(Platform)\$(Configuration)\dumpmedia/</AssemblerListingLocation>
+      <ObjectFileName>$(Platform)\$(Configuration)\dumpmedia/</ObjectFileName>
+      <ProgramDataBaseFileName>$(Platform)\$(Configuration)\dumpmedia/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
@@ -199,23 +199,23 @@ copy x64\Release\dumpmedia.exe $(MLE_HOME)\bin64\dumpmedia.exe
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>$(Platform)\$(Configuration)/DPPGend.lib;DPPd.lib;DWPd.lib;playprintd.lib;utild.lib;mlmathd.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(Platform)\$(Configuration)/dumpmedia.exe</OutputFile>
+      <AdditionalDependencies>$(Platform)\$(Configuration)\DPPGen\DPPGend.lib;DPPd.lib;DWPd.lib;playprintd.lib;utild.lib;mlmathd.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(Platform)\$(Configuration)\dumpmedia\dumpmedia.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>$(MLE_HOME)/lib/tools;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>$(Platform)\$(Configuration)/dumpmedia.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>$(Platform)\$(Configuration)\dumpmedia\dumpmedia.pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>$(Platform)\$(Configuration)/dumpmedia.bsc</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)\dumpmedia\dumpmedia.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
       <Message>Install Executable</Message>
       <Command>mkdir $(MLE_HOME)\bin
-copy Win32\Debug\dumpmedia.exe $(MLE_HOME)\bin\dumpmedia.exe
+copy Win32\Debug\dumpmedia\dumpmedia.exe $(MLE_HOME)\bin\dumpmedia.exe
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -233,10 +233,10 @@ copy Win32\Debug\dumpmedia.exe $(MLE_HOME)\bin\dumpmedia.exe
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)/dumpmedia.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>$(Platform)\$(Configuration)/</AssemblerListingLocation>
-      <ObjectFileName>$(Platform)\$(Configuration)/</ObjectFileName>
-      <ProgramDataBaseFileName>$(Platform)\$(Configuration)/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)\dumpmedia\dumpmedia.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(Platform)\$(Configuration)\dumpmedia/</AssemblerListingLocation>
+      <ObjectFileName>$(Platform)\$(Configuration)\dumpmedia/</ObjectFileName>
+      <ProgramDataBaseFileName>$(Platform)\$(Configuration)\dumpmedia/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -246,23 +246,23 @@ copy Win32\Debug\dumpmedia.exe $(MLE_HOME)\bin\dumpmedia.exe
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>$(Platform)\$(Configuration)/DPPGend.lib;DPPd.lib;DWPd.lib;playprintd.lib;utild.lib;mlmathd.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(Platform)\$(Configuration)/dumpmedia.exe</OutputFile>
+      <AdditionalDependencies>$(Platform)\$(Configuration)\DPPGen\DPPGend.lib;DPPd.lib;DWPd.lib;playprintd.lib;utild.lib;mlmathd.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(Platform)\$(Configuration)\dumpmedia\dumpmedia.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>$(MLE_HOME)/lib64/tools;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>$(Platform)\$(Configuration)/dumpmedia.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>$(Platform)\$(Configuration)\dumpmedia\dumpmedia.pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>$(Platform)\$(Configuration)/dumpmedia.bsc</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)\dumpmedia\dumpmedia.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
       <Message>Install Executable</Message>
       <Command>mkdir $(MLE_HOME)\bin64
-copy x64\Debug\dumpmedia.exe $(MLE_HOME)\bin64\dumpmedia.exe
+copy x64\Debug\dumpmedia\dumpmedia.exe $(MLE_HOME)\bin64\dumpmedia.exe
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>

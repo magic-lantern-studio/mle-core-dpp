@@ -70,17 +70,17 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Platform)\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Platform)\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Platform)\$(Configuration)\genscene\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Platform)\$(Configuration)\genscene\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.$(Platform)\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Platform)\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Platform)\$(Configuration)\genscene\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Platform)\$(Configuration)\genscene\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\genscene\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\genscene\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\genscene\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\genscene\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -96,10 +96,10 @@
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)/genscene.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>$(Platform)\$(Configuration)/</AssemblerListingLocation>
-      <ObjectFileName>$(Platform)\$(Configuration)/</ObjectFileName>
-      <ProgramDataBaseFileName>$(Platform)\$(Configuration)/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)\genscene\genscene.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(Platform)\$(Configuration)\genscene/</AssemblerListingLocation>
+      <ObjectFileName>$(Platform)\$(Configuration)\genscene/</ObjectFileName>
+      <ProgramDataBaseFileName>$(Platform)\$(Configuration)\genscene/</ProgramDataBaseFileName>
       <BrowseInformation>true</BrowseInformation>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -110,23 +110,23 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>$(Platform)\$(Configuration)/DPPGend.lib;playprintd.lib;DPPd.lib;DPPBased.lib;DPPModeld.lib;DPPTyped.lib;DWPd.lib;DWPBased.lib;DWPModeld.lib;DWPTyped.lib;utild.lib;mlmathd.lib;odbc32.lib;odbccp32.lib;psapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(Platform)\$(Configuration)/genscene.exe</OutputFile>
+      <AdditionalDependencies>$(Platform)\$(Configuration)\DPPGen\DPPGend.lib;playprintd.lib;DPPd.lib;DPPBased.lib;DPPModeld.lib;DPPTyped.lib;DWPd.lib;DWPBased.lib;DWPModeld.lib;DWPTyped.lib;utild.lib;mlmathd.lib;odbc32.lib;odbccp32.lib;psapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(Platform)\$(Configuration)\genscene\genscene.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>$(MLE_HOME)/lib/tools;$(MLE_HOME)/Core/util/win32/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>$(Platform)\$(Configuration)/genscene.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>$(Platform)\$(Configuration)\genscene\genscene.pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>$(Platform)\$(Configuration)/genscene.bsc</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)\genscene\genscene.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
       <Message>Install Executable</Message>
       <Command>mkdir $(MLE_HOME)\bin
-copy Win32\Debug\genscene.exe $(MLE_HOME)\bin\genscene.exe
+copy Win32\Debug\genscene\genscene.exe $(MLE_HOME)\bin\genscene.exe
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -144,10 +144,10 @@ copy Win32\Debug\genscene.exe $(MLE_HOME)\bin\genscene.exe
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)/genscene.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>$(Platform)\$(Configuration)/</AssemblerListingLocation>
-      <ObjectFileName>$(Platform)\$(Configuration)/</ObjectFileName>
-      <ProgramDataBaseFileName>$(Platform)\$(Configuration)/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)\genscene\genscene.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(Platform)\$(Configuration)\genscene/</AssemblerListingLocation>
+      <ObjectFileName>$(Platform)\$(Configuration)\genscene/</ObjectFileName>
+      <ProgramDataBaseFileName>$(Platform)\$(Configuration)\genscene/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </ClCompile>
@@ -156,22 +156,22 @@ copy Win32\Debug\genscene.exe $(MLE_HOME)\bin\genscene.exe
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>$(Platform)\$(Configuration)/DPPGen.lib;playprint.lib;DPP.lib;DPPBase.lib;DPPModel.lib;DPPType.lib;DWP.lib;DWPBase.lib;DWPModel.lib;DWPType.lib;util.lib;mlmath.lib;odbc32.lib;odbccp32.lib;psapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(Platform)\$(Configuration)/genscene.exe</OutputFile>
+      <AdditionalDependencies>$(Platform)\$(Configuration)\DPPGen\DPPGen.lib;playprint.lib;DPP.lib;DPPBase.lib;DPPModel.lib;DPPType.lib;DWP.lib;DWPBase.lib;DWPModel.lib;DWPType.lib;util.lib;mlmath.lib;odbc32.lib;odbccp32.lib;psapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(Platform)\$(Configuration)\genscene\genscene.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>$(MLE_HOME)/lib/tools;$(MLE_HOME)/Core/util/win32/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ProgramDatabaseFile>$(Platform)\$(Configuration)/genscene.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>$(Platform)\$(Configuration)\genscene\genscene.pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>$(Platform)\$(Configuration)/genscene.bsc</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)\genscene\genscene.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
       <Message>Install Executable</Message>
       <Command>mkdir $(MLE_HOME)\bin
-copy Win32\Release\genscene.exe $(MLE_HOME)\bin\genscene.exe
+copy Win32\Release\genscene\genscene.exe $(MLE_HOME)\bin\genscene.exe
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -189,10 +189,10 @@ copy Win32\Release\genscene.exe $(MLE_HOME)\bin\genscene.exe
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)/genscene.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>$(Platform)\$(Configuration)/</AssemblerListingLocation>
-      <ObjectFileName>$(Platform)\$(Configuration)/</ObjectFileName>
-      <ProgramDataBaseFileName>$(Platform)\$(Configuration)/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)\genscene\genscene.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(Platform)\$(Configuration)\genscene/</AssemblerListingLocation>
+      <ObjectFileName>$(Platform)\$(Configuration)\genscene/</ObjectFileName>
+      <ProgramDataBaseFileName>$(Platform)\$(Configuration)\genscene/</ProgramDataBaseFileName>
       <BrowseInformation>true</BrowseInformation>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -203,23 +203,23 @@ copy Win32\Release\genscene.exe $(MLE_HOME)\bin\genscene.exe
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>$(Platform)\$(Configuration)/DPPGend.lib;playprintd.lib;DPPd.lib;DPPBased.lib;DPPModeld.lib;DPPTyped.lib;DWPd.lib;DWPBased.lib;DWPModeld.lib;DWPTyped.lib;utild.lib;mlmathd.lib;odbc32.lib;odbccp32.lib;psapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(Platform)\$(Configuration)/genscene.exe</OutputFile>
+      <AdditionalDependencies>$(Platform)\$(Configuration)\DPPGen\DPPGend.lib;playprintd.lib;DPPd.lib;DPPBased.lib;DPPModeld.lib;DPPTyped.lib;DWPd.lib;DWPBased.lib;DWPModeld.lib;DWPTyped.lib;utild.lib;mlmathd.lib;odbc32.lib;odbccp32.lib;psapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(Platform)\$(Configuration)\genscene\genscene.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>$(MLE_HOME)/lib64/tools;$(MLE_HOME)/Core/util/win32/lib64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>$(Platform)\$(Configuration)/genscene.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>$(Platform)\$(Configuration)\genscene\genscene.pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>$(Platform)\$(Configuration)/genscene.bsc</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)\genscene\genscene.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
       <Message>Install Executable</Message>
       <Command>mkdir $(MLE_HOME)\bin64
-copy x64\Debug\genscene.exe $(MLE_HOME)\bin64\genscene.exe
+copy x64\Debug\genscene\genscene.exe $(MLE_HOME)\bin64\genscene.exe
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -238,10 +238,10 @@ copy x64\Debug\genscene.exe $(MLE_HOME)\bin64\genscene.exe
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)/genscene.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>$(Platform)\$(Configuration)/</AssemblerListingLocation>
-      <ObjectFileName>$(Platform)\$(Configuration)/</ObjectFileName>
-      <ProgramDataBaseFileName>$(Platform)\$(Configuration)/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)\genscene\genscene.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(Platform)\$(Configuration)\genscene/</AssemblerListingLocation>
+      <ObjectFileName>$(Platform)\$(Configuration)\genscene/</ObjectFileName>
+      <ProgramDataBaseFileName>$(Platform)\$(Configuration)\genscene/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </ClCompile>
@@ -250,22 +250,22 @@ copy x64\Debug\genscene.exe $(MLE_HOME)\bin64\genscene.exe
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>$(Platform)\$(Configuration)/DPPGen.lib;playprint.lib;DPP.lib;DPPBase.lib;DPPModel.lib;DPPType.lib;DWP.lib;DWPBase.lib;DWPModel.lib;DWPType.lib;util.lib;mlmath.lib;odbc32.lib;odbccp32.lib;psapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(Platform)\$(Configuration)/genscene.exe</OutputFile>
+      <AdditionalDependencies>$(Platform)\$(Configuration)\DPPGen\DPPGen.lib;playprint.lib;DPP.lib;DPPBase.lib;DPPModel.lib;DPPType.lib;DWP.lib;DWPBase.lib;DWPModel.lib;DWPType.lib;util.lib;mlmath.lib;odbc32.lib;odbccp32.lib;psapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(Platform)\$(Configuration)\genscene\genscene.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>$(MLE_HOME)/lib64/tools;$(MLE_HOME)/Core/util/win32/lib64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ProgramDatabaseFile>$(Platform)\$(Configuration)/genscene.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>$(Platform)\$(Configuration)\genscene\genscene.pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>$(Platform)\$(Configuration)/genscene.bsc</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)\genscene\genscene.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
       <Message>Install Executable</Message>
       <Command>mkdir $(MLE_HOME)\bin64
-copy x64\Release\genscene.exe $(MLE_HOME)\bin64\genscene.exe
+copy x64\Release\genscene\genscene.exe $(MLE_HOME)\bin64\genscene.exe
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>

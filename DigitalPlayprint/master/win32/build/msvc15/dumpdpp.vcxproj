@@ -69,17 +69,17 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Platform)\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Platform)\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Platform)\$(Configuration)\dumpdpp\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Platform)\$(Configuration)\dumpdpp\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\dumpdpp\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\dumpdpp\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Platform)\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Platform)\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Platform)\$(Configuration)\dumpdpp\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Platform)\$(Configuration)\dumpdpp\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\dumpdpp\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\dumpdpp\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -95,10 +95,10 @@
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)/dumpdpp.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>$(Platform)\$(Configuration)/</AssemblerListingLocation>
-      <ObjectFileName>$(Platform)\$(Configuration)/</ObjectFileName>
-      <ProgramDataBaseFileName>$(Platform)\$(Configuration)/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)\dumpdpp\dumpdpp.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(Platform)\$(Configuration)\dumpdpp/</AssemblerListingLocation>
+      <ObjectFileName>$(Platform)\$(Configuration)\dumpdpp/</ObjectFileName>
+      <ProgramDataBaseFileName>$(Platform)\$(Configuration)\dumpdpp/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
@@ -108,23 +108,23 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>$(Platform)\$(Configuration)/DPPGend.lib;DPPd.lib;DWPd.lib;playprintd.lib;utild.lib;mlmathd.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(Platform)\$(Configuration)/dumpdpp.exe</OutputFile>
+      <AdditionalDependencies>$(Platform)\$(Configuration)\DPPGen\DPPGend.lib;DPPd.lib;DWPd.lib;playprintd.lib;utild.lib;mlmathd.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(Platform)\$(Configuration)\dumpdpp\dumpdpp.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>$(MLE_HOME)/lib/tools;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>$(Platform)\$(Configuration)/dumpdpp.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>$(Platform)\$(Configuration)\dumpdpp\dumpdpp.pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>$(Platform)\$(Configuration)/dumpdpp.bsc</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)\dumpdpp\dumpdpp.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
       <Message>Install Executable</Message>
       <Command>mkdir $(MLE_HOME)\bin
-copy Win32\Debug\dumpdpp.exe $(MLE_HOME)\bin\dumpdpp.exe
+copy Win32\Debug\dumpdpp\dumpdpp.exe $(MLE_HOME)\bin\dumpdpp.exe
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -142,10 +142,10 @@ copy Win32\Debug\dumpdpp.exe $(MLE_HOME)\bin\dumpdpp.exe
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)/dumpdpp.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>$(Platform)\$(Configuration)/</AssemblerListingLocation>
-      <ObjectFileName>$(Platform)\$(Configuration)/</ObjectFileName>
-      <ProgramDataBaseFileName>$(Platform)\$(Configuration)/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)\dumpdpp\dumpdpp.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(Platform)\$(Configuration)\dumpdpp/</AssemblerListingLocation>
+      <ObjectFileName>$(Platform)\$(Configuration)\dumpdpp/</ObjectFileName>
+      <ProgramDataBaseFileName>$(Platform)\$(Configuration)\dumpdpp/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -155,23 +155,23 @@ copy Win32\Debug\dumpdpp.exe $(MLE_HOME)\bin\dumpdpp.exe
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>$(Platform)\$(Configuration)/DPPGend.lib;DPPd.lib;DWPd.lib;playprintd.lib;utild.lib;mlmathd.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(Platform)\$(Configuration)/dumpdpp.exe</OutputFile>
+      <AdditionalDependencies>$(Platform)\$(Configuration)\DPPGen\DPPGend.lib;DPPd.lib;DWPd.lib;playprintd.lib;utild.lib;mlmathd.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(Platform)\$(Configuration)\dumpdpp\dumpdpp.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>$(MLE_HOME)/lib64/tools;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>$(Platform)\$(Configuration)/dumpdpp.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>$(Platform)\$(Configuration)\dumpdpp\dumpdpp.pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>$(Platform)\$(Configuration)/dumpdpp.bsc</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)\dumpdpp\dumpdpp.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
       <Message>Install Executable</Message>
       <Command>mkdir $(MLE_HOME)\bin64
-copy x64\Debug\dumpdpp.exe $(MLE_HOME)\bin64\dumpdpp.exe
+copy x64\Debug\dumpdpp\dumpdpp.exe $(MLE_HOME)\bin64\dumpdpp.exe
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -188,10 +188,10 @@ copy x64\Debug\dumpdpp.exe $(MLE_HOME)\bin64\dumpdpp.exe
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)/dumpdpp.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>$(Platform)\$(Configuration)/</AssemblerListingLocation>
-      <ObjectFileName>$(Platform)\$(Configuration)/</ObjectFileName>
-      <ProgramDataBaseFileName>$(Platform)\$(Configuration)/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)\dumpdpp\dumpdpp.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(Platform)\$(Configuration)\dumpdpp/</AssemblerListingLocation>
+      <ObjectFileName>$(Platform)\$(Configuration)\dumpdpp/</ObjectFileName>
+      <ProgramDataBaseFileName>$(Platform)\$(Configuration)\dumpdpp/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </ClCompile>
@@ -200,16 +200,24 @@ copy x64\Debug\dumpdpp.exe $(MLE_HOME)\bin64\dumpdpp.exe
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <OutputFile>$(Platform)\$(Configuration)/dumpdpp.exe</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)\dumpdpp\dumpdpp.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <ProgramDatabaseFile>$(Platform)\$(Configuration)/dumpdpp.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>$(Platform)\$(Configuration)\dumpdpp\dumpdpp.pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
+      <AdditionalLibraryDirectories>$(MLE_HOME)/lib/tools</AdditionalLibraryDirectories>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>$(Platform)\$(Configuration)/dumpdpp.bsc</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)\dumpdpp\dumpdpp.bsc</OutputFile>
     </Bscmake>
+    <PostBuildEvent>
+      <Command>mkdir $(MLE_HOME)\bin
+copy Win32\Release\dumpdpp\dumpdpp.exe $(MLE_HOME)\bin\dumpdpp.exe</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Install Executable</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Midl>
@@ -225,10 +233,10 @@ copy x64\Debug\dumpdpp.exe $(MLE_HOME)\bin64\dumpdpp.exe
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)/dumpdpp.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>$(Platform)\$(Configuration)/</AssemblerListingLocation>
-      <ObjectFileName>$(Platform)\$(Configuration)/</ObjectFileName>
-      <ProgramDataBaseFileName>$(Platform)\$(Configuration)/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)\dumpdpp\dumpdpp.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(Platform)\$(Configuration)\dumpdpp/</AssemblerListingLocation>
+      <ObjectFileName>$(Platform)\$(Configuration)\dumpdpp/</ObjectFileName>
+      <ProgramDataBaseFileName>$(Platform)\$(Configuration)\dumpdpp/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </ClCompile>
@@ -237,21 +245,21 @@ copy x64\Debug\dumpdpp.exe $(MLE_HOME)\bin64\dumpdpp.exe
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <OutputFile>$(Platform)\$(Configuration)/dumpdpp.exe</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)\dumpdpp\dumpdpp.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>$(MLE_HOME)/lib64/tools;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ProgramDatabaseFile>$(Platform)\$(Configuration)/dumpdpp.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>$(Platform)\$(Configuration)\dumpdpp\dumpdpp.pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>$(Platform)\$(Configuration)/dumpdpp.bsc</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)\dumpdpp\dumpdpp.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
       <Message>Install Executable</Message>
       <Command>mkdir $(MLE_HOME)\bin64
-copy x64\Release\dumpdpp.exe $(MLE_HOME)\bin64\dumpdpp.exe</Command>
+copy x64\Release\dumpdpp\dumpdpp.exe $(MLE_HOME)\bin64\dumpdpp.exe</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

@@ -69,17 +69,17 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Platform)\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Platform)\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Platform)\$(Configuration)\dumpscene\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Platform)\$(Configuration)\dumpscene\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\dumpscene\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\dumpscene\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Platform)\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Platform)\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Platform)\$(Configuration)\dumpscene\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Platform)\$(Configuration)\dumpscene\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\dumpscene\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\dumpscene\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -95,10 +95,10 @@
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)/dumpscene.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>$(Platform)\$(Configuration)/</AssemblerListingLocation>
-      <ObjectFileName>$(Platform)\$(Configuration)/</ObjectFileName>
-      <ProgramDataBaseFileName>$(Platform)\$(Configuration)/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)\dumpscene\dumpscene.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(Platform)\$(Configuration)\dumpscene/</AssemblerListingLocation>
+      <ObjectFileName>$(Platform)\$(Configuration)\dumpscene/</ObjectFileName>
+      <ProgramDataBaseFileName>$(Platform)\$(Configuration)\dumpscene/</ProgramDataBaseFileName>
       <BrowseInformation>true</BrowseInformation>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -110,22 +110,22 @@
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>utild.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(Platform)\$(Configuration)/dumpscene.exe</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)\dumpscene\dumpscene.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>$(MLE_HOME)/lib/tools;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>$(Platform)\$(Configuration)/dumpscene.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>$(Platform)\$(Configuration)\dumpscene\dumpscene.pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>$(Platform)\$(Configuration)/dumpscene.bsc</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)\dumpscene\dumpscene.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
       <Message>Install Executable</Message>
       <Command>mkdir $(MLE_HOME)\bin
-copy Win32\Debug\dumpscene.exe $(MLE_HOME)\bin\dumpscene.exe
+copy Win32\Debug\dumpscene\dumpscene.exe $(MLE_HOME)\bin\dumpscene.exe
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -143,10 +143,10 @@ copy Win32\Debug\dumpscene.exe $(MLE_HOME)\bin\dumpscene.exe
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)/dumpscene.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>$(Platform)\$(Configuration)/</AssemblerListingLocation>
-      <ObjectFileName>$(Platform)\$(Configuration)/</ObjectFileName>
-      <ProgramDataBaseFileName>$(Platform)\$(Configuration)/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)\dumpscene\dumpscene.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(Platform)\$(Configuration)\dumpscene/</AssemblerListingLocation>
+      <ObjectFileName>$(Platform)\$(Configuration)\dumpscene/</ObjectFileName>
+      <ProgramDataBaseFileName>$(Platform)\$(Configuration)\dumpscene/</ProgramDataBaseFileName>
       <BrowseInformation>true</BrowseInformation>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -158,22 +158,22 @@ copy Win32\Debug\dumpscene.exe $(MLE_HOME)\bin\dumpscene.exe
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>utild.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(Platform)\$(Configuration)/dumpscene.exe</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)\dumpscene\dumpscene.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>$(MLE_HOME)/lib64/tools;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>$(Platform)\$(Configuration)/dumpscene.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>$(Platform)\$(Configuration)\dumpscene\dumpscene.pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>$(Platform)\$(Configuration)/dumpscene.bsc</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)\dumpscene\dumpscene.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
       <Message>Install Executable</Message>
       <Command>mkdir $(MLE_HOME)\bin64
-copy x64\Debug\dumpscene.exe $(MLE_HOME)\bin64\dumpscene.exe
+copy x64\Debug\dumpscene\dumpscene.exe $(MLE_HOME)\bin64\dumpscene.exe
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -191,10 +191,10 @@ copy x64\Debug\dumpscene.exe $(MLE_HOME)\bin64\dumpscene.exe
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)/dumpscene.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>$(Platform)\$(Configuration)/</AssemblerListingLocation>
-      <ObjectFileName>$(Platform)\$(Configuration)/</ObjectFileName>
-      <ProgramDataBaseFileName>$(Platform)\$(Configuration)/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)\dumpscene\dumpscene.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(Platform)\$(Configuration)\dumpscene/</AssemblerListingLocation>
+      <ObjectFileName>$(Platform)\$(Configuration)\dumpscene/</ObjectFileName>
+      <ProgramDataBaseFileName>$(Platform)\$(Configuration)\dumpscene/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </ClCompile>
@@ -204,21 +204,21 @@ copy x64\Debug\dumpscene.exe $(MLE_HOME)\bin64\dumpscene.exe
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>util.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(Platform)\$(Configuration)/dumpscene.exe</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)\dumpscene\dumpscene.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>$(MLE_HOME)/lib/tools;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ProgramDatabaseFile>.\Release/dumpscene.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>$(Platform)\$(Configuration)\dumpscene\dumpscene.pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>$(Platform)\$(Configuration)/dumpscene.bsc</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)\dumpscene\dumpscene.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
       <Message>Install Executable</Message>
       <Command>mkdir $(MLE_HOME)\bin
-copy Win32\Release\dumpscene.exe $(MLE_HOME)\bin\dumpscene.exe
+copy Win32\Release\dumpscene\dumpscene.exe $(MLE_HOME)\bin\dumpscene.exe
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -237,10 +237,10 @@ copy Win32\Release\dumpscene.exe $(MLE_HOME)\bin\dumpscene.exe
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)/dumpscene.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>$(Platform)\$(Configuration)/</AssemblerListingLocation>
-      <ObjectFileName>$(Platform)\$(Configuration)/</ObjectFileName>
-      <ProgramDataBaseFileName>$(Platform)\$(Configuration)/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)\dumpscene\dumpscene.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(Platform)\$(Configuration)\dumpscene/</AssemblerListingLocation>
+      <ObjectFileName>$(Platform)\$(Configuration)\dumpscene/</ObjectFileName>
+      <ProgramDataBaseFileName>$(Platform)\$(Configuration)\dumpscene/</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </ClCompile>
@@ -250,21 +250,21 @@ copy Win32\Release\dumpscene.exe $(MLE_HOME)\bin\dumpscene.exe
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>util.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(Platform)\$(Configuration)/dumpscene.exe</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)\dumpscene\dumpscene.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>$(MLE_HOME)/lib64/tools;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ProgramDatabaseFile>.\Release/dumpscene.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>$(Platform)\$(Configuration)\dumpscene\dumpscene.pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>$(Platform)\$(Configuration)/dumpscene.bsc</OutputFile>
+      <OutputFile>$(Platform)\$(Configuration)\dumpscene\dumpscene.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
       <Message>Install Executable</Message>
       <Command>mkdir $(MLE_HOME)\bin64
-copy x64\Release\dumpscene.exe $(MLE_HOME)\bin64\dumpscene.exe
+copy x64\Release\dumpscene\dumpscene.exe $(MLE_HOME)\bin64\dumpscene.exe
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
