@@ -6,16 +6,13 @@
  *
  * This file implements the Scene Output used by the Magic Lantern Digital
  * Playprint Library API.
- *
- * @author Mark S. Millard
- * @date July 17, 2004
  */
 
 // COPYRIGHT_BEGIN
 //
 // The MIT License (MIT)
 //
-// Copyright (c) 2015 Wizzer Works
+// Copyright (c) 2015-2024 Wizzer Works
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -113,8 +110,11 @@ MleDppSceneOutput::MleDppSceneOutput(
 {
 	if (m_language)
 	{
-		//m_package = strdup(package);
+#if defined(WIN32)
 		m_package = _strdup(package);
+#else
+		m_package = strdup(package);
+#endif
 	}
 }
 

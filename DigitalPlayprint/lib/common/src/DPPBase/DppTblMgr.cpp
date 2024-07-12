@@ -6,9 +6,6 @@
  *
  * This file implements the table manager used by the Magic Lantern Digital
  * Playprint Library API.
- *
- * @author Mark S. Millard
- * @date July 17, 2004
  */
 
 // COPYRIGHT_BEGIN
@@ -666,8 +663,11 @@ MlBoolean MleDppTblMgr::buildIndexTables(MleDwpItem *root)
 		strcat(buf,(char *)actorClassDictIter.getKey());
 		strcat(buf,"_");
 		strcat(buf,(char *)propDictIter.getKey());
-		//saveString(strdup(buf),&m_actorPropTable);
+#if defined(WIN32)
 		saveString(_strdup(buf), &m_actorPropTable);
+#else
+		saveString(strdup(buf),&m_actorPropTable);
+#endif
 		
 		//	    printf("\t%s (%s)\n",
 		//		propDictIter.getKey(),
@@ -698,8 +698,11 @@ MlBoolean MleDppTblMgr::buildIndexTables(MleDwpItem *root)
 		if (headerFileItem)
 		{
 		  if (headerFile != NULL) mlFree(headerFile);
-		  //headerFile = strdup(headerFileItem->getName());
+#if defined(WIN32)
 		  headerFile = _strdup(headerFileItem->getName());
+#else
+		  headerFile = strdup(headerFileItem->getName());
+#endif
 		} else
 		  headerFile = NULL;
 
@@ -711,16 +714,22 @@ MlBoolean MleDppTblMgr::buildIndexTables(MleDwpItem *root)
 		if (packageItem)
 		{
 		  if (package != NULL) mlFree(package);
-		  //package = strdup(packageItem->getName());
+#if defined(WIN32)
 		  package = _strdup(packageItem->getName());
+#else
+		  package = strdup(packageItem->getName());
+#endif
 		} else
 		  package = NULL;
 	  }
 	  
-	  //saveActorClass(strdup((char *)actorClassDictIter.getKey()),nProps,
-      //	 headerFile,package,&m_actorClassTable);
+#if defined(WIN32)
 	  saveActorClass(_strdup((char *)actorClassDictIter.getKey()), nProps,
 		  headerFile, package, &m_actorClassTable);
+#else
+	  saveActorClass(strdup((char *)actorClassDictIter.getKey()),nProps,
+      	 headerFile,package,&m_actorClassTable);
+#endif
 	  
 	  actorClassDictIter.next();
     }
@@ -800,8 +809,11 @@ MlBoolean MleDppTblMgr::buildIndexTables(MleDwpItem *root)
 				  (MleDwpHeaderFile *)headerFileFinder.find(roleDef);
 			  
 			  if (headerFileItem)
-				  //headerFile = strdup(headerFileItem->getName());
+#if defined(WIN32)
 			      headerFile = _strdup(headerFileItem->getName());
+#else
+			      headerFile = strdup(headerFileItem->getName());
+#endif
 			  else
 				  headerFile = NULL;
 
@@ -811,8 +823,11 @@ MlBoolean MleDppTblMgr::buildIndexTables(MleDwpItem *root)
 				  (MleDwpPackage *)packageFinder.find(roleDef);
 			
 			  if (packageItem)
-				  //package = strdup(packageItem->getName());
+#if defined(WIN32)
 			      package = _strdup(packageItem->getName());
+#else
+			      package = strdup(packageItem->getName());
+#endif
 			  else
 				  package = NULL;
 			  
@@ -959,8 +974,11 @@ MlBoolean MleDppTblMgr::buildIndexTables(MleDwpItem *root)
 		strcat(buf,(char *)setClassDictIter.getKey());
 		strcat(buf,"_");
 		strcat(buf,(char *)propDictIter.getKey());
-		//saveString(strdup(buf),&m_setPropTable);
+#if defined(WIN32)
 		saveString(_strdup(buf), &m_setPropTable);
+#else
+		saveString(strdup(buf),&m_setPropTable);
+#endif
 		
 		propDictIter.next();
 	  }
@@ -985,8 +1003,11 @@ MlBoolean MleDppTblMgr::buildIndexTables(MleDwpItem *root)
 		  (MleDwpHeaderFile *) headerFileFinder.getItem();
 		
 		if (headerFileItem)
-			//headerFile = strdup(headerFileItem->getName());
+#if defined(WIN32)
 			headerFile = _strdup(headerFileItem->getName());
+#else
+		    headerFile = strdup(headerFileItem->getName());
+#endif
 
 		// Find the associated package for this actor class.
 		MleDwpFinder packageFinder(MleDwpPackage::typeId);
@@ -994,16 +1015,22 @@ MlBoolean MleDppTblMgr::buildIndexTables(MleDwpItem *root)
 		  (MleDwpPackage *)packageFinder.find(setDef);
 		
 		if (packageItem)
-		  //package = strdup(packageItem->getName());
+#if defined(WIN32)
 	      package = _strdup(packageItem->getName());
+#else
+		  package = strdup(packageItem->getName());
+#endif
 		else
 		  package = NULL;
 	  }
 	  
-	  //saveSetClass(strdup((char *)setClassDictIter.getKey()), nProps,
-	  //    headerFile,package,&m_setClassTable);
+#if defined(WIN32)
 	  saveSetClass(_strdup((char *)setClassDictIter.getKey()), nProps,
 		  headerFile, package, &m_setClassTable);
+#else
+	  saveSetClass(strdup((char *)setClassDictIter.getKey()), nProps,
+	      headerFile,package,&m_setClassTable);
+#endif
 	  
 	  setClassDictIter.next();
     }
@@ -1056,8 +1083,11 @@ MlBoolean MleDppTblMgr::buildIndexTables(MleDwpItem *root)
 			(MleDwpHeaderFile *)headerFileFinder.find(mediarefClassItems[i]);
 			  
 		if (headerFileItem)
-			//headerFile = strdup(headerFileItem->getName());
+#if defined(WIN32)
 		    headerFile = _strdup(headerFileItem->getName());
+#else
+		    headerFile = strdup(headerFileItem->getName());
+#endif
 		else
 			headerFile = NULL;
 
@@ -1067,8 +1097,11 @@ MlBoolean MleDppTblMgr::buildIndexTables(MleDwpItem *root)
 			(MleDwpPackage *)packageFinder.find(mediarefClassItems[i]);
 			
 		if (packageItem)
-			//package = strdup(packageItem->getName());
+#if defined(WIN32)
 		    package = _strdup(packageItem->getName());
+#else
+		    package = strdup(packageItem->getName());
+#endif
 		else
 			package = NULL;
 		
@@ -1123,8 +1156,11 @@ MlBoolean MleDppTblMgr::buildIndexTables(MleDwpItem *root)
 	    (MleDwpHeaderFile *)headerFileFinder.find(group[i]);
 	  
 	  if (headerFileItem)
-	    //headerFile = strdup(headerFileItem->getName());
+#if defined(WIN32)
 	    headerFile = _strdup(headerFileItem->getName());
+#else
+	    headerFile = strdup(headerFileItem->getName());
+#endif
 	  else
 	    headerFile = NULL;
 
@@ -1134,8 +1170,11 @@ MlBoolean MleDppTblMgr::buildIndexTables(MleDwpItem *root)
 		  (MleDwpPackage *)packageFinder.find(group[i]);
 		
 		if (packageItem)
-		  //package = strdup(packageItem->getName());
+#if defined(WIN32)
 		  package = _strdup(packageItem->getName());
+#else
+		  package = strdup(packageItem->getName());
+#endif
 		else
 		  package = NULL;
 	  
@@ -1194,8 +1233,11 @@ MlBoolean MleDppTblMgr::buildIndexTables(MleDwpItem *root)
 	    (MleDwpHeaderFile *)headerFileFinder.find(scene[i]);
 	  
 	  if (headerFileItem)
-	    //headerFile = strdup(headerFileItem->getName());
+#if defined(WIN32)
 	    headerFile = _strdup(headerFileItem->getName());
+#else
+	    headerFile = strdup(headerFileItem->getName());
+#endif
 	  else
 	    headerFile = NULL;
 
@@ -1205,8 +1247,11 @@ MlBoolean MleDppTblMgr::buildIndexTables(MleDwpItem *root)
 		  (MleDwpPackage *)packageFinder.find(scene[i]);
 		
 		if (packageItem)
-		  //package = strdup(packageItem->getName());
+#if defined(WIN32)
 		  package = _strdup(packageItem->getName());
+#else
+		  package = strdup(packageItem->getName());
+#endif
 		else
 		  package = NULL;
 	  
@@ -1669,8 +1714,11 @@ MlBoolean MleDppTblMgr::setDiscriminators(MleDwpItem *tree, char *tags)
         return TRUE;
     } else
 	{
-        //processTags = strdup(tags);
+#if defined(WIN32)
 		processTags = _strdup(tags);
+#else
+        processTags = strdup(tags);
+#endif
     }
 
     // Remove old discriminator.
