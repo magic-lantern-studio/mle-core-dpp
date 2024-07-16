@@ -163,22 +163,35 @@ int parseArgs(int argc, char *argv[], ArgStruct *args)
 	{
         if (! args->tags)
 		{
-            //args->tags = strdup(argv[optind]);
+#if defined(WIN32)
 			args->tags = _strdup(argv[optind]);
+#else
+			args->tags = strdup(argv[optind]);
+#endif
         } else if (! args->workprint)
 		{
             args->workprint = getCanonicalPath(argv[optind]);
         } else if (! args->playprint)
 		{
-            //args->playprint = strdup(argv[optind]);
+#if defined(WIN32)
 			args->playprint = _strdup(argv[optind]);
+#else
+			args->playprint = strdup(argv[optind]);
+#endif
         } else if (! args->script)
 		{
-            //args->script = strdup(argv[optind]);
+#if defined(WIN32)
 			args->script = _strdup(argv[optind]);
+#else
+			args->script = strdup(argv[optind]);
+#endif
         } else if (! args->chunkIndexFile)
 		{
+#if defined(WIN32)
+			args->chunkIndexFile = _strdup(argv[optind]);
+#else
             args->chunkIndexFile = strdup(argv[optind]);
+#endif
         } else {
             fprintf(stderr,"%s\n",usage_str);
             return FALSE;
@@ -227,7 +240,11 @@ static MlBoolean setDiscriminators(MleDwpItem *tree, char *tags)
         return TRUE;
     } else
 	{
-        processTags = strdup(tags);
+#if defined(WIN32)
+		processTags = _strdup(tags);
+#else
+		processTags = strdup(tags);
+#endif
     }
 
     // Remove old discriminator.

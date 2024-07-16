@@ -223,7 +223,7 @@ int MleDppActorGroupChunk::readIndex(void)
 	
 	while ((byte = nextChunkByte()) >= 0)
 	{
-		MLE_ASSERT((value & (MlInt) 0x80000000 >> valueBits - 1) == 0);
+		MLE_ASSERT((value & (MlInt) 0x80000000 >> (valueBits - 1)) == 0);
 		value = (value << valueBits) | byte;
 	}
 	MLE_ASSERT(value >= 0);

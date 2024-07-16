@@ -305,7 +305,7 @@ MleMrefChunkFile::processMediaRef(MleMediaRefChunk *chunkData)
             {
 #ifdef MLE_DEBUG
                 printf("%s: %s %s\n",
-                       "MleMrefChunkFile::processMedia:"
+                       "MleMrefChunkFile::processMedia:",
                        "couldn't find media file",
                        filename);
 #endif

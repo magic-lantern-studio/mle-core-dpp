@@ -5,9 +5,6 @@
  * @ingroup MleDPPMaster
  *
  * Magic Lantern Digital Playprint Library API.
- *
- * @author Mark S. Millard
- * @date September 15, 2004
  */
 
 
@@ -437,13 +434,21 @@ void doGenCodeProperties(MleTemplateProcess *ptp, char *section, void *data)
     // Iterate over the MleDwpActor items, extracting class name and properties.
     for (int i=0; i<strTable->used; i++)
 	{
+#if defined(WIN32)
+		className = _strdup((char *)strTable->items[i]);
+#else
         className = strdup((char *)strTable->items[i]);
+#endif
 		underbar = strchr(className,'_');
         *underbar = '\0';
         pLBindings.defineConstant("NAME_STRING",className);
 
         underbar++;
-        propName = strdup(underbar);
+#if defined(WIN32)
+        propName = _strdup(underbar);
+#else
+		propName = strdup(underbar);
+#endif
         pLBindings.defineConstant("PROPERTY_NAME",propName);
 
         pProcess.go();

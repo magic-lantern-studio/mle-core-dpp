@@ -100,8 +100,13 @@ void MleDppChunkTable::addEntry(
     extendChunkTable();
 
     m_tbl[m_used].m_type = type;
+#if defined(WIN32)
+	m_tbl[m_used].m_filename = _strdup(filename);
+	m_tbl[m_used].m_name = _strdup(name);
+#else
     m_tbl[m_used].m_filename = strdup(filename);
-    m_tbl[m_used].m_name = strdup(name);
+	m_tbl[m_used].m_name = strdup(name);
+#endif
     m_tbl[m_used].m_offset = offset;
 
     m_used++;

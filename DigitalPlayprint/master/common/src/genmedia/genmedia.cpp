@@ -340,8 +340,11 @@ main(int argc,char **argv)
     char *processTags;
     char *tag,*nextTag;
     MleDwpTagAllDiscriminator *discriminator = new MleDwpTagAllDiscriminator;
-
+#if defined(WIN32)
+	processTags = _strdup(args.tags);
+#else
     processTags = strdup(args.tags);
+#endif
     tag = processTags;
     while (tag)
 	{

@@ -134,7 +134,11 @@ int parseArgs(int argc, char *argv[], ArgStruct *args)
     for ( ; optind < argc; optind++)
 	{
         nextPattern = (Pattern *)mlMalloc(sizeof(Pattern));
-        nextPattern->str = strdup(argv[optind]);
+#if defined(WIN32)
+        nextPattern->str = _strdup(argv[optind]);
+#else
+		nextPattern->str = strdup(argv[optind]);
+#endif
         nextPattern->next = NULL;
 
         *nextFile = nextPattern;
