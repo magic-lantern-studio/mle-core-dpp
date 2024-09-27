@@ -5,15 +5,12 @@
  * @ingroup MleDPPMaster
  *
  * Program to generate Scene chunk files.
- *
- * @author Mark S. Millard
- * @date September 15, 2004
  */
 
 
 // COPYRIGHT_BEGIN
 //
-// Copyright (c) 2015-2020 Wizzer Works
+// Copyright (c) 2015-2024 Wizzer Works
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -82,23 +79,23 @@
 //extern MlBoolean mlVerifyTargetWorkprint(MleDwpItem *root,char *tags);
 MlBoolean mlVerifyTargetWorkprint(MleDwpItem * /*root*/,char * /*tags*/)
 {
-	return TRUE;
+    return TRUE;
 }
 
 #ifdef WIN32
 static char *getCanonicalPath(char *path)
 {
-	char *cpath = NULL;
-	MleWin32Path *wpath = new MleWin32Path((MlChar *)path, true);
+    char *cpath = NULL;
+    MleWin32Path *wpath = new MleWin32Path((MlChar *)path, true);
     //cpath = strdup((char *)wpath->getPath());
-	cpath = _strdup((char *)wpath->getPath());
-	delete wpath;
-	return cpath;
+    cpath = _strdup((char *)wpath->getPath());
+    delete wpath;
+    return cpath;
 }
 #else
 static char *getCanonicalPath(char *path)
 {
-	return strdup(path);
+    return strdup(path);
 }
 #endif /* WIN32 */
 
@@ -116,8 +113,8 @@ typedef struct _ArgStruct
     MlBoolean  fixedPt;       /* TRUE = Fixed-Point, FALSE = Floating-Point. */
     char       *workprint;    /* Name of workprint file to build. */
     char       *sceneid;      /* Name of scene id include file to build. */
-	char       language;      /* TRUE = Java, FALSE = C++. */
-	char       *package;      /* The Java package. */
+    char       language;      /* TRUE = Java, FALSE = C++. */
+    char       *package;      /* The Java package. */
     char       *tags;         /* Digital Workprint tags. */
     int        verbose;       /* Be verbose. */
     char       *outputDir;    /* Directory to redirect output to. */
@@ -157,76 +154,82 @@ int parseArgs(int argc, char *argv[], ArgStruct *args)
     
     errflg = 0;
     while ((c = getopt(argc, argv, "blfj:cvd:")) != -1)\
-	{
-		switch (c)
-		{
-		  case 'b':
-			/* Use Big Endian byte ordering. */
-			args->byteOrder = FALSE;
-			break;
-		  case 'l':
-			/* Use Little Endian byte ordering. */
-			args->byteOrder = TRUE;
-			break;
-		  case 'f':
-			/* Use Fixed-Point arithmetic. */
-			args->fixedPt = TRUE;
-			break;
-		  case 'j':
-			/* Generate code for Java programming language. */
-			args->language = TRUE;
-			args->package = optarg;
-			break;
-		  case 'c':
-			/* Generate code for C++ programming language. */
-			args->language = FALSE;
-			break;
-		  case 'v':
-			args->verbose = TRUE;
-			break;
-		  case 'd':
-			/* Place files in this directory. */
-			args->outputDir = optarg;
-			break;
-		  case '?':
-			errflg++;
-		}
+    {
+        switch (c)
+        {
+          case 'b':
+            /* Use Big Endian byte ordering. */
+            args->byteOrder = FALSE;
+            break;
+          case 'l':
+            /* Use Little Endian byte ordering. */
+            args->byteOrder = TRUE;
+            break;
+          case 'f':
+            /* Use Fixed-Point arithmetic. */
+            args->fixedPt = TRUE;
+            break;
+          case 'j':
+            /* Generate code for Java programming language. */
+            args->language = TRUE;
+            args->package = optarg;
+            break;
+          case 'c':
+            /* Generate code for C++ programming language. */
+            args->language = FALSE;
+            break;
+          case 'v':
+            args->verbose = TRUE;
+            break;
+          case 'd':
+            /* Place files in this directory. */
+            args->outputDir = optarg;
+            break;
+          case '?':
+            errflg++;
+        }
     }
 
     if (errflg)
-	{
-		(void)fprintf(stderr, "%s\n", usage_str);
-		return FALSE;
+    {
+        (void)fprintf(stderr, "%s\n", usage_str);
+        return FALSE;
     }
 
     for ( ; optind < argc; optind++)
-	{
-		if (! args->tags)
-		{
-			//args->tags = strdup(argv[optind]);
-			args->tags = _strdup(argv[optind]);
-		} else if (! args->workprint)
-		{
-			args->workprint = getCanonicalPath(argv[optind]);
-		} else if (! args->sceneid)
-		{
-			//args->sceneid = strdup(argv[optind]);
-			args->sceneid = _strdup(argv[optind]);
-		} else
-		{
-			fprintf(stderr,"%s\n",usage_str);
-			return FALSE;
-		}
+    {
+        if (! args->tags)
+        {
+#ifdef WIN32
+            args->tags = _strdup(argv[optind]);
+#els
+            args->tags = strdup(argv[optind]);
+#endif /* WIN32 */
+        } else if (! args->workprint)
+        {
+            args->workprint = getCanonicalPath(argv[optind]);
+        } else if (! args->sceneid)
+        {
+#ifdef WIN32
+            args->sceneid = _strdup(argv[optind]);
+#else
+            args->sceneid = strdup(argv[optind]);
+#endif /* WIN32 */
+        } else
+        {
+            fprintf(stderr,"%s\n",usage_str);
+            return FALSE;
+        }
     }
     
     /* If there is no specified workprint, complain. */
     if (args->tags == NULL ||
         args->workprint == NULL ||
-		args->sceneid == NULL ||
-		((args->language == TRUE) && (args->package == NULL)))
-	{
-	    fprintf(stderr,"%s\n",usage_str);
-	    return FALSE;
+        args->sceneid == NULL ||
+        ((args->language == TRUE) && (args->package == NULL)))
+    {
+        fprintf(stderr,"%s\n",usage_str);
+        return FALSE;
     }
     
     /* Having made it to here implies that we have good arguments. */
@@ -250,13 +253,13 @@ int main(int argc,char *argv[])
     args.fixedPt = FALSE;
     args.workprint = NULL;
     args.sceneid = NULL;
-	args.language = FALSE;
+    args.language = FALSE;
     args.tags = NULL;
     args.verbose = FALSE;
     args.outputDir = NULL;
-	args.package = NULL;
+    args.package = NULL;
     if (! parseArgs(argc, argv, &args))
-	{
+    {
       exit(1);
     }
     
@@ -268,30 +271,30 @@ int main(int argc,char *argv[])
     MLE_ASSERT(in);
     
     // Open the DWP.
-	//__asm int 3h
+    //__asm int 3h
     if (in->openFile(args.workprint) > 0)
-	{
-		fprintf(stderr,"%s : %s\n",args.commandName,
+    {
+        fprintf(stderr,"%s : %s\n",args.commandName,
             "Unable to open Digital Workprint");
         exit(1);
-	}
+    }
     
     // Build the entire DWP, instantiating each MleDwpItem.
     root = MleDwpItem::readAll(in);
 
-	// Redirect the generated output.
+    // Redirect the generated output.
     if (args.outputDir != NULL)
-		MleDppSceneOutput::setOutputDirectory(args.outputDir);
+        MleDppSceneOutput::setOutputDirectory(args.outputDir);
     
     // Create an Scene File output object.
     out = new MleDppSceneOutput(root,args.fixedPt,args.byteOrder,
         args.language,args.package);
-	if (! out->init(args.tags, args.sceneid))
-	{
-		fprintf(stderr,"%s : %s\n",args.commandName,
+    if (! out->init(args.tags, args.sceneid))
+    {
+        fprintf(stderr,"%s : %s\n",args.commandName,
                 "Unable to initialize Scene output");
         exit(1);
-	}
+    }
     
     if (args.fixedPt)
       out->setScalarFormat(ML_SCALAR_FIXED_16_16);
@@ -302,7 +305,7 @@ int main(int argc,char *argv[])
     
     // Verify digital workprint.
     if (! mlVerifyTargetWorkprint(root,args.tags))
-	{
+    {
         fprintf(stderr,"%s : %s\n",args.commandName,
                 "Unable to verify Digital Workprint");
         exit(1);
@@ -321,25 +324,25 @@ int main(int argc,char *argv[])
     {
         ((MleDppScene *)scenes[i])->write(out);
 
-		if (out->closeFile() != 0)
-		{
-			return -1;
-		}
+        if (out->closeFile() != 0)
+        {
+            return -1;
+        }
 
-		// Create the scene chunk.
-		char sceneChunkFile[FILENAME_MAX*2];
-		if ( args.outputDir != NULL )
-		{
+        // Create the scene chunk.
+        char sceneChunkFile[FILENAME_MAX*2];
+        if ( args.outputDir != NULL )
+        {
 #ifdef WIN32
-			sprintf(sceneChunkFile, "%s\\%s.chk", args.outputDir, scenes[i]->getName());
+            sprintf(sceneChunkFile, "%s\\%s.chk", args.outputDir, scenes[i]->getName());
 #else /* ! WIN32 */
-			sprintf(sceneChunkFile, "%s/%s.chk", args.outputDir, scenes[i]->getName());
+            sprintf(sceneChunkFile, "%s/%s.chk", args.outputDir, scenes[i]->getName());
 #endif /* WIN32 */
-		} else
-		{
-			sprintf(sceneChunkFile, "%s.chk", scenes[i]->getName());
-		}
-		MleDppSceneChunk chunk(sceneChunkFile,args.byteOrder);
+        } else
+        {
+            sprintf(sceneChunkFile, "%s.chk", scenes[i]->getName());
+        }
+        MleDppSceneChunk chunk(sceneChunkFile,args.byteOrder);
     }
 
     // Clean-up and return.

@@ -7,15 +7,12 @@
  * Program to generate title runtime tables.
  *
  * This program creates files to support the actor build environment.
- *
- * @author Mark S. Millard
- * @date September 15, 2004
  */
 
 
 // COPYRIGHT_BEGIN
 //
-// Copyright (c) 2015 Wizzer Works
+// Copyright (c) 2015-2024 Wizzer Works
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -75,23 +72,23 @@
 //extern MlBoolean mlVerifyTargetWorkprint(MleDwpItem *root,char *tags);
 MlBoolean mlVerifyTargetWorkprint(MleDwpItem * /*root*/,char * /*tags*/)
 {
-	return TRUE;
+    return TRUE;
 }
 
 #ifdef WIN32
 static char *getCanonicalPath(char *path)
 {
-	char *cpath = NULL;
-	MleWin32Path *wpath = new MleWin32Path((MlChar *)path, true);
+    char *cpath = NULL;
+    MleWin32Path *wpath = new MleWin32Path((MlChar *)path, true);
     //cpath = strdup((char *)wpath->getPath());
-	cpath = _strdup((char *)wpath->getPath());
-	delete wpath;
-	return cpath;
+    cpath = _strdup((char *)wpath->getPath());
+    delete wpath;
+    return cpath;
 }
 #else
 static char *getCanonicalPath(char *path)
 {
-	return strdup(path);
+    return strdup(path);
 }
 #endif /* WIN32 */
 
@@ -107,10 +104,10 @@ typedef struct _ArgStruct
     char       *commandName;  /* name of command */
     char       *workprint;    /* name of workprint file to build */
     char       *tags;         /* Digital Workprint tags */
-	char       language;      /* TRUE = Java, FALSE = C++. */
-	char       *package;      /* Java package encapsualtion. */
-	char       *outputDir;    /* Directory to redirect output to. */
-	MlBoolean  verbose;       /* Be verbose. */
+    char       language;      /* TRUE = Java, FALSE = C++. */
+    char       *package;      /* Java package encapsualtion. */
+    char       *outputDir;    /* Directory to redirect output to. */
+    MlBoolean  verbose;       /* Be verbose. */
 } ArgStruct;
 
 
@@ -140,48 +137,51 @@ int parseArgs(int argc, char *argv[], ArgStruct *args)
     
     errflg = 0;
     while ((c = getopt(argc, argv, "vcj:d:")) != -1)
-	{
+    {
         switch (c)
-		{
-		  case 'j':
-			/* Generate code for Java programming language. */
-			args->language = TRUE;
-			args->package = optarg;
-			break;
-		  case 'c':
-			/* Generate code for C++ programming language. */
-			args->language = FALSE;
-			break;
+        {
+          case 'j':
+            /* Generate code for Java programming language. */
+            args->language = TRUE;
+            args->package = optarg;
+            break;
+          case 'c':
+            /* Generate code for C++ programming language. */
+            args->language = FALSE;
+            break;
           case 'd':
             /* Place files in this directory. */
             args->outputDir = optarg;
             break;
           case 'v':
-        	// Set verbosity flag.
-        	args->verbose = TRUE;
-        	break;
+            // Set verbosity flag.
+            args->verbose = TRUE;
+            break;
           case '?':
             errflg++;
         }
     }
 
     if (errflg)
-	{
+    {
         (void)fprintf(stderr, "%s\n", usage_str);
         return FALSE;
     }
 
     for ( ; optind < argc; optind++)
-	{
+    {
         if (! args->tags)
-		{
-            //args->tags = strdup(argv[optind]);
-			args->tags = _strdup(argv[optind]);
+        {
+#ifdef WIN32
+            args->tags = _strdup(argv[optind]);
+#else
+            args->tags = strdup(argv[optind]);
+#endif /* WIN32 */
         } else if (! args->workprint)
-		{
+        {
             args->workprint = getCanonicalPath(argv[optind]);
         } else
-		{
+        {
             fprintf(stderr,"%s\n",usage_str);
             return FALSE;
         }
@@ -190,8 +190,8 @@ int parseArgs(int argc, char *argv[], ArgStruct *args)
     /* If there is no specified workprint, complain. */
     if (args->tags == NULL ||
         args->workprint == NULL ||
-		((args->language == TRUE) && (args->package == NULL)))
-	{
+        ((args->language == TRUE) && (args->package == NULL)))
+    {
         fprintf(stderr,"%s\n",usage_str);
         return FALSE;
     }
@@ -212,29 +212,29 @@ int main(int argc,char *argv[])
     args.commandName = argv[0];
     args.workprint = NULL;
     args.tags = NULL;
-	args.language = FALSE;
-	args.package = NULL;
-	args.outputDir = NULL;
-	args.verbose = FALSE;
+    args.language = FALSE;
+    args.package = NULL;
+    args.outputDir = NULL;
+    args.verbose = FALSE;
     if (! parseArgs(argc, argv, &args))
-	{
+    {
         exit(1);
     }
 
-	//__asm int 3h
-	
-	// Redirect the generated output.
+    //__asm int 3h
+    
+    // Redirect the generated output.
     if (args.outputDir != NULL)
-		MleDppGenCode::setOutputDirectory(args.outputDir);
+        MleDppGenCode::setOutputDirectory(args.outputDir);
 
     // Create instances of the code generation object.
     gc = new MleDppGenCode(args.workprint,args.language,args.package);
     if (args.verbose == TRUE)
-    	gc->setVerbose(TRUE);
+        gc->setVerbose(TRUE);
     MLE_ASSERT(gc);
 
     if (gc->getRoot() == NULL)
-	{
+    {
         fprintf(stderr,"%s : %s\n",args.commandName,
                 "Unable to open Digital Workprint");
         exit(1);
@@ -242,7 +242,7 @@ int main(int argc,char *argv[])
 
     // Verify digital workprint.
     if (! mlVerifyTargetWorkprint(gc->getRoot(),args.tags))
-	{
+    {
         fprintf(stderr,"%s : %s\n",args.commandName,
                 "Unable to process Digital Workprint");
         exit(1);

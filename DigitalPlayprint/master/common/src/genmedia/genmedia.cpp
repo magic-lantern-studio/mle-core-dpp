@@ -5,15 +5,12 @@
  * @ingroup MleDPPMaster
  *
  * Program to generate MediaRef chunk files.
- *
- * @author Mark S. Millard
- * @date September 15, 2004
  */
 
 
 // COPYRIGHT_BEGIN
 //
-// Copyright (c) 2015 Wizzer Works
+// Copyright (c) 2015-2024 Wizzer Works
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -85,24 +82,24 @@
 //extern MlBoolean mlVerifyTargetWorkprint(MleDwpItem *root,char *tags);
 MlBoolean mlVerifyTargetWorkprint(MleDwpItem * /*root*/,char * /*tags*/)
 {
-	return TRUE;
+    return TRUE;
 }
 
 
 #ifdef WIN32
 static char *getCanonicalPath(char *path)
 {
-	char *cpath = NULL;
-	MleWin32Path *wpath = new MleWin32Path((MlChar *)path, true);
+    char *cpath = NULL;
+    MleWin32Path *wpath = new MleWin32Path((MlChar *)path, true);
     //cpath = strdup((char *)wpath->getPath());
-	cpath = _strdup((char *)wpath->getPath());
-	delete wpath;
-	return cpath;
+    cpath = _strdup((char *)wpath->getPath());
+    delete wpath;
+    return cpath;
 }
 #else
 static char *getCanonicalPath(char *path)
 {
-	return strdup(path);
+    return strdup(path);
 }
 #endif /* WIN32 */
 
@@ -151,16 +148,16 @@ int parseArgs(int argc, char *argv[], ArgStruct *args)
     fprintf(stdout, "genmedia arguments:\n");
     for (int i = 0; i < argc; i++)
     {
-    	fprintf(stdout, "\targ[%d]: %s\n", i, argv[i]);
+        fprintf(stdout, "\targ[%d]: %s\n", i, argv[i]);
     }
 #endif /* 0 */
 
     errflg = 0;
     //while ((c = getopt(argc, argv, "bld::")) != -1)
     while ((c = getopt(argc, argv, "bld:")) != -1)
-	{
+    {
         switch (c)
-		{
+        {
           case 'b':
             /* Use Big Endian byte ordering. */
             args->byteOrder = FALSE;
@@ -179,25 +176,31 @@ int parseArgs(int argc, char *argv[], ArgStruct *args)
     }
 
     if (errflg)
-	{
+    {
         (void)fprintf(stderr, "%s\n", usage_str);
         return FALSE;
     }
 
     for ( ; optind < argc; optind++)
-	{
+    {
         if (! args->tags) {
-            //args->tags = strdup(argv[optind]);
-			args->tags = _strdup(argv[optind]);
+#ifdef WIN32
+            args->tags = _strdup(argv[optind]);
+#else
+            args->tags = strdup(argv[optind]);
+#endif /* WIN32 */
         } else if (! args->workprint)
-		{
+        {
             args->workprint = getCanonicalPath(argv[optind]);
         } else if (! args->inventory)
-		{
-            //args->inventory = strdup(argv[optind]);
-			args->inventory = _strdup(argv[optind]);
+        {
+#ifdef WIN32
+            args->inventory = _strdup(argv[optind]);
+#else
+            args->inventory = strdup(argv[optind]);
+#endif /* WIN32 */
         } else
-		{
+        {
             fprintf(stderr,"%s\n",usage_str);
             return FALSE;
         }
@@ -207,7 +210,7 @@ int parseArgs(int argc, char *argv[], ArgStruct *args)
     if (args->tags == NULL ||
         args->workprint == NULL ||
         args->inventory == NULL)
-	{
+    {
         fprintf(stderr,"%s\n",usage_str);
         return FALSE;
     }
@@ -224,26 +227,26 @@ static MlePath *g_outputDir = NULL;
 // Utility to append the global directory path to the specified path.
 static char *_expandPath(char * path)
 {
-	MLE_ASSERT(path);
+    MLE_ASSERT(path);
 
-	MlePath *dir = g_outputDir;
+    MlePath *dir = g_outputDir;
 
-	// Expand directory path, if necessary.
-	char *tmpPath;
-	if (dir != NULL)
-	{
-		tmpPath = (char *)mlMalloc(strlen((char *)dir->getPlatformPath()) + strlen(path) + 2);
-		strcpy(tmpPath,(char *)dir->getPlatformPath());
+    // Expand directory path, if necessary.
+    char *tmpPath;
+    if (dir != NULL)
+    {
+        tmpPath = (char *)mlMalloc(strlen((char *)dir->getPlatformPath()) + strlen(path) + 2);
+        strcpy(tmpPath,(char *)dir->getPlatformPath());
 #ifdef WIN32
-		strcat(tmpPath,"\\");
+        strcat(tmpPath,"\\");
 #else /* ! WIN32 */
-		strcat(tmpPath,"/");
+        strcat(tmpPath,"/");
 #endif /* WIN32 */
-		strcat(tmpPath,path);
-	} else
-		tmpPath = path;
+        strcat(tmpPath,path);
+    } else
+        tmpPath = path;
 
-	return tmpPath;
+    return tmpPath;
 }
 
 
@@ -266,21 +269,21 @@ main(int argc,char **argv)
     args.tags = NULL;
     args.outputDir = NULL;
     if (! parseArgs(argc, argv, &args))
-	{
+    {
       exit(1);
     }
-	
-	// Redirect generated output.
+    
+    // Redirect generated output.
 #ifdef WIN32
-	if (args.outputDir != NULL)
-	{
-		g_outputDir = new MleWin32Path((MlChar *)args.outputDir,true);
-	}
+    if (args.outputDir != NULL)
+    {
+        g_outputDir = new MleWin32Path((MlChar *)args.outputDir,true);
+    }
 #else
-	if (args.outputDir != NULL)
-	{
-		g_outputDir = new MleLinuxPath((MlChar *)args.outputDir,true);
-	}
+    if (args.outputDir != NULL)
+    {
+        g_outputDir = new MleLinuxPath((MlChar *)args.outputDir,true);
+    }
 #endif /* WIN32 */
 
     // Check for Little Endian  byte ordering.
@@ -289,21 +292,21 @@ main(int argc,char **argv)
 
     // Open output file (media inventory file).
     if (args.inventory != NULL)
-	{
-		char * inventoryPath;
-		if (g_outputDir != NULL)
-			inventoryPath = _expandPath(args.inventory);
-		else
-			inventoryPath = args.inventory;
+    {
+        char * inventoryPath;
+        if (g_outputDir != NULL)
+            inventoryPath = _expandPath(args.inventory);
+        else
+            inventoryPath = args.inventory;
         inventoryOut = mlFOpen(inventoryPath, "w");
 
-		if (g_outputDir != NULL)
-			mlFree(inventoryPath);
+        if (g_outputDir != NULL)
+            mlFree(inventoryPath);
 
-	    fprintf(inventoryOut,"/*\n * Digital Workprint: %s\n * Media Inventory\n */\n",
+        fprintf(inventoryOut,"/*\n * Digital Workprint: %s\n * Media Inventory\n */\n",
             args.workprint);
-	} else
-	{
+    } else
+    {
         fprintf(stderr,"%s : Error : Could not create media inventory file %s.[c,h]\n",
                args.commandName,args.inventory);
         return 1;
@@ -317,11 +320,11 @@ main(int argc,char **argv)
 
     // Open the DWP.
     if (in->openFile(args.workprint) > 0)
-	{
-		fprintf(stderr,"%s : %s\n",args.commandName,
+    {
+        fprintf(stderr,"%s : %s\n",args.commandName,
                 "Unable to open Digital Workprint");
         exit(1);
-	}
+    }
 
     // Build the entire DWP, instantiating each MleDwpItem.
     MleDwpItem *root;
@@ -330,7 +333,7 @@ main(int argc,char **argv)
 
     // Verify digital workprint.
     if (! mlVerifyTargetWorkprint(root,args.tags))
-	{
+    {
         fprintf(stderr,"%s : Error : %s\n",args.commandName,
                 "Unable to verify Digital Workprint.");
         exit(1);
@@ -341,13 +344,13 @@ main(int argc,char **argv)
     char *tag,*nextTag;
     MleDwpTagAllDiscriminator *discriminator = new MleDwpTagAllDiscriminator;
 #if defined(WIN32)
-	processTags = _strdup(args.tags);
+    processTags = _strdup(args.tags);
 #else
     processTags = strdup(args.tags);
 #endif
     tag = processTags;
     while (tag)
-	{
+    {
         nextTag = strchr(tag,':');
         if (nextTag) *nextTag++ = '\0';
         discriminator->addTag(tag);
@@ -403,18 +406,18 @@ main(int argc,char **argv)
         strcpy(fileName,nextMediaRef->getName());
         strcat(fileName,".chk");
 
-		// Redirect the generated output.
-		char *filePath;
-		if (g_outputDir != NULL)
-		{
-			filePath = _expandPath(fileName);
-		} else
-			filePath = fileName;
+        // Redirect the generated output.
+        char *filePath;
+        if (g_outputDir != NULL)
+        {
+            filePath = _expandPath(fileName);
+        } else
+            filePath = fileName;
 
         // Create chunk file.
         out = new MleMrefChunkFile(filePath,MleChunkFile::WRITING);
         if (littleEndian)
-		{
+        {
 #if BYTE_ORDER == BIG_ENDIAN
             out->setSwap(TRUE);
 #endif
@@ -431,7 +434,7 @@ main(int argc,char **argv)
         // Calculate class table index.
         mrefType = 0;
         for (int k = 0; k < tblMgr.getMediaRefTableSize(); k++)
-		{
+        {
             if (! strcmp(nextMediaRef->getMediaRefClass(),
                          ((MediaRefClassTableItem *)mrefTable->items[k])->name))
                 break;
@@ -450,7 +453,7 @@ main(int argc,char **argv)
 
         // Process target entries.
         for (int j = 0; j < numEntries; j++)
-		{
+        {
             MleMediaRefChunk mrefData;
 
             if (entries[j].m_flags == MleMrefChunkFile::EXTERNAL)
@@ -460,24 +463,24 @@ main(int argc,char **argv)
                 //    strlen(entries[j].m_filename)+1);
                 //strcpy(targetFilename,entries[j].m_filename);
 #ifdef WIN32
-				MleWin32Path *targetPath = new MleWin32Path((MlChar *)entries[j].m_filename,false);
+                MleWin32Path *targetPath = new MleWin32Path((MlChar *)entries[j].m_filename,false);
 #else
-				MleLinuxPath *targetPath = new MleLinuxPath((MlChar *)entries[j].m_filename,false);
+                MleLinuxPath *targetPath = new MleLinuxPath((MlChar *)entries[j].m_filename,false);
 #endif
 
                 mrefData.m_flags = MleMrefChunkFile::EXTERNAL;
                 //mrefData.m_size = strlen(targetFilename);
-				mrefData.m_size = strlen((char *)targetPath->getPlatformPath());
+                mrefData.m_size = strlen((char *)targetPath->getPlatformPath());
                 mrefData.m_type = mlDppStringToTag(entries[j].m_label,0);
                 //mrefData.m_data = targetFilename;
-				mrefData.m_data = (char *)targetPath->getPlatformPath();
+                mrefData.m_data = (char *)targetPath->getPlatformPath();
 
                 // Write chunk data.
                 out->writeData(&mrefData);
 
                 // Clean up.
                 //mlFree(targetFilename);
-				delete targetPath;
+                delete targetPath;
             } else
             {
                 printf("%s: Warning: %s, %s\n",
@@ -502,10 +505,10 @@ main(int argc,char **argv)
         // Clean up.
         mlFree(fileName);
         mlFree(entries);
-		if (g_outputDir != NULL)
-		{
-			mlFree(filePath);
-		}
+        if (g_outputDir != NULL)
+        {
+            mlFree(filePath);
+        }
     }
 
     // Close the DWP.

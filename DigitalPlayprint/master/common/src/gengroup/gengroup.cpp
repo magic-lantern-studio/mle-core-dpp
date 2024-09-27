@@ -5,15 +5,12 @@
  * @ingroup MleDPPMaster
  *
  * Program to generate Group chunk files.
- *
- * @author Mark S. Millard
- * @date September 15, 2004
  */
 
 
 // COPYRIGHT_BEGIN
 //
-// Copyright (c) 2015-2020 Wizzer Works
+// Copyright (c) 2015-2024 Wizzer Works
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -84,23 +81,23 @@
 //extern MlBoolean mlVerifyTargetWorkprint(MleDwpItem *root,char *tags);
 MlBoolean mlVerifyTargetWorkprint(MleDwpItem * /*root*/,char * /*tags*/)
 {
-	return TRUE;
+    return TRUE;
 }
 
 #ifdef WIN32
 static char *getCanonicalPath(char *path)
 {
-	char *cpath = NULL;
-	MleWin32Path *wpath = new MleWin32Path((MlChar *)path, true);
-	//cpath = strdup((char *)wpath->getPath());
-	cpath = _strdup((char *)wpath->getPath());
-	delete wpath;
-	return cpath;
+    char *cpath = NULL;
+    MleWin32Path *wpath = new MleWin32Path((MlChar *)path, true);
+    //cpath = strdup((char *)wpath->getPath());
+    cpath = _strdup((char *)wpath->getPath());
+    delete wpath;
+    return cpath;
 }
 #else
 static char *getCanonicalPath(char *path)
 {
-	return strdup(path);
+    return strdup(path);
 }
 #endif /* WIN32 */
 
@@ -120,8 +117,8 @@ typedef struct _ArgStruct
     char       *workprint;    /* Name of workprint file to build. */
     char       *actorid;      /* Name of actor id file to build. */
     char       *groupid;      /* Name of group id file to build. */
-	MlBoolean  language;      /* TRUE = Java, FALSE = C++. */
-	char       *package;      /* The Java package. */
+    MlBoolean  language;      /* TRUE = Java, FALSE = C++. */
+    char       *package;      /* The Java package. */
     char       *tags;         /* Digital Workprint tags. */
     int        verbose;       /* Be verbose. */
     char       *outputDir;    /* Directory to redirect output to. */
@@ -162,77 +159,84 @@ int parseArgs(int argc, char *argv[], ArgStruct *args)
     
     errflg = 0;
     while ((c = getopt(argc, argv, "blfj:cvd:")) != -1)
-	{
-		switch (c)
-		{
-		  case 'b':
-			/* Use Big Endian byte ordering. */
-			args->byteOrder = FALSE;
-			break;
-		  case 'l':
-			/* Use Little Endian byte ordering. */
-			args->byteOrder = TRUE;
-			break;
-		  case 'f':
-			/* Use Fixed-Point arithmetic. */
-			args->fixedPt = TRUE;
-			break;
-		  case 'j':
-			/* Generate code for Java programming language. */
-			args->language = TRUE;
-			args->package = optarg;
-			break;
-		  case 'c':
-			/* Generate code for C++ programming language. */
-			args->language = FALSE;
-			break;
-		  case 'd':
-			/* Place files in this directory. */
-			args->outputDir = optarg;
-			break;
-		  case 'v':
-			args->verbose = TRUE;
-			break;
-		  case '?':
-			errflg++;
-		}
+    {
+        switch (c)
+        {
+          case 'b':
+            /* Use Big Endian byte ordering. */
+            args->byteOrder = FALSE;
+            break;
+          case 'l':
+            /* Use Little Endian byte ordering. */
+            args->byteOrder = TRUE;
+            break;
+          case 'f':
+            /* Use Fixed-Point arithmetic. */
+            args->fixedPt = TRUE;
+            break;
+          case 'j':
+            /* Generate code for Java programming language. */
+            args->language = TRUE;
+            args->package = optarg;
+            break;
+          case 'c':
+            /* Generate code for C++ programming language. */
+            args->language = FALSE;
+            break;
+          case 'd':
+            /* Place files in this directory. */
+            args->outputDir = optarg;
+            break;
+          case 'v':
+            args->verbose = TRUE;
+            break;
+          case '?':
+            errflg++;
+        }
     }
 
     if (errflg)
-	{
-		(void)fprintf(stderr, "%s\n", usage_str);
-		return FALSE;
+    {
+        (void)fprintf(stderr, "%s\n", usage_str);
+        return FALSE;
     }
 
     for ( ; optind < argc; optind++)
-	{
-		if (! args->tags)
-		{
-			//args->tags = strdup(argv[optind]);
-			args->tags = _strdup(argv[optind]);
-		} else if (! args->workprint) {
-			args->workprint = getCanonicalPath(argv[optind]);
-		} else if (! args->actorid) {
-			//args->actorid = strdup(argv[optind]);
-			args->actorid = _strdup(argv[optind]);
-		} else if (! args->groupid) {
-			//args->groupid = strdup(argv[optind]);
-			args->groupid = _strdup(argv[optind]);
-		} else {
-			fprintf(stderr,"%s\n",usage_str);
-			return FALSE;
-		}
-	}
+    {
+        if (! args->tags)
+        {
+#ifdef WIN32
+            args->tags = _strdup(argv[optind]);
+        } else if (! args->workprint) {
+            args->workprint = getCanonicalPath(argv[optind]);
+        } else if (! args->actorid) {
+            args->actorid = _strdup(argv[optind]);
+        } else if (! args->groupid) {
+            args->groupid = _strdup(argv[optind]);
+#else
+            args->tags = strdup(argv[optind]);
+        } else if (! args->workprint) {
+            args->workprint = getCanonicalPath(argv[optind]);
+        } else if (! args->actorid) {
+            args->actorid = strdup(argv[optind]);
+        } else if (! args->groupid) {
+            args->groupid = strdup(argv[optind]);
+#endif /* WIN32 */
+        } else {
+            fprintf(stderr,"%s\n",usage_str);
+            return FALSE;
+        }
+    }
     
     /* If there is no specified workprint, complain. */
     if (args->tags == NULL ||
         args->workprint == NULL ||
         args->actorid == NULL ||
-		args->groupid == NULL ||
-		((args->language == TRUE) && (args->package == NULL)))
-	{
-		fprintf(stderr,"%s\n",usage_str);
-		return FALSE;
+        args->groupid == NULL ||
+        ((args->language == TRUE) && (args->package == NULL)))
+    {
+        fprintf(stderr,"%s\n",usage_str);
+        return FALSE;
     }
     
     /* Having made it to here implies that we have good arguments. */
@@ -250,7 +254,7 @@ int main(int argc,char *argv[])
     MleDwpItem *root;
     MleDppActorGroupOutput *out;
 
-	//__asm int 3h
+    //__asm int 3h
     
     // Parse arguments.
     args.commandName = argv[0];
@@ -259,21 +263,21 @@ int main(int argc,char *argv[])
     args.workprint = NULL;
     args.actorid = NULL;
     args.groupid = NULL;
-	args.language = FALSE;
-	args.package = NULL;
+    args.language = FALSE;
+    args.package = NULL;
     args.tags = NULL;
     args.verbose = FALSE;
     args.outputDir = NULL;
     if (! parseArgs(argc, argv, &args))
-	{
+    {
       exit(1);
     }
 
-	// Set verbosity levels.
-	if (args.verbose)
-	{
-		MleDppActorGroupOutput::setVerbosity(TRUE);
-	}
+    // Set verbosity levels.
+    if (args.verbose)
+    {
+        MleDppActorGroupOutput::setVerbosity(TRUE);
+    }
     
     // Initialize Digital Playprint/Workprint toolkit.
     mleDppInit();
@@ -284,30 +288,30 @@ int main(int argc,char *argv[])
     
     // Open the DWP.
     if (in->openFile(args.workprint) > 0)
-	{
-		fprintf(stderr,"%s : %s\n",args.commandName,
+    {
+        fprintf(stderr,"%s : %s\n",args.commandName,
                 "Unable to open Digital Workprint");
         exit(1);
-	}
+    }
     
     // Build the entire DWP, instantiating each MleDwpItem.
     root = MleDwpItem::readAll(in);
 
-	// Redirect the generated output.
+    // Redirect the generated output.
     if (args.outputDir != NULL)
-		MleDppActorGroupOutput::setOutputDirectory(args.outputDir);
+        MleDppActorGroupOutput::setOutputDirectory(args.outputDir);
 
     // Create an Actor Group File output object.
     out = new MleDppActorGroupOutput(root,args.fixedPt,
-		args.byteOrder, args.language,args.package);
-	if (! out->init(args.tags, args.actorid, args.groupid))
-	{
-		fprintf(stderr,"%s : %s\n",args.commandName,
+        args.byteOrder, args.language,args.package);
+    if (! out->init(args.tags, args.actorid, args.groupid))
+    {
+        fprintf(stderr,"%s : %s\n",args.commandName,
                 "Unable to initialize Actor/Group output");
         exit(1);
-	}
+    }
     
-	// Set the scalar format.
+    // Set the scalar format.
     if (args.fixedPt)
       out->setScalarFormat(ML_SCALAR_FIXED_16_16);
     else
@@ -317,7 +321,7 @@ int main(int argc,char *argv[])
 
     // Verify digital workprint.
     if (! mlVerifyTargetWorkprint(root,args.tags))
-	{
+    {
         fprintf(stderr,"%s : %s\n",args.commandName,
                 "Unable to verify Digital Workprint");
         exit(1);
@@ -336,25 +340,25 @@ int main(int argc,char *argv[])
     {
         ((MleDppGroup *)items[i])->write(out);
         if (out->closeFile() == 0)
-		{
-			char groupChunkFile[FILENAME_MAX*2];
-			if ( args.outputDir != NULL )
-			{
+        {
+            char groupChunkFile[FILENAME_MAX*2];
+            if ( args.outputDir != NULL )
+            {
 #ifdef WIN32
-				sprintf(groupChunkFile, "%s\\%s.chk", args.outputDir, items[i]->getName());
+                sprintf(groupChunkFile, "%s\\%s.chk", args.outputDir, items[i]->getName());
 #else /* ! WIN32 */
-				sprintf(groupChunkFile, "%s/%s.chk", args.outputDir, items[i]->getName());
+                sprintf(groupChunkFile, "%s/%s.chk", args.outputDir, items[i]->getName());
 #endif /* WIN32 */
-			} else {
-				sprintf(groupChunkFile, "%s.chk", items[i]->getName());
-			}
+            } else {
+                sprintf(groupChunkFile, "%s.chk", items[i]->getName());
+            }
 
             MleDppActorGroupChunk chunk(groupChunkFile,args.byteOrder);
             int *indices = new int[chunk.countNames()];
             int *indicesPtr = indices;
             const char* names = chunk.getNames();
             if (names)
-			{
+            {
                 // Just for something to do, this test uses the length of the
                 // media file name as the replacement index.
                 do 
@@ -365,19 +369,19 @@ int main(int argc,char *argv[])
             int resolvedLength;
             const unsigned char* resolved = chunk.resolveNames(&resolvedLength, indices);
             for (int counter = 0; counter < resolvedLength; counter++)
-			{
-				if ( args.verbose )
-				{
-					printf("%02x ", resolved[counter]);
-					if ((counter % 8) == 7 || counter == resolvedLength - 1)
-					  printf("\n");
-				}
-			}
+            {
+                if ( args.verbose )
+                {
+                    printf("%02x ", resolved[counter]);
+                    if ((counter % 8) == 7 || counter == resolvedLength - 1)
+                      printf("\n");
+                }
+            }
 
             delete [] indices;
 
             //delete (unsigned char*) resolved;
-			mlFree((void *)resolved);
+            mlFree((void *)resolved);
 
         }
     }
