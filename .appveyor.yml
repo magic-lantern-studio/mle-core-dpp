@@ -32,6 +32,7 @@ install:
     make;
     sudo MLE_ROOT=$MLE_ROOT make install
 - sh: >-
+    git clone -q --branch=master https://github.com/magic-lantern-studio/mle-core-dwp.git /home/appveyor/projects/mle-core-dwp;
     cd /home/appveyor/projects/mle-core-dwp/DigitalWorkprint/lib/linux;
     libtoolize;
     aclocal;
