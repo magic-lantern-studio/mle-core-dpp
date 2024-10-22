@@ -63,6 +63,78 @@ build_script:
     make;
     sudo MLE_ROOT=$MLE_ROOT make install
 - sh: >-
+    cd /home/appveyor/projects/mle-core-dpp/DigitalPlayprint/master/linux/libDPPGen;
+    libtoolize;
+    aclocal;
+    automake --add-missing --ignore-deps;
+    autoconf;
+    ./configure;
+    make;
+    sudo MLE_ROOT=$MLE_ROOT make install
+- sh: >-
+    cd /home/appveyor/projects/mle-core-dpp/DigitalPlayprint/master/linux/gentables;
+    libtoolize;
+    aclocal;
+    automake --add-missing --ignore-deps;
+    autoconf;
+    ./configure;
+    make;
+    sudo MLE_ROOT=$MLE_ROOT make install
+- sh: >-
+    cd /home/appveyor/projects/mle-core-dpp/DigitalPlayprint/master/linux/gengroup;
+    libtoolize;
+    aclocal;
+    automake --add-missing --ignore-deps;
+    autoconf;
+    ./configure;
+    make;
+    sudo MLE_ROOT=$MLE_ROOT make install
+- sh: >-
+    cd /home/appveyor/projects/mle-core-dpp/DigitalPlayprint/master/linux/genscene;
+    libtoolize;
+    aclocal;
+    automake --add-missing --ignore-deps;
+    autoconf;
+    ./configure;
+    make;
+    sudo MLE_ROOT=$MLE_ROOT make install
+- sh: >-
+    cd /home/appveyor/projects/mle-core-dpp/DigitalPlayprint/master/linux/genmedia;
+    libtoolize;
+    aclocal;
+    automake --add-missing --ignore-deps;
+    autoconf;
+    ./configure;
+    make;
+    sudo MLE_ROOT=$MLE_ROOT make install
+- sh: >-
+    cd /home/appveyor/projects/mle-core-dpp/DigitalPlayprint/master/linux/genmakefile;
+    libtoolize;
+    aclocal;
+    automake --add-missing --ignore-deps;
+    autoconf;
+    ./configure;
+    make;
+    sudo MLE_ROOT=$MLE_ROOT make install
+- sh: >-
+    cd /home/appveyor/projects/mle-core-dpp/DigitalPlayprint/master/linux/genppscript;
+    libtoolize;
+    aclocal;
+    automake --add-missing --ignore-deps;
+    autoconf;
+    ./configure;
+    make;
+    sudo MLE_ROOT=$MLE_ROOT make install
+- sh: >-
+    cd /home/appveyor/projects/mle-core-dpp/DigitalPlayprint/master/linux/gendpp;
+    libtoolize;
+    aclocal;
+    automake --add-missing --ignore-deps;
+    autoconf;
+    ./configure;
+    make;
+    sudo MLE_ROOT=$MLE_ROOT make install
+- sh: >-
     cd /home/appveyor/projects/mle-core-util/util/linux/build;
     sudo MLE_ROOT=$MLE_ROOT make uninstall;
     cd /home/appveyor/projects/mle-core-math/math/linux/libmlmath;
