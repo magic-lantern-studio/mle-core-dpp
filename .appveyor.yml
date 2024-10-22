@@ -44,7 +44,7 @@ install:
 # Custom script to build libmlmath.so using autoconf tools.
 build_script:
 - sh: >-
-    cd /home/appveyor/projects/mle-core-dwp/DigitalPlayprint/lib/linux;
+    cd /home/appveyor/projects/mle-core-dpp/DigitalPlayprint/lib/linux;
     libtoolize;
     aclocal;
     automake --add-missing --ignore-deps;
