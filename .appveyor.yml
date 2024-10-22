@@ -42,10 +42,19 @@ install:
     make;
     sudo MLE_ROOT=$MLE_ROOT make install
 
-# Custom script to build libmlmath.so using autoconf tools.
+# Custom script to build Digital Playprint components using autoconf tools.
 build_script:
 - sh: >-
     cd /home/appveyor/projects/mle-core-dpp/DigitalPlayprint/lib/linux;
+    libtoolize;
+    aclocal;
+    automake --add-missing --ignore-deps;
+    autoconf;
+    ./configure;
+    make;
+    sudo MLE_ROOT=$MLE_ROOT make install
+- sh: >-
+    cd /home/appveyor/projects/mle-core-dpp/DigitalPlayprint/runtime/linux;
     libtoolize;
     aclocal;
     automake --add-missing --ignore-deps;
