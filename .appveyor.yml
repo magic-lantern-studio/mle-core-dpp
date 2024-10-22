@@ -136,7 +136,7 @@ build_script:
     aclocal;
     automake --add-missing --ignore-deps;
     autoconf;
-    ./configure;
+    ./configure --enable-python-integration;
     make;
     sudo MLE_ROOT=$MLE_ROOT make install
 - sh: >-
