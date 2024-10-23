@@ -134,8 +134,6 @@ build_script:
 - sh: >-
     cd /home/appveyor/projects/mle-core-dpp/DigitalPlayprint/master/linux/gendpp;
     autoreconf --install;
-    echo "***** aclocal.m4 contents *****";
-    cat aclocal.m4;
     ./configure --enable-python-integration;
     make;
     sudo MLE_ROOT=$MLE_ROOT make install
