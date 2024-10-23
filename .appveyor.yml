@@ -15,6 +15,7 @@ install:
     sudo apt install -y libssl-dev;
     sudo apt install -y libffi-dev;
     sudo apt install -y python3-dev;
+    sudo apt install -y autoconf-archive
 - sh: >-
     sudo mkdir $MLE_ROOT;
     git clone -q --branch=master https://github.com/magic-lantern-studio/mle-core-util.git /home/appveyor/projects/mle-core-util;
@@ -132,10 +133,9 @@ build_script:
     sudo MLE_ROOT=$MLE_ROOT make install
 - sh: >-
     cd /home/appveyor/projects/mle-core-dpp/DigitalPlayprint/master/linux/gendpp;
-    libtoolize;
-    aclocal;
-    automake --add-missing --ignore-deps;
-    autoconf;
+    autoreconf --install;
+    echo "***** aclocal.m4 contents *****";
+    cat aclocal.m4;
     ./configure --enable-python-integration;
     make;
     sudo MLE_ROOT=$MLE_ROOT make install
