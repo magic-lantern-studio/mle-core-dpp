@@ -138,6 +138,30 @@ build_script:
     make;
     sudo MLE_ROOT=$MLE_ROOT make install
 - sh: >-
+    cd /home/appveyor/projects/mle-core-dpp/DigitalPlayprint/master/linux/dumpgroup;
+    autoreconf --install;
+    ./configure;
+    make;
+    sudo MLE_ROOT=$MLE_ROOT make install
+- sh: >-
+    cd /home/appveyor/projects/mle-core-dpp/DigitalPlayprint/master/linux/dumpscene;
+    autoreconf --install;
+    ./configure;
+    make;
+    sudo MLE_ROOT=$MLE_ROOT make install
+- sh: >-
+    cd /home/appveyor/projects/mle-core-dpp/DigitalPlayprint/master/linux/dumpmedia;
+    autoreconf --install;
+    ./configure;
+    make;
+    sudo MLE_ROOT=$MLE_ROOT make install
+- sh: >-
+    cd /home/appveyor/projects/mle-core-dpp/DigitalPlayprint/master/linux/dumpdpp;
+    autoreconf --install;
+    ./configure;
+    make;
+    sudo MLE_ROOT=$MLE_ROOT make install
+- sh: >-
     cd /home/appveyor/projects/mle-core-util/util/linux/build;
     sudo MLE_ROOT=$MLE_ROOT make uninstall;
     cd /home/appveyor/projects/mle-core-math/math/linux/libmlmath;
