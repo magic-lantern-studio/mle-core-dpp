@@ -6,4 +6,4 @@ The Digital Playprint is a runtime translation of a [Digital Workprint](https://
 More information on the [Digital Playprint](https://github.com/magic-lantern-studio/mle-documentation/wiki/Digital-Playprint) library and authoring tools can be found on the [mle-documentation Github project](https://github.com/magic-lantern-studio/mle-documentation) wiki.
 
 # Build Status
-AppVeyor CI: <img src="https://ci.appveyor.com/api/projects/status/32r7s2skrgm9ubva?svg=true" alt="Project Badge">
+AppVeyor CI: <img src="https://ci.appveyor.com/api/projects/status/hafv6cyeb8i8k8t5?svg=true" alt="Project Badge">
