@@ -202,7 +202,7 @@ int parseArgs(int argc, char *argv[], ArgStruct *args)
         {
 #ifdef WIN32
             args->tags = _strdup(argv[optind]);
-#els
+#else
             args->tags = strdup(argv[optind]);
 #endif /* WIN32 */
         } else if (! args->workprint)
