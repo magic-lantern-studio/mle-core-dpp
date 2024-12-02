@@ -173,9 +173,9 @@ build_script:
 after_build:
 - sh: >-
     cd /home/appveyor/projects/mle-core-dpp;
-    7z a dpp.zip $MLE_ROOT
+    7z a mldpp.zip $MLE_ROOT
 
 # Define artifacts to push to AppVeyor
 artifacts:
-- path: dpp.zip
+- path: mldpp.zip
   name: mle-core-dpp
