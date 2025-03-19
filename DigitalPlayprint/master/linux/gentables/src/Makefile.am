@@ -11,7 +11,9 @@ gentables_LDADD = \
 	-ldl
 
 gentables_CPPFLAGS = \
-	-DMLE_NOT_DLL \
+	-DMLE_NOT_UTIL_DLL \
+	-DMLE_NOT_MATH_DLL \
+	-DMLE_NOT_DWP_DLL \
 	-I$(top_srcdir)/../../common/include \
 	-I$(MLE_ROOT)/include \
 	-std=c++17

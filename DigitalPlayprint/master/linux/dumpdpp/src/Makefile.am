@@ -14,12 +14,14 @@ dumpdpp_LDADD = \
 dumpdpp_LDFLAGS = -Wl,--no-as-needed
 
 dumpdpp_CPPFLAGS = \
-	-DMLE_NOT_DLL \
+	-DMLE_NOT_UTIL_DLL \
+	-DMLE_NOT_MATH_DLL \
+	-DMLE_NOT_DWP_DLL \
 	-I$(top_srcdir)/../../common/include \
 	-I$(top_srcdir)/../../../runtime/common/include \
 	-I$(MLE_ROOT)/include
 
-dumpdpp_LDFLAGS = \
+dumpdpp_LDFLAGS += \
 	-Wl,-rpath=$(MLE_ROOT)/lib \
 	-Wl,--no-as-needed
 
