@@ -7,15 +7,11 @@
  * This file contains header information for the Magic Lantern
  * Digital Playprint Runtime library. It is designed to be shared
  * by both C and C++ programs.
- *
- * @author Mark S. Millard
- * @date July 10, 2003
- * @version 0.1
  */
 
 // COPYRIGHT_BEGIN
 //
-// Copyright (c) 2015-2018 Wizzer Works
+// Copyright (c) 2015-2025 Wizzer Works
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal

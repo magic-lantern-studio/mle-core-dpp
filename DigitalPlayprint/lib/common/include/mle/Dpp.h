@@ -6,9 +6,6 @@
  *
  * Magic Lantern Digital Playprint Library API.
  *
- * @author Mark S. Millard
- * @date September 15, 2004
- *
  * \mainpage Magic Lantern Digital Playprint Library API
  *
  * \section overview Overview
