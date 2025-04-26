@@ -160,7 +160,7 @@ copy Win32\Debug\DPPModel\DPPModeld.lib $(MLE_HOME)\lib\tools\DPPModeld.lib
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <AdditionalIncludeDirectories>../../../common/include;../../include;$(MLE_HOME)/Core/util/common/include;$(MLE_HOME)/Core/util/win32/include;$(MLE_HOME)/Core/math/common/include;$(MLE_HOME)/CORE/math/win32/include;$(MLE_HOME)/DigitalWorkprint/lib/common/include;$(MLE_HOME)/DigitalWorkprint/lib/win32/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>ML_CDECL;MLE_NOT_DLL;WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>ML_CDECL;MLE_NOT_DWP_DLL;MLE_NOT_UTIL_DLL;MLE_NOT_MATH_DLL;WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -197,8 +197,8 @@ copy x64\Release\DPPModel\DPPModel.lib $(MLE_HOME)\lib64\tools\DPPModel.lib
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>../../../common/include;../../include;$(MLE_HOME)/Core/util/common/include;$(MLE_HOME)/Core/util/win32/include;$(MLE_HOME)/Core/math/common/include;$(MLE_HOME)/CORE/math/win32/include;$(MLE_HOME)/DigitalWorkprint/lib/common/include;$(MLE_HOME)/DigitalWorkprint/lib/win32/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>MLE_DEBUG;ML_CDECL;MLE_NOT_DLL;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>true</MinimalRebuild>
+      <PreprocessorDefinitions>MLE_DEBUG;ML_CDECL;MLE_NOT_DWP_DLL;MLE_NOT_UTIL_DLL;MLE_NOT_MATH_DLL;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PrecompiledHeaderOutputFile>$(Platform)\$(Configuration)\DPPModel\DPPModel.pch</PrecompiledHeaderOutputFile>

@@ -1,6 +1,8 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.35431.46
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "chkfileTest", "chkfileTest.vcxproj", "{6F898A7A-9325-4EB8-A62B-145CB1B57EB6}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mrefchkTest", "mrefchkTest.vcxproj", "{35E83BB2-074A-40B1-9771-56FEC2139386}"
@@ -130,9 +132,11 @@ Global
 		{4F356D58-723F-4F75-AB98-E8D3C7C206AA}.CDECL Release|x64.ActiveCfg = CDECL Release|x64
 		{4F356D58-723F-4F75-AB98-E8D3C7C206AA}.CDECL Release|x64.Build.0 = CDECL Release|x64
 		{4F356D58-723F-4F75-AB98-E8D3C7C206AA}.Debug|Win32.ActiveCfg = Debug|Win32
-		{4F356D58-723F-4F75-AB98-E8D3C7C206AA}.Debug|x64.ActiveCfg = Debug|x64
+		{4F356D58-723F-4F75-AB98-E8D3C7C206AA}.Debug|x64.ActiveCfg = CDECL Debug|x64
+		{4F356D58-723F-4F75-AB98-E8D3C7C206AA}.Debug|x64.Build.0 = CDECL Debug|x64
 		{4F356D58-723F-4F75-AB98-E8D3C7C206AA}.Release|Win32.ActiveCfg = Release|Win32
-		{4F356D58-723F-4F75-AB98-E8D3C7C206AA}.Release|x64.ActiveCfg = Release|x64
+		{4F356D58-723F-4F75-AB98-E8D3C7C206AA}.Release|x64.ActiveCfg = CDECL Release|x64
+		{4F356D58-723F-4F75-AB98-E8D3C7C206AA}.Release|x64.Build.0 = CDECL Release|x64
 		{4F356D58-723F-4F75-AB98-E8D3C7C206AA}.STDCALL Debug|Win32.ActiveCfg = STDCALL Debug|Win32
 		{4F356D58-723F-4F75-AB98-E8D3C7C206AA}.STDCALL Debug|Win32.Build.0 = STDCALL Debug|Win32
 		{4F356D58-723F-4F75-AB98-E8D3C7C206AA}.STDCALL Debug|x64.ActiveCfg = STDCALL Debug|x64
@@ -144,5 +148,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {DAA47A31-7CAD-4273-82F8-820DD56F5055}
 	EndGlobalSection
 EndGlobal
