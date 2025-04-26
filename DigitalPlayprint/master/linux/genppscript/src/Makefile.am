@@ -13,7 +13,9 @@ genppscript_LDADD = \
 	-ldl
 
 genppscript_CPPFLAGS = \
-	-DMLE_NOT_DLL \
+	-DMLE_NOT_UTIL_DLL \
+	-DMLE_NOT_MATH_DLL \
+	-DMLE_NOT_DWP_DLL \
 	-DUSE_PYTHON \
 	-I$(top_srcdir)/../../common/include \
 	-I$(top_srcdir)/../../../runtime/common/include \

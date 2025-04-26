@@ -21,7 +21,9 @@ gendpp_LDADD = \
 # 	-L/usr/lib/python3.6/config-3.6m-x86_64-linux-gnu -lpython3.6m
 
 gendpp_CPPFLAGS = \
-	-DMLE_NOT_DLL \
+	-DMLE_NOT_UTIL_DLL \
+	-DMLE_NOT_MATH_DLL \
+	-DMLE_NOT_DWP_DLL \
 	-I$(top_srcdir)/../../common/include \
 	-I$(top_srcdir)/../../../runtime/common/include \
 	-I$(MLE_ROOT)/include \

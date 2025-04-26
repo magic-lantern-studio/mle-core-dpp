@@ -27,7 +27,9 @@ libplayprint_la_LDFLAGS = \
 # Compiler options. Here we are adding the include directory
 # to be searched for headers included in the source code.
 libplayprint_la_CPPFLAGS = \
-	-DMLE_NOT_DLL \
+	-DMLE_NOT_UTIL_DLL \
+	-DMLE_NOT_MATH_DLL \
+	-DMLE_NOT_DWP_DLL \
 	-I$(top_srcdir)/include \
 	-I$(top_srcdir)/../common/include \
 	-I$(top_srcdir)/../../lib/common/include \
