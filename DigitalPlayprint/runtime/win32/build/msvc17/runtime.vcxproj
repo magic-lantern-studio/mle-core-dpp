@@ -633,7 +633,7 @@ xcopy /y ..\..\..\common\include\mle\*.h $(MLE_ROOT)\include\mle
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>../../../common/include;../../include;$(MLE_ROOT)/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>MLE_DEBUG;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>true</MinimalRebuild>
+      <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <StructMemberAlignment>4Bytes</StructMemberAlignment>

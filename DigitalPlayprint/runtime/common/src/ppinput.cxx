@@ -441,7 +441,7 @@ int headerCB(void *clientData, void *callData)
 {
     // Declare local variables.
     MleDppHeader *hdrData = (MleDppHeader *)callData;
-	if (hdrData->m_version != MleDpp::VERSION)
+	if (hdrData->m_version != MleDpp::PLAYPRINT_VERSION)
 	{
         // XXX -- need to set an errno here.
         return(FALSE);

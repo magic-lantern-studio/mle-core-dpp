@@ -400,7 +400,7 @@ void main(int argc,char *argv[])
     timeStamp = time(NULL);
 
     hdrData.m_id = TEST_HEADER_ID;
-    hdrData.m_version = MleMrefChunkFile::VERSION;
+    hdrData.m_version = MleMrefChunkFile::PLAYPRINT_VERSION;
     hdrData.m_time = timeStamp;
     hdrData.m_crc = TEST_HEADER_CRC;
 
@@ -472,7 +472,7 @@ void main(int argc,char *argv[])
     delete in;
 
     if ((hdrData.m_id != TEST_HEADER_ID) ||
-        (hdrData.m_version != MleMrefChunkFile::VERSION) ||
+        (hdrData.m_version != MleMrefChunkFile::PLAYPRINT_VERSION) ||
         (hdrData.m_time != timeStamp) ||
         (hdrData.m_crc != TEST_HEADER_CRC))
     {
@@ -516,7 +516,7 @@ void main(int argc,char *argv[])
     delete in;
 
     if ((hdrData.m_id != TEST_HEADER_ID) ||
-        (hdrData.m_version != MleMrefChunkFile::VERSION) ||
+        (hdrData.m_version != MleMrefChunkFile::PLAYPRINT_VERSION) ||
         (hdrData.m_time != timeStamp) ||
         (hdrData.m_crc != TEST_HEADER_CRC))
     {

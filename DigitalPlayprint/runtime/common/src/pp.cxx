@@ -381,7 +381,7 @@ void main(int argc,char *argv[])
 
     timeStamp = time(NULL);
 
-    hdrData.m_version = MleDpp::VERSION;
+    hdrData.m_version = MleDpp::PLAYPRINT_VERSION;
     hdrData.m_date = timeStamp;
 
     // Create Big Endian Playprint.
@@ -416,7 +416,7 @@ void main(int argc,char *argv[])
     in->end();
     delete in;
 
-    if ((hdrData.m_version != MleDpp::VERSION) ||
+    if ((hdrData.m_version != MleDpp::PLAYPRINT_VERSION) ||
         (hdrData.m_date != timeStamp))
     {
         fprintf(stderr,"Big Endian MleDpp Test Failed!\n");
@@ -437,7 +437,7 @@ void main(int argc,char *argv[])
     in->end();
     delete in;
 
-    if ((hdrData.m_version != MleDpp::VERSION) ||
+    if ((hdrData.m_version != MleDpp::PLAYPRINT_VERSION) ||
         (hdrData.m_date != timeStamp))
     {
         fprintf(stderr,"Little Endian MleDpp Test Failed!\n");
