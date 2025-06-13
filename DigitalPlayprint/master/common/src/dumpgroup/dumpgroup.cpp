@@ -116,7 +116,7 @@ int parseArgs(int argc, char *argv[], ArgStruct *args)
     extern int optind;
     
     errflg = 0;
-    while ((c = getopt(argc, argv, "blv")) != -1)
+    while ((c = getopt(argc, argv, (char *)"blv")) != -1)
 	{
 		switch (c)
 		{
