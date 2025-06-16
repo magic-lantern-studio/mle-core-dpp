@@ -17,7 +17,7 @@
 
 // COPYRIGHT_BEGIN
 //
-// Copyright (c) 2021-2024 Wizzer Works
+// Copyright (c) 2021-2025 Wizzer Works
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -51,7 +51,7 @@
 #include <Python.h>
 
 // Include system header files.
-#ifdef WIN32
+#ifdef _WINDOWS
 #include <windows.h>
 #else
 #include <unistd.h>
@@ -61,7 +61,7 @@
 #include <errno.h>
 
 // Include Magic Lantern header files.
-#ifdef WIN32
+#ifdef _WINDOWS
 #include <mle/mlGetOpt.h>
 #include <mle/MleWin32Path.h>
 #else
@@ -106,7 +106,7 @@ extern void endPlayprint();
 //
 // Get a canonical path definition for the specified input.
 //
-#ifdef WIN32
+#ifdef _WINDOWS
 static char *getCanonicalPath(char *path)
 {
     char *cpath = NULL;
@@ -120,7 +120,7 @@ static char *getCanonicalPath(char *path)
 {
     return strdup(path);
 }
-#endif /* WIN32 */
+#endif /* _WINDOWS */
 
 //
 // Parse command line arguments
@@ -226,9 +226,9 @@ int main(int argc, char *argv[])
 
     // Read in the script file...
     MlePath *scriptFile;
-#if WIN32
+#if _WINDOWS
     scriptFile = new MleWin32Path((MlChar *)(state->m_scriptfile), true);
-#else /* ! WIN32 */
+#else /* ! _WINDOWS */
     scriptFile = new MleLinuxPath((MlChar *)state->m_scriptfile, true);;
 #endif
 

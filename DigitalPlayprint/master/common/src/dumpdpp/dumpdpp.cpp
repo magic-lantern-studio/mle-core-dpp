@@ -5,15 +5,12 @@
  * @ingroup MleDPPMaster
  *
  * Program to dump Digital Playprint files.
- *
- * @author Mark S. Millard
- * @date October 13, 2004
  */
 
 
 // COPYRIGHT_BEGIN
 //
-// Copyright (c) 2017-2024 Wizzer Works
+// Copyright (c) 2017-2025 Wizzer Works
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -43,7 +40,7 @@
 // COPYRIGHT_END
 
 // Include system header files.
-#ifdef WIN32
+#ifdef _WINDOWS
 #include <windows.h>
 #else
 #ifdef __linux__
@@ -59,7 +56,7 @@
 #include <time.h>
 
 // Inclclude Magic Lantern header files.
-#ifdef WIN32
+#ifdef _WINDOWS
 #include "mle/mlGetOpt.h"
 #else
 #include <unistd.h>

@@ -13,15 +13,12 @@
  *
  * This code is structured so that it can write multiple playprints from
  * a single script.
- *
- * @author Mark S. Millard
- * @date September 15, 2004
  */
 
 
 // COPYRIGHT_BEGIN
 //
-// Copyright (c) 2015-2020 Wizzer Works
+// Copyright (c) 2015-2025 Wizzer Works
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -51,7 +48,7 @@
 // COPYRIGHT_END
 
 // Include system header files.
-#ifdef WIN32
+#ifdef _WINDOWS
 #include <windows.h>
 #else
 #include <unistd.h>
@@ -65,7 +62,7 @@
 #include <tcl.h>
 
 // Include Magic Lantern header files.
-#ifdef WIN32
+#ifdef _WINDOWS
 #include <mle/mlGetOpt.h>
 #include <mle/MleWin32Path.h>
 #else
@@ -119,21 +116,21 @@ Tcl_CmdProc beginList;
 Tcl_CmdProc endList;
 
 
-#ifdef WIN32
+#ifdef _WINDOWS
 static char *getCanonicalPath(char *path)
 {
-	char *cpath = NULL;
-	MleWin32Path *wpath = new MleWin32Path((MlChar *)path, true);
+    char *cpath = NULL;
+    MleWin32Path *wpath = new MleWin32Path((MlChar *)path, true);
     cpath = strdup((char *)wpath->getPath());
-	delete wpath;
-	return cpath;
+    delete wpath;
+    return cpath;
 }
 #else
 static char *getCanonicalPath(char *path)
 {
-	return strdup(path);
+    return strdup(path);
 }
-#endif /* WIN32 */
+#endif /* _WINDOWS */
 
 /*
  * main
@@ -150,22 +147,22 @@ int main(int argc, char *argv[])
 
     state.m_commandName = argv[0];
     state.m_byteOrder = FALSE;
-	state.m_workprint = NULL;
+    state.m_workprint = NULL;
     state.m_playprint = NULL;
-	state.m_outputDir = NULL;
-	state.m_inputDir = NULL;
+    state.m_outputDir = NULL;
+    state.m_inputDir = NULL;
     state.m_codefile = NULL;
     state.m_chunks = new MleDppChunkTable();
     state.m_scriptfile = NULL;
     state.m_root = NULL;
     state.m_tags = NULL;
-	state.m_language = FALSE;
-	state.m_package = NULL;
+    state.m_language = FALSE;
+    state.m_package = NULL;
 
     /* Parse arguments. */
     if ( !parseArgs(argc, argv, &state) )
-	{
-		exit(1);
+    {
+        exit(1);
     }
 
     //__asm int 3h
@@ -173,20 +170,20 @@ int main(int argc, char *argv[])
     /*
      * Read in the script file...
      */
-	MlePath *scriptFile;
-#if WIN32
-	scriptFile = new MleWin32Path((MlChar *)state.m_scriptfile, true);
-#else /* ! WIN32 */
-	scriptFile = new MleLinuxPath((MlChar *)state.m_scriptfile, true);;
+    MlePath *scriptFile;
+#if _WINDOWS
+    scriptFile = new MleWin32Path((MlChar *)state.m_scriptfile, true);
+#else /* ! _WINDOWS */
+    scriptFile = new MleLinuxPath((MlChar *)state.m_scriptfile, true);;
 #endif
 
     if ((script = readFileToMemory((char *)scriptFile->getPlatformPath(), NULL)) == NULL )
-	{
-		perror(state.m_scriptfile);
-		exit(2);
+    {
+        perror(state.m_scriptfile);
+        exit(2);
     }
-	if (scriptFile != NULL)
-		delete scriptFile;
+    if (scriptFile != NULL)
+        delete scriptFile;
 
     /*
      * Start interpreting the script...
@@ -194,23 +191,23 @@ int main(int argc, char *argv[])
 
     interp = Tcl_CreateInterp();
     Tcl_CreateCommand( interp, "codefile", codeFile,
-		      (ClientData)&state, (Tcl_CmdDeleteProc *)NULL);
+              (ClientData)&state, (Tcl_CmdDeleteProc *)NULL);
     Tcl_CreateCommand( interp, "beginplayprint", beginPlayPrint,
-		      (ClientData)&state, (Tcl_CmdDeleteProc *)NULL);
+              (ClientData)&state, (Tcl_CmdDeleteProc *)NULL);
     Tcl_CreateCommand( interp, "endplayprint", endPlayPrint,
-		      (ClientData)&state, (Tcl_CmdDeleteProc *)NULL);
+              (ClientData)&state, (Tcl_CmdDeleteProc *)NULL);
     Tcl_CreateCommand( interp, "addgroup", addGroup,
-		      (ClientData)&state, (Tcl_CmdDeleteProc *)NULL);
+              (ClientData)&state, (Tcl_CmdDeleteProc *)NULL);
     Tcl_CreateCommand( interp, "addmedia", addMedia,
-		      (ClientData)&state, (Tcl_CmdDeleteProc *)NULL);
+              (ClientData)&state, (Tcl_CmdDeleteProc *)NULL);
     Tcl_CreateCommand( interp, "addset", addSet,
-		      (ClientData)&state, (Tcl_CmdDeleteProc *)NULL);
+              (ClientData)&state, (Tcl_CmdDeleteProc *)NULL);
     Tcl_CreateCommand( interp, "addscene", addScene,
-		      (ClientData)&state, (Tcl_CmdDeleteProc *)NULL);
+              (ClientData)&state, (Tcl_CmdDeleteProc *)NULL);
     Tcl_CreateCommand( interp, "beginlist", beginList,
-		      (ClientData)&state, (Tcl_CmdDeleteProc *)NULL);
+              (ClientData)&state, (Tcl_CmdDeleteProc *)NULL);
     Tcl_CreateCommand( interp, "endlist", endList,
-		      (ClientData)&state, (Tcl_CmdDeleteProc *)NULL);
+              (ClientData)&state, (Tcl_CmdDeleteProc *)NULL);
     code = Tcl_Eval(interp, script);
 
     /*
@@ -218,14 +215,14 @@ int main(int argc, char *argv[])
      */
 
     //if( *interp->result != 0)
-	if( Tcl_GetStringResult(interp) != 0 )
-	{
-		//fprintf(stderr, "%s\n", interp->result);
-		fprintf(stderr, "%s\n", Tcl_GetStringResult(interp)); 
+    if( Tcl_GetStringResult(interp) != 0 )
+    {
+        //fprintf(stderr, "%s\n", interp->result);
+        fprintf(stderr, "%s\n", Tcl_GetStringResult(interp)); 
     }
     if ( code != TCL_OK )
-	{
-		exit(1);
+    {
+        exit(1);
     }
 
     /*
@@ -235,8 +232,8 @@ int main(int argc, char *argv[])
      */
 
     if ( state.m_chunks->getUsed() > 0 )
-	{
-		endPlayPrint((ClientData)&state, interp, 1, NULL);
+    {
+        endPlayPrint((ClientData)&state, interp, 1, NULL);
     }
 
     /*
@@ -260,48 +257,48 @@ static int parseArgs(int argc, char *argv[], LayoutState *state)
 
     errflg = 0;
     while ((c = getopt(argc, argv, "blcj:d:s:")) != EOF )
-	{
-		switch (c)
-		{
-		  case 'b':
-			state->m_byteOrder = FALSE;
-			break;
-		  case 'l':
-			state->m_byteOrder = TRUE;
-			break;
-		  case 'j':
-			/* Generate code for Java programming language. */
-			state->m_language = TRUE;
-			state->m_package = optarg;
-			break;
-		  case 'c':
-			/* Generate code for C++ programming language. */
-			state->m_language = FALSE;
-			break;
-		  case 'd':
-			state->m_outputDir = optarg;
-			break;
-		  case 's':
-			state->m_inputDir = optarg;
-			break;
-		  case '?':
-			errflg++;
-		}
+    {
+        switch (c)
+        {
+          case 'b':
+            state->m_byteOrder = FALSE;
+            break;
+          case 'l':
+            state->m_byteOrder = TRUE;
+            break;
+          case 'j':
+            /* Generate code for Java programming language. */
+            state->m_language = TRUE;
+            state->m_package = optarg;
+            break;
+          case 'c':
+            /* Generate code for C++ programming language. */
+            state->m_language = FALSE;
+            break;
+          case 'd':
+            state->m_outputDir = optarg;
+            break;
+          case 's':
+            state->m_inputDir = optarg;
+            break;
+          case '?':
+            errflg++;
+        }
     }
 
     for ( ; optind < argc; optind++)
-	{
+    {
         if (! state->m_tags)
-		{
+        {
             state->m_tags = strdup(argv[optind]);
         } else if (! state->m_workprint)
-		{
-			state->m_workprint = getCanonicalPath(argv[optind]);
-		} else if (! state->m_scriptfile)
-		{
+        {
+            state->m_workprint = getCanonicalPath(argv[optind]);
+        } else if (! state->m_scriptfile)
+        {
             state->m_scriptfile = strdup(argv[optind]);
         } else
-		{
+        {
             fprintf(stderr,"%s\n",usage_str);
             return FALSE;
         }
@@ -309,10 +306,10 @@ static int parseArgs(int argc, char *argv[], LayoutState *state)
     
     /* If there is no specified tags or scriptfile, complain. */
     if (state->m_tags == NULL ||
-		state->m_workprint == NULL ||
+        state->m_workprint == NULL ||
         state->m_scriptfile == NULL ||
-		((state->m_language == TRUE) && (state->m_package == NULL)))
-	{
+        ((state->m_language == TRUE) && (state->m_package == NULL)))
+    {
         fprintf(stderr,"%s\n",usage_str);
         return FALSE;
     }
@@ -337,41 +334,41 @@ static char *readFileToMemory(char *filename, int *size)
     int length, used, allocked;
 
     if ( filename==NULL || strcmp(filename,"-")==0 )
-	{
-		ifd = stdin;
-		closeMe = 0;
+    {
+        ifd = stdin;
+        closeMe = 0;
     } else
-	{
-		if ( (ifd = mlFOpen(filename, "r")) == NULL )
-		{
-			return NULL;
-		}
-		closeMe = 1;
+    {
+        if ( (ifd = mlFOpen(filename, "r")) == NULL )
+        {
+            return NULL;
+        }
+        closeMe = 1;
     }
 
     data = (char *)mlMalloc(READ_CHUNK_SIZE);
     allocked = READ_CHUNK_SIZE;
     used = 0;
     while((length = mlFRead(data+used,sizeof(char),READ_CHUNK_SIZE,ifd)) > 0)
-	{
-		used += length;
-		allocked += READ_CHUNK_SIZE;
-		data = (char *)mlRealloc(data, allocked);
+    {
+        used += length;
+        allocked += READ_CHUNK_SIZE;
+        data = (char *)mlRealloc(data, allocked);
     }
 
     if ( closeMe )
-	{
-		mlFClose(ifd);
+    {
+        mlFClose(ifd);
     }
 
     if ( used != allocked )
-	{
-		data = (char *)mlRealloc(data, used);
+    {
+        data = (char *)mlRealloc(data, used);
     }
 
     if ( size != NULL )
-	{
-		*size = used;
+    {
+        *size = used;
     }
 
     return data;
@@ -386,50 +383,50 @@ int addGroup(ClientData cd, Tcl_Interp *interp, int argc, CONST84 char *argv[])
     LayoutState *state = (LayoutState *)cd;
 
     if ( argc != 3 )
-	{
-		//interp->result = "wrong # args";
-		Tcl_SetResult(interp, "wrong # args", TCL_STATIC);
-		return TCL_ERROR;
+    {
+        //interp->result = "wrong # args";
+        Tcl_SetResult(interp, "wrong # args", TCL_STATIC);
+        return TCL_ERROR;
     }
 
-	char *chunkfile;
-	if (state->m_inputDir != NULL)
-	{
-#if WIN32
-		char *tmpFile = (char *)mlMalloc(strlen(state->m_inputDir) + strlen(argv[1]) + 2);
-		strcpy(tmpFile,state->m_inputDir);
-		strcat(tmpFile,"\\");
-		strcat(tmpFile,argv[1]);
+    char *chunkfile;
+    if (state->m_inputDir != NULL)
+    {
+#if _WINDOWS
+        char *tmpFile = (char *)mlMalloc(strlen(state->m_inputDir) + strlen(argv[1]) + 2);
+        strcpy(tmpFile,state->m_inputDir);
+        strcat(tmpFile,"\\");
+        strcat(tmpFile,argv[1]);
 
-		MlePath *chunkpath;
-		chunkpath = new MleWin32Path((MlChar *)tmpFile,true);
-		chunkfile = (char *)chunkpath->getPlatformPath();
+        MlePath *chunkpath;
+        chunkpath = new MleWin32Path((MlChar *)tmpFile,true);
+        chunkfile = (char *)chunkpath->getPlatformPath();
 
-		mlFree(tmpFile);
-#else /* ! WIN32 */
-		char *tmpFile = (char *)mlMalloc(strlen(state->m_inputDir) + strlen(argv[1]) + 2);
-		strcpy(tmpFile,state->m_inputDir);
-		strcat(tmpFile,"/");
-		strcat(tmpFile,argv[1]);
+        mlFree(tmpFile);
+#else /* ! _WINDOWS */
+        char *tmpFile = (char *)mlMalloc(strlen(state->m_inputDir) + strlen(argv[1]) + 2);
+        strcpy(tmpFile,state->m_inputDir);
+        strcat(tmpFile,"/");
+        strcat(tmpFile,argv[1]);
 
-		MlePath *chunkpath;
-		chunkpath = new MleLinuxPath((MlChar *)tmpFile,true);
-		chunkfile = (char *)chunkpath->getPlatformPath();
+        MlePath *chunkpath;
+        chunkpath = new MleLinuxPath((MlChar *)tmpFile,true);
+        chunkfile = (char *)chunkpath->getPlatformPath();
 
-		mlFree(tmpFile);
+        mlFree(tmpFile);
 #endif
-	} else
-	{
-		chunkfile = (char *)argv[1];
-	}
+    } else
+    {
+        chunkfile = (char *)argv[1];
+    }
 
     if ( access(chunkfile, R_OK) < 0 )
-	{
-		char errmsg[BUFSIZ];
-		sprintf(errmsg, "%s: %s", argv[1], strerror(errno));
-		//interp->result = errmsg;
-		Tcl_SetResult(interp, errmsg, TCL_STATIC);
-		return TCL_ERROR;
+    {
+        char errmsg[BUFSIZ];
+        sprintf(errmsg, "%s: %s", argv[1], strerror(errno));
+        //interp->result = errmsg;
+        Tcl_SetResult(interp, errmsg, TCL_STATIC);
+        return TCL_ERROR;
     }
 
     /*
@@ -452,50 +449,50 @@ int addMedia(ClientData cd, Tcl_Interp *interp, int argc, CONST84 char *argv[])
     LayoutState *state = (LayoutState *)cd;
 
     if ( argc != 3 )
-	{
-		//interp->result = "wrong # args";
-		Tcl_SetResult(interp, "wrong # args", TCL_STATIC);
-		return TCL_ERROR;
+    {
+        //interp->result = "wrong # args";
+        Tcl_SetResult(interp, "wrong # args", TCL_STATIC);
+        return TCL_ERROR;
     }
 
-	char *chunkfile;
-	if (state->m_inputDir != NULL)
-	{
-#if WIN32
-		char *tmpFile = (char *)mlMalloc(strlen(state->m_inputDir) + strlen(argv[1]) + 2);
-		strcpy(tmpFile,state->m_inputDir);
-		strcat(tmpFile,"\\");
-		strcat(tmpFile,argv[1]);
+    char *chunkfile;
+    if (state->m_inputDir != NULL)
+    {
+#if _WINDOWS
+        char *tmpFile = (char *)mlMalloc(strlen(state->m_inputDir) + strlen(argv[1]) + 2);
+        strcpy(tmpFile,state->m_inputDir);
+        strcat(tmpFile,"\\");
+        strcat(tmpFile,argv[1]);
 
-		MlePath *chunkpath;
-		chunkpath = new MleWin32Path((MlChar *)tmpFile,true);
-		chunkfile = (char *)chunkpath->getPlatformPath();
+        MlePath *chunkpath;
+        chunkpath = new MleWin32Path((MlChar *)tmpFile,true);
+        chunkfile = (char *)chunkpath->getPlatformPath();
 
-		mlFree(tmpFile);
-#else /* ! WIN32 */
-		char *tmpFile = (char *)mlMalloc(strlen(state->m_inputDir) + strlen(argv[1]) + 2);
-		strcpy(tmpFile,state->m_inputDir);
-		strcat(tmpFile,"/");
-		strcat(tmpFile,argv[1]);
+        mlFree(tmpFile);
+#else /* ! _WINDOWS */
+        char *tmpFile = (char *)mlMalloc(strlen(state->m_inputDir) + strlen(argv[1]) + 2);
+        strcpy(tmpFile,state->m_inputDir);
+        strcat(tmpFile,"/");
+        strcat(tmpFile,argv[1]);
 
-		MlePath *chunkpath;
-		chunkpath = new MleLinuxPath((MlChar *)tmpFile,true);
-		chunkfile = (char *)chunkpath->getPlatformPath();
+        MlePath *chunkpath;
+        chunkpath = new MleLinuxPath((MlChar *)tmpFile,true);
+        chunkfile = (char *)chunkpath->getPlatformPath();
 
-		mlFree(tmpFile);
+        mlFree(tmpFile);
 #endif
-	} else
-	{
-		chunkfile = (char *)argv[1];
-	}
+    } else
+    {
+        chunkfile = (char *)argv[1];
+    }
 
     if ( access(chunkfile, R_OK) < 0 )
-	{
-		char errmsg[BUFSIZ];
-		sprintf(errmsg, "%s: %s", argv[1], strerror(errno));
-		//interp->result = errmsg;
-		Tcl_SetResult(interp, errmsg, TCL_STATIC);
-		return TCL_ERROR;
+    {
+        char errmsg[BUFSIZ];
+        sprintf(errmsg, "%s: %s", argv[1], strerror(errno));
+        //interp->result = errmsg;
+        Tcl_SetResult(interp, errmsg, TCL_STATIC);
+        return TCL_ERROR;
     }
 
     /*
@@ -517,50 +514,50 @@ int addSet(ClientData cd, Tcl_Interp *interp, int argc, CONST84 char *argv[])
     LayoutState *state = (LayoutState *)cd;
 
     if ( argc != 3 )
-	{
-		//interp->result = "wrong # args";
-		Tcl_SetResult(interp, "wrong # args", TCL_STATIC);
-		return TCL_ERROR;
+    {
+        //interp->result = "wrong # args";
+        Tcl_SetResult(interp, "wrong # args", TCL_STATIC);
+        return TCL_ERROR;
     }
 
-	char *chunkfile;
-	if (state->m_inputDir != NULL)
-	{
-#if WIN32
-		char *tmpFile = (char *)mlMalloc(strlen(state->m_inputDir) + strlen(argv[1]) + 2);
-		strcpy(tmpFile,state->m_inputDir);
-		strcat(tmpFile,"\\");
-		strcat(tmpFile,argv[1]);
+    char *chunkfile;
+    if (state->m_inputDir != NULL)
+    {
+#if _WINDOWS
+        char *tmpFile = (char *)mlMalloc(strlen(state->m_inputDir) + strlen(argv[1]) + 2);
+        strcpy(tmpFile,state->m_inputDir);
+        strcat(tmpFile,"\\");
+        strcat(tmpFile,argv[1]);
 
-		MlePath *chunkpath;
-		chunkpath = new MleWin32Path((MlChar *)tmpFile,true);
-		chunkfile = (char *)chunkpath->getPlatformPath();
+        MlePath *chunkpath;
+        chunkpath = new MleWin32Path((MlChar *)tmpFile,true);
+        chunkfile = (char *)chunkpath->getPlatformPath();
 
-		mlFree(tmpFile);
-#else /* ! WIN32 */
-		char *tmpFile = (char *)mlMalloc(strlen(state->m_inputDir) + strlen(argv[1]) + 2);
-		strcpy(tmpFile,state->m_inputDir);
-		strcat(tmpFile,"/");
-		strcat(tmpFile,argv[1]);
+        mlFree(tmpFile);
+#else /* ! _WINDOWS */
+        char *tmpFile = (char *)mlMalloc(strlen(state->m_inputDir) + strlen(argv[1]) + 2);
+        strcpy(tmpFile,state->m_inputDir);
+        strcat(tmpFile,"/");
+        strcat(tmpFile,argv[1]);
 
-		MlePath *chunkpath;
-		chunkpath = new MleLinuxPath((MlChar *)tmpFile,true);
-		chunkfile = (char *)chunkpath->getPlatformPath();
+        MlePath *chunkpath;
+        chunkpath = new MleLinuxPath((MlChar *)tmpFile,true);
+        chunkfile = (char *)chunkpath->getPlatformPath();
 
-		mlFree(tmpFile);
+        mlFree(tmpFile);
 #endif
-	} else
-	{
-		chunkfile = (char *)argv[1];
-	}
+    } else
+    {
+        chunkfile = (char *)argv[1];
+    }
 
     if ( access(chunkfile, R_OK) < 0 )
-	{
-		char errmsg[BUFSIZ];
-		sprintf(errmsg, "%s: %s", argv[1], strerror(errno));
-		//interp->result = errmsg;
-		Tcl_SetResult(interp, errmsg, TCL_STATIC);
-		return TCL_ERROR;
+    {
+        char errmsg[BUFSIZ];
+        sprintf(errmsg, "%s: %s", argv[1], strerror(errno));
+        //interp->result = errmsg;
+        Tcl_SetResult(interp, errmsg, TCL_STATIC);
+        return TCL_ERROR;
     }
 
     /*
@@ -582,50 +579,50 @@ int addScene(ClientData cd, Tcl_Interp *interp, int argc, CONST84 char *argv[])
     LayoutState *state = (LayoutState *)cd;
 
     if ( argc != 3 )
-	{
-		//interp->result = "wrong # args";
-		Tcl_SetResult(interp, "wrong # args", TCL_STATIC);
-		return TCL_ERROR;
+    {
+        //interp->result = "wrong # args";
+        Tcl_SetResult(interp, "wrong # args", TCL_STATIC);
+        return TCL_ERROR;
     }
 
-	char *chunkfile;
-	if (state->m_inputDir != NULL)
-	{
-#if WIN32
-		char *tmpFile = (char *)mlMalloc(strlen(state->m_inputDir) + strlen(argv[1]) + 2);
-		strcpy(tmpFile,state->m_inputDir);
-		strcat(tmpFile,"\\");
-		strcat(tmpFile,argv[1]);
+    char *chunkfile;
+    if (state->m_inputDir != NULL)
+    {
+#if _WINDOWS
+        char *tmpFile = (char *)mlMalloc(strlen(state->m_inputDir) + strlen(argv[1]) + 2);
+        strcpy(tmpFile,state->m_inputDir);
+        strcat(tmpFile,"\\");
+        strcat(tmpFile,argv[1]);
 
-		MlePath *chunkpath;
-		chunkpath = new MleWin32Path((MlChar *)tmpFile,true);
-		chunkfile = (char *)chunkpath->getPlatformPath();
+        MlePath *chunkpath;
+        chunkpath = new MleWin32Path((MlChar *)tmpFile,true);
+        chunkfile = (char *)chunkpath->getPlatformPath();
 
-		mlFree(tmpFile);
-#else /* ! WIN32 */
-		char *tmpFile = (char *)mlMalloc(strlen(state->m_inputDir) + strlen(argv[1]) + 2);
-		strcpy(tmpFile,state->m_inputDir);
-		strcat(tmpFile,"/");
-		strcat(tmpFile,argv[1]);
+        mlFree(tmpFile);
+#else /* ! _WINDOWS */
+        char *tmpFile = (char *)mlMalloc(strlen(state->m_inputDir) + strlen(argv[1]) + 2);
+        strcpy(tmpFile,state->m_inputDir);
+        strcat(tmpFile,"/");
+        strcat(tmpFile,argv[1]);
 
-		MlePath *chunkpath;
-		chunkpath = new MleLinuxPath((MlChar *)tmpFile,true);
-		chunkfile = (char *)chunkpath->getPlatformPath();
+        MlePath *chunkpath;
+        chunkpath = new MleLinuxPath((MlChar *)tmpFile,true);
+        chunkfile = (char *)chunkpath->getPlatformPath();
 
-		mlFree(tmpFile);
+        mlFree(tmpFile);
 #endif
-	} else
-	{
-		chunkfile = (char *)argv[1];
-	}
+    } else
+    {
+        chunkfile = (char *)argv[1];
+    }
 
     if ( access(chunkfile, R_OK) < 0 )
-	{
-		char errmsg[BUFSIZ];
-		sprintf(errmsg, "%s: %s", argv[1], strerror(errno));
-		//interp->result = errmsg;
-		Tcl_SetResult(interp, errmsg, TCL_STATIC);
-		return TCL_ERROR;
+    {
+        char errmsg[BUFSIZ];
+        sprintf(errmsg, "%s: %s", argv[1], strerror(errno));
+        //interp->result = errmsg;
+        Tcl_SetResult(interp, errmsg, TCL_STATIC);
+        return TCL_ERROR;
     }
 
     /*
@@ -649,15 +646,15 @@ int beginList(ClientData /*cd*/, Tcl_Interp *interp, int argc, CONST84 char *arg
     char *listName;
 
     if ( argc != 2 )
-	{
-		//interp->result = "wrong # args";
-		Tcl_SetResult(interp, "wrong # args", TCL_STATIC);
-		return TCL_ERROR;
+    {
+        //interp->result = "wrong # args";
+        Tcl_SetResult(interp, "wrong # args", TCL_STATIC);
+        return TCL_ERROR;
     }
     listName = (char *)argv[1];
 
     //interp->result = "Command not implemented yet";
-	Tcl_SetResult(interp,"Command not implemented yet", TCL_STATIC);
+    Tcl_SetResult(interp,"Command not implemented yet", TCL_STATIC);
     return TCL_ERROR;
 }
 
@@ -671,16 +668,16 @@ int endList(ClientData cd, Tcl_Interp *interp, int argc, CONST84 char *argv[])
     char *listName;
 
     if ( argc != 2 )
-	{
-		//interp->result = "wrong # args";
-		Tcl_SetResult(interp, "wrong # args", TCL_STATIC);
-		return TCL_ERROR;
+    {
+        //interp->result = "wrong # args";
+        Tcl_SetResult(interp, "wrong # args", TCL_STATIC);
+        return TCL_ERROR;
     }
     listName = (char *)argv[1];
 
     state->m_playprint = NULL;
     //interp->result = "Command not implemented yet";
-	Tcl_SetResult(interp, "Command not implemented yet", TCL_STATIC);
+    Tcl_SetResult(interp, "Command not implemented yet", TCL_STATIC);
     return TCL_ERROR;
 }
 
@@ -693,10 +690,10 @@ int beginPlayPrint(ClientData cd, Tcl_Interp *interp, int argc, CONST84 char *ar
     LayoutState *state = (LayoutState *)cd;
 
     if ( argc != 2 )
-	{
-		//interp->result = "wrong # args";
-		Tcl_SetResult(interp, "wrong # args", TCL_STATIC);
-		return TCL_ERROR;
+    {
+        //interp->result = "wrong # args";
+        Tcl_SetResult(interp, "wrong # args", TCL_STATIC);
+        return TCL_ERROR;
     }
 
     /*
@@ -705,34 +702,34 @@ int beginPlayPrint(ClientData cd, Tcl_Interp *interp, int argc, CONST84 char *ar
      */
 
     if ( state->m_playprint != NULL )
-	{
-		//interp->result = "playprint file has already been specified.";
-		Tcl_SetResult(interp, "playprint file has already been specified.", TCL_STATIC);
-		return TCL_ERROR;
+    {
+        //interp->result = "playprint file has already been specified.";
+        Tcl_SetResult(interp, "playprint file has already been specified.", TCL_STATIC);
+        return TCL_ERROR;
     }
-#if WIN32
-	char *tmpFile = (char *)mlMalloc(strlen(state->m_outputDir) + strlen(argv[1]) + 2);
-	strcpy(tmpFile,state->m_outputDir);
-	strcat(tmpFile,"\\");
-	strcat(tmpFile,argv[1]);
+#if _WINDOWS
+    char *tmpFile = (char *)mlMalloc(strlen(state->m_outputDir) + strlen(argv[1]) + 2);
+    strcpy(tmpFile,state->m_outputDir);
+    strcat(tmpFile,"\\");
+    strcat(tmpFile,argv[1]);
 
-	MlePath *dpppath;
-	dpppath = new MleWin32Path((MlChar *)tmpFile,true);
-	state->m_playprint = (char *)dpppath->getPlatformPath();
+    MlePath *dpppath;
+    dpppath = new MleWin32Path((MlChar *)tmpFile,true);
+    state->m_playprint = (char *)dpppath->getPlatformPath();
 
-	mlFree(tmpFile);
-#else /* ! WIN32 */
-	//state->m_playprint = strdup(argv[1]);
-	char *tmpFile = (char *)mlMalloc(strlen(state->m_outputDir) + strlen(argv[1]) + 2);
-	strcpy(tmpFile,state->m_outputDir);
-	strcat(tmpFile,"/");
-	strcat(tmpFile,argv[1]);
+    mlFree(tmpFile);
+#else /* ! _WINDOWS */
+    //state->m_playprint = strdup(argv[1]);
+    char *tmpFile = (char *)mlMalloc(strlen(state->m_outputDir) + strlen(argv[1]) + 2);
+    strcpy(tmpFile,state->m_outputDir);
+    strcat(tmpFile,"/");
+    strcat(tmpFile,argv[1]);
 
-	MlePath *dpppath;
-	dpppath = new MleLinuxPath((MlChar *)tmpFile,true);
-	state->m_playprint = (char *)dpppath->getPlatformPath();
+    MlePath *dpppath;
+    dpppath = new MleLinuxPath((MlChar *)tmpFile,true);
+    state->m_playprint = (char *)dpppath->getPlatformPath();
 
-	mlFree(tmpFile);
+    mlFree(tmpFile);
 #endif
 
     /*
@@ -740,15 +737,15 @@ int beginPlayPrint(ClientData cd, Tcl_Interp *interp, int argc, CONST84 char *ar
      */
 
     if (state->m_byteOrder)
-	{
-		// Little Endian format.
+    {
+        // Little Endian format.
         state->m_dpp = new MleDppOutput(state->m_playprint);
 #if BYTE_ORDER != LITTLE_ENDIAN
         state->m_dpp->setSwap(TRUE);
 #endif
     } else
-	{
-		// Big Endian format.
+    {
+        // Big Endian format.
         state->m_dpp = new MleDppOutput(state->m_playprint);
 #if BYTE_ORDER != BIG_ENDIAN
         state->m_dpp->setSwap(TRUE);
@@ -778,10 +775,10 @@ int endPlayPrint(ClientData cd, Tcl_Interp *interp, int argc, CONST84 char *argv
     int i;
 
     if ( argc != 1 )
-	{
-		//interp->result = "wrong # args";
-		Tcl_SetResult(interp, "wrong # args", TCL_STATIC);
-		return TCL_ERROR;
+    {
+        //interp->result = "wrong # args";
+        Tcl_SetResult(interp, "wrong # args", TCL_STATIC);
+        return TCL_ERROR;
     }
 
     /*
@@ -795,24 +792,24 @@ int endPlayPrint(ClientData cd, Tcl_Interp *interp, int argc, CONST84 char *argv
      */
 
     for ( i=0 ; i<state->m_chunks->getUsed() ; i++ )
-	{
-		switch ( state->m_chunks->getType(i) )
-		{
-		  case CHUNK_GROUP:
-		  //contents = readFileToMemory(state->m_chunks->getFilename(i), &size);
-		  //MLE_ASSERT(contents!=NULL);
-			state->m_dpp->writeGroup(state->m_chunks, i);
-			break;
-		  case CHUNK_MEDIA:
-			state->m_dpp->writeMedia(state->m_chunks->getFilename(i));
-			break;
-		  case CHUNK_SET:
-			state->m_dpp->writeSet(state->m_chunks->getFilename(i));
-			break;
-		  case CHUNK_SCENE:
-			state->m_dpp->writeScene(state->m_chunks, i);
-			break;
-		}
+    {
+        switch ( state->m_chunks->getType(i) )
+        {
+          case CHUNK_GROUP:
+          //contents = readFileToMemory(state->m_chunks->getFilename(i), &size);
+          //MLE_ASSERT(contents!=NULL);
+            state->m_dpp->writeGroup(state->m_chunks, i);
+            break;
+          case CHUNK_MEDIA:
+            state->m_dpp->writeMedia(state->m_chunks->getFilename(i));
+            break;
+          case CHUNK_SET:
+            state->m_dpp->writeSet(state->m_chunks->getFilename(i));
+            break;
+          case CHUNK_SCENE:
+            state->m_dpp->writeScene(state->m_chunks, i);
+            break;
+        }
     }
 
     /*
@@ -833,12 +830,12 @@ int endPlayPrint(ClientData cd, Tcl_Interp *interp, int argc, CONST84 char *argv
     //state->m_chunks = new MleDppChunkTable();
     //state->m_playprint = NULL;
 
-	/*
-	 * Close the generated files.
-	 */
-	mlFClose(state->m_codefd);
-	if (state->m_language != TRUE)
-	    mlFClose(state->m_headerfd);
+    /*
+     * Close the generated files.
+     */
+    mlFClose(state->m_codefd);
+    if (state->m_language != TRUE)
+        mlFClose(state->m_headerfd);
 
     return TCL_OK;
 }
@@ -852,139 +849,139 @@ int codeFile(ClientData cd, Tcl_Interp *interp, int argc, CONST84 char *argv[])
     LayoutState *state = (LayoutState *)cd;
 
     if ( argc != 2 )
-	{
-		//interp->result = "wrong # args";
-		Tcl_SetResult(interp, "wrong # args", TCL_STATIC);
-		return TCL_ERROR;
+    {
+        //interp->result = "wrong # args";
+        Tcl_SetResult(interp, "wrong # args", TCL_STATIC);
+        return TCL_ERROR;
     }
 
     if (state->m_codefile != NULL)
-	{
-		if (state->m_language != TRUE)
-		{
-			// Closing C/C++ files.
-			mlFClose(state->m_codefd);
-			mlFClose(state->m_headerfd);
-		} else
-		{
-			// Closing Java file.
-			mlFClose(state->m_codefd);
-		}
-	}
-
-    char *codefilename, *headerfilename;
-	if (state->m_language)
-	{
-		// Java code generation.
-		state->m_codefile = strdup(argv[1]);
-		codefilename = new char[strlen(state->m_codefile) + strlen(JAVA_CODE_FILENAME_EXT) + 1];
-		strcpy(codefilename, state->m_codefile); strcat(codefilename, JAVA_CODE_FILENAME_EXT);
-	} else
-	{
-		// C/C++ code generation.
-		state->m_codefile = strdup(argv[1]);
-		codefilename = new char[strlen(state->m_codefile) + strlen(CPP_CODE_FILENAME_EXT) + 1];
-		strcpy(codefilename, state->m_codefile); strcat(codefilename, CPP_CODE_FILENAME_EXT);
-		headerfilename = new char[strlen(state->m_codefile) + strlen(CPP_HEADER_FILENAME_EXT) + 1];
-		strcpy(headerfilename, state->m_codefile); strcat(headerfilename, CPP_HEADER_FILENAME_EXT);
-	}
-
-	if (state->m_outputDir != NULL)
-	{
-#ifdef WIN32
-		char *tmpFilename = new char[strlen(state->m_outputDir) + strlen(codefilename) + 2];
-		strcpy(tmpFilename,state->m_outputDir);
-		strcat(tmpFilename,"\\");
-		strcat(tmpFilename,codefilename);
-
-		MlePath *tmpSourcePath;
-		tmpSourcePath = new MleWin32Path((MlChar *)tmpFilename,true);
-		delete [] codefilename;
-		codefilename = (char *)tmpSourcePath->getPlatformPath();
-
-		delete [] tmpFilename;
-
-		if (state->m_language == FALSE)
-		{
-			// Process header file name for C/C++ generation.
-			tmpFilename = new char[strlen(state->m_outputDir) + strlen(headerfilename) + 2];
-			strcpy(tmpFilename,state->m_outputDir);
-			strcat(tmpFilename,"\\");
-			strcat(tmpFilename,headerfilename);
-
-			MlePath *tmpHeaderPath;
-			tmpHeaderPath = new MleWin32Path((MlChar *)tmpFilename,true);
-			delete [] headerfilename;
-			headerfilename = (char *)tmpHeaderPath->getPlatformPath();
-		} else
-		{
-			headerfilename = NULL;
-		}
-#else /* ! WIN32 */
-		char *tmpFilename = new char[strlen(state->m_outputDir) + strlen(codefilename) + 2];
-		strcpy(tmpFilename,state->m_outputDir);
-		strcat(tmpFilename,"/");
-		strcat(tmpFilename,codefilename);
-
-		MlePath *tmpSourcePath;
-		tmpSourcePath = new MleLinuxPath((MlChar *)tmpFilename,true);
-		delete [] codefilename;
-		codefilename = (char *)tmpSourcePath->getPlatformPath();
-
-		delete [] tmpFilename;
-
-		if (state->m_language == FALSE)
-		{
-			// Process header file name for C/C++ generation.
-			tmpFilename = new char[strlen(state->m_outputDir) + strlen(headerfilename) + 2];
-			strcpy(tmpFilename,state->m_outputDir);
-			strcat(tmpFilename,"/");
-			strcat(tmpFilename,headerfilename);
-
-			MlePath *tmpHeaderPath;
-			tmpHeaderPath = new MleLinuxPath((MlChar *)tmpFilename,true);
-			delete [] headerfilename;
-			headerfilename = (char *)tmpHeaderPath->getPlatformPath();
-		} else
-		{
-			headerfilename = NULL;
-		}
-#endif
-	}
-
-	// Open the file(s) for generation.
-	if (state->m_language)
-	{
-		// Generating code for Java.
-		if ((state->m_codefd = mlFOpen(codefilename, "w")) == NULL)
-		{
-			char errmsg[BUFSIZ];
-			sprintf(errmsg, "%s: %s", argv[1], strerror(errno));
-			//interp->result = errmsg;
-			Tcl_SetResult(interp, errmsg, TCL_STATIC);
-			return TCL_ERROR;
-		}
-		state->m_headerfd = NULL;
-	} else
-	{
-		// Generating code for C/C++.
-		if ( (state->m_codefd = mlFOpen(codefilename, "w")) == NULL ||
-			 (state->m_headerfd = mlFOpen(headerfilename, "w")) == NULL )
-		{
-			char errmsg[BUFSIZ];
-			sprintf(errmsg, "%s: %s", argv[1], strerror(errno));
-			//interp->result = errmsg;
-			Tcl_SetResult(interp, errmsg, TCL_STATIC);
-			return TCL_ERROR;
-		}
-	}
-
-	// Start the code generation.
-    if ( gencodeStart(state, headerfilename, codefilename) )
-	{
-		return TCL_ERROR;
+    {
+        if (state->m_language != TRUE)
+        {
+            // Closing C/C++ files.
+            mlFClose(state->m_codefd);
+            mlFClose(state->m_headerfd);
+        } else
+        {
+            // Closing Java file.
+            mlFClose(state->m_codefd);
+        }
     }
 
-	// Return success.
+    char *codefilename, *headerfilename;
+    if (state->m_language)
+    {
+        // Java code generation.
+        state->m_codefile = strdup(argv[1]);
+        codefilename = new char[strlen(state->m_codefile) + strlen(JAVA_CODE_FILENAME_EXT) + 1];
+        strcpy(codefilename, state->m_codefile); strcat(codefilename, JAVA_CODE_FILENAME_EXT);
+    } else
+    {
+        // C/C++ code generation.
+        state->m_codefile = strdup(argv[1]);
+        codefilename = new char[strlen(state->m_codefile) + strlen(CPP_CODE_FILENAME_EXT) + 1];
+        strcpy(codefilename, state->m_codefile); strcat(codefilename, CPP_CODE_FILENAME_EXT);
+        headerfilename = new char[strlen(state->m_codefile) + strlen(CPP_HEADER_FILENAME_EXT) + 1];
+        strcpy(headerfilename, state->m_codefile); strcat(headerfilename, CPP_HEADER_FILENAME_EXT);
+    }
+
+    if (state->m_outputDir != NULL)
+    {
+#ifdef _WINDOWS
+        char *tmpFilename = new char[strlen(state->m_outputDir) + strlen(codefilename) + 2];
+        strcpy(tmpFilename,state->m_outputDir);
+        strcat(tmpFilename,"\\");
+        strcat(tmpFilename,codefilename);
+
+        MlePath *tmpSourcePath;
+        tmpSourcePath = new MleWin32Path((MlChar *)tmpFilename,true);
+        delete [] codefilename;
+        codefilename = (char *)tmpSourcePath->getPlatformPath();
+
+        delete [] tmpFilename;
+
+        if (state->m_language == FALSE)
+        {
+            // Process header file name for C/C++ generation.
+            tmpFilename = new char[strlen(state->m_outputDir) + strlen(headerfilename) + 2];
+            strcpy(tmpFilename,state->m_outputDir);
+            strcat(tmpFilename,"\\");
+            strcat(tmpFilename,headerfilename);
+
+            MlePath *tmpHeaderPath;
+            tmpHeaderPath = new MleWin32Path((MlChar *)tmpFilename,true);
+            delete [] headerfilename;
+            headerfilename = (char *)tmpHeaderPath->getPlatformPath();
+        } else
+        {
+            headerfilename = NULL;
+        }
+#else /* ! _WINDOWS */
+        char *tmpFilename = new char[strlen(state->m_outputDir) + strlen(codefilename) + 2];
+        strcpy(tmpFilename,state->m_outputDir);
+        strcat(tmpFilename,"/");
+        strcat(tmpFilename,codefilename);
+
+        MlePath *tmpSourcePath;
+        tmpSourcePath = new MleLinuxPath((MlChar *)tmpFilename,true);
+        delete [] codefilename;
+        codefilename = (char *)tmpSourcePath->getPlatformPath();
+
+        delete [] tmpFilename;
+
+        if (state->m_language == FALSE)
+        {
+            // Process header file name for C/C++ generation.
+            tmpFilename = new char[strlen(state->m_outputDir) + strlen(headerfilename) + 2];
+            strcpy(tmpFilename,state->m_outputDir);
+            strcat(tmpFilename,"/");
+            strcat(tmpFilename,headerfilename);
+
+            MlePath *tmpHeaderPath;
+            tmpHeaderPath = new MleLinuxPath((MlChar *)tmpFilename,true);
+            delete [] headerfilename;
+            headerfilename = (char *)tmpHeaderPath->getPlatformPath();
+        } else
+        {
+            headerfilename = NULL;
+        }
+#endif
+    }
+
+    // Open the file(s) for generation.
+    if (state->m_language)
+    {
+        // Generating code for Java.
+        if ((state->m_codefd = mlFOpen(codefilename, "w")) == NULL)
+        {
+            char errmsg[BUFSIZ];
+            sprintf(errmsg, "%s: %s", argv[1], strerror(errno));
+            //interp->result = errmsg;
+            Tcl_SetResult(interp, errmsg, TCL_STATIC);
+            return TCL_ERROR;
+        }
+        state->m_headerfd = NULL;
+    } else
+    {
+        // Generating code for C/C++.
+        if ( (state->m_codefd = mlFOpen(codefilename, "w")) == NULL ||
+             (state->m_headerfd = mlFOpen(headerfilename, "w")) == NULL )
+        {
+            char errmsg[BUFSIZ];
+            sprintf(errmsg, "%s: %s", argv[1], strerror(errno));
+            //interp->result = errmsg;
+            Tcl_SetResult(interp, errmsg, TCL_STATIC);
+            return TCL_ERROR;
+        }
+    }
+
+    // Start the code generation.
+    if ( gencodeStart(state, headerfilename, codefilename) )
+    {
+        return TCL_ERROR;
+    }
+
+    // Return success.
     return TCL_OK;
 }

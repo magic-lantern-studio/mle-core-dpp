@@ -5,15 +5,12 @@
  * @ingroup MleDPPMaster
  *
  * Program to dump MediaRef chunk files.
- *
- * @author Mark S. Millard
- * @date September 15, 2004
  */
 
 
 // COPYRIGHT_BEGIN
 //
-// Copyright (c) 2015-2020 Wizzer Works
+// Copyright (c) 2015-2025 Wizzer Works
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -43,7 +40,7 @@
 // COPYRIGHT_END
 
 // Include system header files.
-#ifdef WIN32
+#ifdef _WINDOWS
 #include <windows.h>
 #endif
 #include <stdio.h>
@@ -51,7 +48,7 @@
 #include <time.h>
 
 // Include Magic Lantern header files.
-#ifdef WIN32
+#ifdef _WINDOWS
 #include "mle/mlGetOpt.h"
 #endif
 #include "mle/mlMalloc.h"
@@ -93,26 +90,26 @@ int parseArgs(int argc, char *argv[], ArgStruct *args)
     
     errflg = 0;
     while ((c = getopt(argc, argv, "?")) != -1)
-	{
+    {
         switch (c)
-		{
+        {
           case '?':
             errflg++;
         }
     }
 
     if (errflg)
-	{
+    {
         (void)fprintf(stderr, "%s\n", usage_str);
         return FALSE;
     }
 
     nextFile = &args->chunkFiles;
     for ( ; optind < argc; optind++)
-	{
+    {
         nextPattern = (Pattern *)mlMalloc(sizeof(Pattern));
-#if defined(WIN32)
-		nextPattern->str = _strdup(argv[optind]);
+#if defined(_WINDOWS)
+        nextPattern->str = _strdup(argv[optind]);
 #else
         nextPattern->str = strdup(argv[optind]);
 #endif
@@ -124,7 +121,7 @@ int parseArgs(int argc, char *argv[], ArgStruct *args)
     
     /* If there is no specified chunk file, complain. */
     if (args->chunkFiles == NULL)
-	{
+    {
         fprintf(stderr,"%s\n",usage_str);
         return FALSE;
     }
@@ -152,15 +149,15 @@ int main(int argc,char *argv[])
 
     nextFile = args.chunkFiles;
     while (nextFile)
-	{
+    {
         // Open the chunk file.
         in = new MleMrefChunkFile(nextFile->str,MleChunkFile::READING);
         if (! in)
-		{
+        {
             fprintf(stderr,"Unable To Open MediaRef Chunk File: %s\n",
                     nextFile->str);
         } else
-		{
+        {
             // Verify that the file is a valid MediaRef chunk file.
 
             fprintf(stdout,"Dumping MediaRef Chunk File: %s\n\n",
@@ -170,7 +167,7 @@ int main(int argc,char *argv[])
             memset(&mrefInfoData,0,sizeof(MleMediaRefInfoChunk));
 
             if (mlDppCheckFormat(in->getFp()) == 2)
-			{
+            {
                 fprintf(stdout,"%s: %s\n\n",
                         "File Format","Little Endian");
 #if BYTE_ORDER == BIG_ENDIAN
@@ -207,7 +204,7 @@ int main(int argc,char *argv[])
 
             // Read chunk file data.
             for (unsigned int i = 0; i < mrefInfoData.m_numMrefs; i++)
-			{
+            {
                 memset(&mrefData,0,sizeof(MleMediaRefChunk));
 
                 in->readData(&mrefData);
@@ -216,11 +213,11 @@ int main(int argc,char *argv[])
                         "Media Type",mlDppTagToString(mrefData.m_type));
 
                 if (mrefData.m_flags == MleMrefChunkFile::EXTERNAL)
-				{
+                {
                     fprintf(stdout,"\t%s: %s\n",
                             "External Media Reference",(char *)mrefData.m_data);
                 } else if (mrefData.m_flags == MleMrefChunkFile::INTERNAL)
-				{
+                {
                     fprintf(stdout,"\t%s: %s\n",
                             "Internal Media Reference","Data Unknown");
                 } else {

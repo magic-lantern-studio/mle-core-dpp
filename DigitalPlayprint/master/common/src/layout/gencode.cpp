@@ -13,7 +13,7 @@
 
 // COPYRIGHT_BEGIN
 //
-// Copyright (c) 2015-2021 Wizzer Works
+// Copyright (c) 2015-2025 Wizzer Works
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -44,7 +44,7 @@
 
 
 // Include system header files.
-#ifdef WIN32
+#ifdef _WINDOWS
 #include <windows.h>
 #endif
 #include <stdlib.h>
@@ -58,7 +58,7 @@
 #include <mle/mlMalloc.h>
 #include <mle/mlAssert.h>
 #include <mle/MlePath.h>
-#ifdef WIN32
+#ifdef _WINDOWS
 #include <mle/MleWin32Path.h>
 #else
 #include <mle/MleLinuxPath.h>
@@ -83,34 +83,34 @@ int gencodeStart(LayoutState *state, char *headerfilename, char *codefilename)
     // pass to the subsidiary routines.
     MLE_ASSERT( NULL == state->m_root );
 
-	char *wpFile;
-	if (state->m_workprint == NULL)
-	{
-		/*
-		 * Determine the workprint file name based on the playprint
-		 * script file name.
-		 *
-		 * This will not work if workprint and playprint do not
-		 * have the same name.
-		 */
-		char *sourceName = state->m_scriptfile;
-		char *lastDot = strrchr(sourceName, '.');
-		if (lastDot)
-			*lastDot = '\0';
-		wpFile = new char[strlen(sourceName) + strlen(".dwp") + 1];
-		sprintf(wpFile, "%s.dwp", sourceName);
-		if (lastDot)
-		 	*lastDot = '.';
-	} else
-	{
-//		MlePath *wpPath;
-//#if WIN32
-//		wpPath = new MleWin32Path((MlChar *)state->m_workprint,true);
-//		wpFile = (char *)wpPath->getPlatformPath();
-//#else /* ! WIN32 */
-		wpFile = state->m_workprint;
+    char *wpFile;
+    if (state->m_workprint == NULL)
+    {
+        /*
+         * Determine the workprint file name based on the playprint
+         * script file name.
+         *
+         * This will not work if workprint and playprint do not
+         * have the same name.
+         */
+        char *sourceName = state->m_scriptfile;
+        char *lastDot = strrchr(sourceName, '.');
+        if (lastDot)
+            *lastDot = '\0';
+        wpFile = new char[strlen(sourceName) + strlen(".dwp") + 1];
+        sprintf(wpFile, "%s.dwp", sourceName);
+        if (lastDot)
+             *lastDot = '.';
+    } else
+    {
+//        MlePath *wpPath;
+//#if _WINDOWS
+//        wpPath = new MleWin32Path((MlChar *)state->m_workprint,true);
+//        wpFile = (char *)wpPath->getPlatformPath();
+//#else /* ! _WINDOWS */
+        wpFile = state->m_workprint;
 //#endif
-	}
+    }
 
     /*
      * Initialize the workprint toolkit.
@@ -120,7 +120,7 @@ int gencodeStart(LayoutState *state, char *headerfilename, char *codefilename)
     MleDwpInput *wp = new MleDwpInput;
     MLE_ASSERT(wp);
 
-	// Open the workprint.
+    // Open the workprint.
     int status = wp->openFile(wpFile);
     // Todo: Log the status so that we know if the wpFile failed because it was invalid.
     MLE_ASSERT(status == 0);
@@ -132,8 +132,8 @@ int gencodeStart(LayoutState *state, char *headerfilename, char *codefilename)
     // Todo: Log the status so that we know if the wp failed because it was invalid.
     MLE_ASSERT(state->m_root);
 
-	if (state->m_workprint == NULL)
-		delete [] wpFile;
+    if (state->m_workprint == NULL)
+        delete [] wpFile;
 
     wp->closeFile();
     delete wp;
@@ -141,23 +141,23 @@ int gencodeStart(LayoutState *state, char *headerfilename, char *codefilename)
     // Left with a new state->m_root here.
 
     // Build the file name path for the code generation template.
-	if (state->m_language)
-	{
-		// Use Java template.
-		filename = mlFilenameExpand(MLE_TOC_JAVA_GLOBALS_TEMPLATE);
-	} else
-	{
-		// Use C/C++ template.
-		filename = mlFilenameExpand(MLE_TOC_CPP_GLOBALS_TEMPLATE);
-	}
+    if (state->m_language)
+    {
+        // Use Java template.
+        filename = mlFilenameExpand(MLE_TOC_JAVA_GLOBALS_TEMPLATE);
+    } else
+    {
+        // Use C/C++ template.
+        filename = mlFilenameExpand(MLE_TOC_CPP_GLOBALS_TEMPLATE);
+    }
 
-	// Read in the template.
+    // Read in the template.
     state->m_tmplate = new MleTemplate;
     if (state->m_tmplate->read(filename) < 0)
-	{
+    {
         perror(filename);
-		mlFree(filename);
-		return 1;
+        mlFree(filename);
+        return 1;
     }
 
     /*
@@ -171,7 +171,7 @@ int gencodeStart(LayoutState *state, char *headerfilename, char *codefilename)
     char *ptime, *pnl;
     ptime = ctime(&clock);
     if ((pnl=strrchr(ptime, '\n')) != NULL )
-	{
+    {
         *pnl = 0;
     }
     gbindings->defineConstant("DATE", ptime);
@@ -180,18 +180,18 @@ int gencodeStart(LayoutState *state, char *headerfilename, char *codefilename)
     MleTemplateBindingCallback doTOCSymbols, doTab;
     MleTemplateBindingCallback doSetToChunk;
     gbindings->defineCallback("DO_TOC_SYMBOLS",
-			      doTOCSymbols,
-			      (void *)state);
+                  doTOCSymbols,
+                  (void *)state);
     gbindings->defineCallback("TAB",
-			      doTab,
-			      (void *)state);
+                  doTab,
+                  (void *)state);
     gbindings->defineCallback("DO_SET_TO_CHUNK",
-			      doSetToChunk,
-			      (void *)state);
-	if (state->m_language)
-		gbindings->defineConstant("PACKAGE", state->m_package);
-	else
-		gbindings->defineConstant("HEADER_FILENAME", headerfilename );
+                  doSetToChunk,
+                  (void *)state);
+    if (state->m_language)
+        gbindings->defineConstant("PACKAGE", state->m_package);
+    else
+        gbindings->defineConstant("HEADER_FILENAME", headerfilename );
 
     state->m_tmplate->setGlobalBindings(gbindings);
 
@@ -199,21 +199,21 @@ int gencodeStart(LayoutState *state, char *headerfilename, char *codefilename)
      * Put out the top of the header file and the source file.
      */
 
-	if (state->m_language != TRUE)
-	{
-		// Only necessary for C/C++ code generation.
-		process = new MleTemplateProcess("HEADER_TOP",
-					   state->m_tmplate,
-					   NULL,
-					   state->m_headerfd);
-		process->go();
-		delete process;
-	}
+    if (state->m_language != TRUE)
+    {
+        // Only necessary for C/C++ code generation.
+        process = new MleTemplateProcess("HEADER_TOP",
+                       state->m_tmplate,
+                       NULL,
+                       state->m_headerfd);
+        process->go();
+        delete process;
+    }
 
     process = new MleTemplateProcess("CODE_TOP",
-				   state->m_tmplate,
-				   NULL,
-				   state->m_codefd);
+                   state->m_tmplate,
+                   NULL,
+                   state->m_codefd);
     process->go();
     delete process;
 
@@ -227,21 +227,21 @@ void gencodeTables(LayoutState *state)
     
     lbindings.defineConstant("PLAYPRINT_FILENAME", state->m_playprint);
 
-	if (state->m_language != TRUE)
-	{
-		// Only necessary for C/C++ code generation.
-		process = new MleTemplateProcess("HEADER_BODY",
-					   state->m_tmplate,
-					   &lbindings,
-					   state->m_headerfd);
-		process->go();
-		delete process;
-	}
+    if (state->m_language != TRUE)
+    {
+        // Only necessary for C/C++ code generation.
+        process = new MleTemplateProcess("HEADER_BODY",
+                       state->m_tmplate,
+                       &lbindings,
+                       state->m_headerfd);
+        process->go();
+        delete process;
+    }
 
     process = new MleTemplateProcess("CODE_BODY",
-				   state->m_tmplate,
-				   &lbindings,
-				   state->m_codefd);
+                   state->m_tmplate,
+                   &lbindings,
+                   state->m_codefd);
     process->go();
 
     delete process;
@@ -259,25 +259,25 @@ void doTOCSymbols(MleTemplateProcess *ptp, char *section, void *data)
     sprintf(sceneSection, section, "SCENE");
     sprintf(bootSceneSection, section, "BOOT_SCENE");
     MleTemplateProcess processgroup(groupSection,
-				 ptp->getTemplate(),
-				 &lbindings,
-				 ptp->getFileDescriptor());
+                 ptp->getTemplate(),
+                 &lbindings,
+                 ptp->getFileDescriptor());
     MleTemplateProcess processmedia(mediaSection,
-				 ptp->getTemplate(),
-				 &lbindings,
-				 ptp->getFileDescriptor());
+                 ptp->getTemplate(),
+                 &lbindings,
+                 ptp->getFileDescriptor());
     MleTemplateProcess processset(setSection,
-				 ptp->getTemplate(),
-				 &lbindings,
-				 ptp->getFileDescriptor());
+                 ptp->getTemplate(),
+                 &lbindings,
+                 ptp->getFileDescriptor());
     MleTemplateProcess processscene(sceneSection,
-				 ptp->getTemplate(),
-				 &lbindings,
-				 ptp->getFileDescriptor());
+                 ptp->getTemplate(),
+                 &lbindings,
+                 ptp->getFileDescriptor());
     MleTemplateProcess processbootscene(bootSceneSection,
-				 ptp->getTemplate(),
-				 &lbindings,
-				 ptp->getFileDescriptor());
+                 ptp->getTemplate(),
+                 &lbindings,
+                 ptp->getFileDescriptor());
 
     /*
      * Only write the distinguished boot scene symbol once,
@@ -286,40 +286,40 @@ void doTOCSymbols(MleTemplateProcess *ptp, char *section, void *data)
     int bootSceneProcessed = 0;
 
     for ( int i=0 ; i<state->m_chunks->getUsed() ; i++ )
-	{
-		lbindings.defineConstant("NAME", state->m_chunks->getName(i));
-		lbindings.defineConstant("VALUE", i);
-		switch ( state->m_chunks->getType(i) )
-		{
-		  case CHUNK_GROUP:
-			processgroup.go();
-			break;
-		  case CHUNK_MEDIA:
-			processmedia.go();
-			break;
-		  case CHUNK_SET:
-			processset.go();
-			break;
-		  case CHUNK_SCENE:
-			if (0 == bootSceneProcessed++)
-			{
-				processbootscene.go();
-			}		    
-			processscene.go();
-			break;
-		}
+    {
+        lbindings.defineConstant("NAME", state->m_chunks->getName(i));
+        lbindings.defineConstant("VALUE", i);
+        switch ( state->m_chunks->getType(i) )
+        {
+          case CHUNK_GROUP:
+            processgroup.go();
+            break;
+          case CHUNK_MEDIA:
+            processmedia.go();
+            break;
+          case CHUNK_SET:
+            processset.go();
+            break;
+          case CHUNK_SCENE:
+            if (0 == bootSceneProcessed++)
+            {
+                processbootscene.go();
+            }            
+            processscene.go();
+            break;
+        }
     }
 
-	// Add a default boot scene for Java if missing in Digital Workprint.
-	if (state->m_language)
-	{
-		// Processing Java template.
-		if (bootSceneProcessed == 0)
-		{
-			lbindings.defineConstant("VALUE", -1);
-			processbootscene.go();
-		}
-	}
+    // Add a default boot scene for Java if missing in Digital Workprint.
+    if (state->m_language)
+    {
+        // Processing Java template.
+        if (bootSceneProcessed == 0)
+        {
+            lbindings.defineConstant("VALUE", -1);
+            processbootscene.go();
+        }
+    }
 }
 
 void doTab(MleTemplateProcess *ptp, char *section, void *)
@@ -350,76 +350,76 @@ doSetToChunk(MleTemplateProcess *ptp, char *section, void *data)
     sprintf(setChunkEntrySection, section, "ENTRY");
     sprintf(setChunkEndSection, section, "END");
     MleTemplateProcess processFCBegin(setChunkBeginSection, ptp->getTemplate(),
-				   &localBinding, ptp->getFileDescriptor());
+                   &localBinding, ptp->getFileDescriptor());
     MleTemplateProcess processFCEntry(setChunkEntrySection, ptp->getTemplate(),
-				   &localBinding, ptp->getFileDescriptor());
+                   &localBinding, ptp->getFileDescriptor());
     MleTemplateProcess processFCEnd(setChunkEndSection, ptp->getTemplate(),
-				 &localBinding, ptp->getFileDescriptor());
+                 &localBinding, ptp->getFileDescriptor());
 
     /*
      * Find the total number of set chunks.
      */
     for (i = 0, numSetChunk = 0, numChunk = chunks->getUsed();
-	     i < numChunk;
-	     i++)
-	{
-		if (chunks->getType(i) == CHUNK_SET)
-			numSetChunk++;
+         i < numChunk;
+         i++)
+    {
+        if (chunks->getType(i) == CHUNK_SET)
+            numSetChunk++;
     }
 
     /*
      * Fill in the table heading.
      */
     if (numSetChunk > 0)
-		localBinding.defineConstant("VALUE", "[] = {");
+        localBinding.defineConstant("VALUE", "[] = {");
     else
-		localBinding.defineConstant("VALUE", "[] = {0};");
+        localBinding.defineConstant("VALUE", "[] = {0};");
     processFCBegin.go();
 
     /*
      * Fill in the entries.
      */
     if (numSetChunk > 0)
-	{
-    	int status;
+    {
+        int status;
 
-		/*
-		 * Build up the runtime table.
-		 */
-		tblMgr = new MleDppTblMgr();
-		MLE_ASSERT(tblMgr);
-		status = tblMgr->buildIndexTables(state->m_root);
-		MLE_ASSERT(status == TRUE);
-		status = tblMgr->setDiscriminators(state->m_root, state->m_tags);
-		MLE_ASSERT(status == TRUE);
+        /*
+         * Build up the runtime table.
+         */
+        tblMgr = new MleDppTblMgr();
+        MLE_ASSERT(tblMgr);
+        status = tblMgr->buildIndexTables(state->m_root);
+        MLE_ASSERT(status == TRUE);
+        status = tblMgr->setDiscriminators(state->m_root, state->m_tags);
+        MLE_ASSERT(status == TRUE);
 
-		/*
-		 * Find the set chunk for each member of the set runtime table,
-		 * and write out the entries.
-		 */
-		setTable = tblMgr->getSetTable();
-		numChunk = chunks->getUsed();
-		for(i = 0; i < setTable->used; i++)
-		{
-			setName = (((SetTableItem **) (setTable->items))[i])->name;
+        /*
+         * Find the set chunk for each member of the set runtime table,
+         * and write out the entries.
+         */
+        setTable = tblMgr->getSetTable();
+        numChunk = chunks->getUsed();
+        for(i = 0; i < setTable->used; i++)
+        {
+            setName = (((SetTableItem **) (setTable->items))[i])->name;
 
-			for(j = 0; j < numChunk; j++)
-			{
-				if (chunks->getType(j) == CHUNK_SET &&
-					strcmp(setName, chunks->getName(j)) == 0)
-				{
-					localBinding.defineConstant("NAME", chunks->getName(j));
-					processFCEntry.go();
-					break;
-				}
-			}
-		}
+            for(j = 0; j < numChunk; j++)
+            {
+                if (chunks->getType(j) == CHUNK_SET &&
+                    strcmp(setName, chunks->getName(j)) == 0)
+                {
+                    localBinding.defineConstant("NAME", chunks->getName(j));
+                    processFCEntry.go();
+                    break;
+                }
+            }
+        }
 
-		/*
-		 * Fill in the table ending.
-		 */
-		processFCEnd.go();
+        /*
+         * Fill in the table ending.
+         */
+        processFCEnd.go();
 
-		delete tblMgr;
+        delete tblMgr;
     }
 }

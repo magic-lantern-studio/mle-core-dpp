@@ -1,6 +1,6 @@
 // COPYRIGHT_BEGIN
 //
-// Copyright (c) 2021 Wizzer Works
+// Copyright (c) 2021-2025 Wizzer Works
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,7 @@
 #include <Python.h>
 
 // Include system header files.
-#if defined(WIN32)
+#if defined(_WINDOWS)
 #include <windows.h>
 #else
 #include <unistd.h>
@@ -43,7 +43,7 @@
 #include <errno.h>
 
 // Include Magic Lantern header files.
-#if defined(WIN32)
+#if defined(_WINDOWS)
 #include <mle/mlGetOpt.h>
 #include <mle/MleWin32Path.h>
 #else
@@ -115,7 +115,7 @@ dpp_beginPlayprint(PyObject *self, PyObject *args)
         return NULL;
     }
 
-#if defined(WIN32)
+#if defined(_WINDOWS)
     char *tmpFile = (char *)mlMalloc(strlen(state->m_outputDir) + strlen(playprint) + 2);
     strcpy(tmpFile,state->m_outputDir);
     strcat(tmpFile,"\\");
@@ -126,7 +126,7 @@ dpp_beginPlayprint(PyObject *self, PyObject *args)
     state->m_playprint = (char *)dpppath->getPlatformPath();
 
     mlFree(tmpFile);
-#else /* ! WIN32 */
+#else /* ! _WINDOWS */
     char *tmpFile = (char *)mlMalloc(strlen(state->m_outputDir) + strlen(playprint) + 2);
     strcpy(tmpFile,state->m_outputDir);
     strcat(tmpFile,"/");
@@ -271,7 +271,7 @@ dpp_codeFile(PyObject *self, PyObject *args)
     }
 
     if (state->m_outputDir != NULL) {
-#if defined(WIN32)
+#if defined(_WINDOWS)
         char *tmpFilename = new char[strlen(state->m_outputDir) + strlen(codefilename) + 2];
         strcpy(tmpFilename,state->m_outputDir);
         strcat(tmpFilename,"\\");
@@ -298,7 +298,7 @@ dpp_codeFile(PyObject *self, PyObject *args)
         } else {
             headerfilename = NULL;
         }
-#else /* ! WIN32 */
+#else /* ! _WINDOWS */
         char *tmpFilename = new char[strlen(state->m_outputDir) + strlen(codefilename) + 2];
         strcpy(tmpFilename,state->m_outputDir);
         strcat(tmpFilename,"/");
@@ -380,7 +380,7 @@ dpp_addGroup(PyObject *self, PyObject *args)
 
     char *chunkfile;
     if (state->m_inputDir != NULL) {
-#if defined(WIN32)
+#if defined(_WINDOWS)
         char *tmpFile = (char *)mlMalloc(strlen(state->m_inputDir) + strlen(filename) + 2);
         strcpy(tmpFile,state->m_inputDir);
         strcat(tmpFile,"\\");
@@ -391,7 +391,7 @@ dpp_addGroup(PyObject *self, PyObject *args)
         chunkfile = (char *)chunkpath->getPlatformPath();
 
         mlFree(tmpFile);
-#else /* ! WIN32 */
+#else /* ! _WINDOWS */
         char *tmpFile = (char *)mlMalloc(strlen(state->m_inputDir) + strlen(filename) + 2);
         strcpy(tmpFile,state->m_inputDir);
         strcat(tmpFile,"/");
@@ -443,7 +443,7 @@ dpp_addMedia(PyObject *self, PyObject *args)
 
     char *chunkfile;
     if (state->m_inputDir != NULL) {
-#if defined(WIN32)
+#if defined(_WINDOWS)
         char *tmpFile = (char *)mlMalloc(strlen(state->m_inputDir) + strlen(filename) + 2);
         strcpy(tmpFile,state->m_inputDir);
         strcat(tmpFile,"\\");
@@ -454,7 +454,7 @@ dpp_addMedia(PyObject *self, PyObject *args)
         chunkfile = (char *)chunkpath->getPlatformPath();
 
         mlFree(tmpFile);
-#else /* ! WIN32 */
+#else /* ! _WINDOWS */
         char *tmpFile = (char *)mlMalloc(strlen(state->m_inputDir) + strlen(filename) + 2);
         strcpy(tmpFile,state->m_inputDir);
         strcat(tmpFile,"/");
@@ -506,7 +506,7 @@ dpp_addSet(PyObject *self, PyObject *args)
 
     char *chunkfile;
     if (state->m_inputDir != NULL) {
-#if defined(WIN32)
+#if defined(_WINDOWS)
         char *tmpFile = (char *)mlMalloc(strlen(state->m_inputDir) + strlen(filename) + 2);
         strcpy(tmpFile,state->m_inputDir);
         strcat(tmpFile,"\\");
@@ -517,7 +517,7 @@ dpp_addSet(PyObject *self, PyObject *args)
         chunkfile = (char *)chunkpath->getPlatformPath();
 
         mlFree(tmpFile);
-#else /* ! WIN32 */
+#else /* ! _WINDOWS */
         char *tmpFile = (char *)mlMalloc(strlen(state->m_inputDir) + strlen(filename) + 2);
         strcpy(tmpFile,state->m_inputDir);
         strcat(tmpFile,"/");
@@ -569,7 +569,7 @@ dpp_addScene(PyObject *self, PyObject *args)
 
     char *chunkfile;
     if (state->m_inputDir != NULL) {
-#if defined(WIN32)
+#if defined(_WINDOWS)
         char *tmpFile = (char *)mlMalloc(strlen(state->m_inputDir) + strlen(filename) + 2);
         strcpy(tmpFile,state->m_inputDir);
         strcat(tmpFile,"\\");
@@ -580,7 +580,7 @@ dpp_addScene(PyObject *self, PyObject *args)
         chunkfile = (char *)chunkpath->getPlatformPath();
 
         mlFree(tmpFile);
-#else /* ! WIN32 */
+#else /* ! _WINDOWS */
         char *tmpFile = (char *)mlMalloc(strlen(state->m_inputDir) + strlen(filename) + 2);
         strcpy(tmpFile,state->m_inputDir);
         strcat(tmpFile,"/");

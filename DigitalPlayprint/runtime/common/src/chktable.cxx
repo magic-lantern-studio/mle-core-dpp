@@ -48,7 +48,7 @@
 
 // Include system header files.
 #include <stdio.h>
-#if defined(WIN32) || defined(__linux__)
+#if defined(_WINDOWS) || defined(__linux__)
 #include <string.h>
 #else
 #include <unistd.h>

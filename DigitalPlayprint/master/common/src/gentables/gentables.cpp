@@ -12,7 +12,7 @@
 
 // COPYRIGHT_BEGIN
 //
-// Copyright (c) 2015-2024 Wizzer Works
+// Copyright (c) 2015-2025 Wizzer Works
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -42,7 +42,7 @@
 // COPYRIGHT_END
 
 // Include system header files.
-#ifdef WIN32
+#ifdef _WINDOWS
 #include <windows.h>
 #endif
 #include <stdlib.h>
@@ -52,13 +52,13 @@
 // Include Magic Lantern header files.
 #include <mle/mlAssert.h>
 #include <mle/MlePath.h>
-#ifdef WIN32
+#ifdef _WINDOWS
 #include "mle/mlGetOpt.h"
 #include <mle/MleWin32Path.h>
 #else
 #include <unistd.h>
 #include <mle/MleLinuxPath.h>
-#endif /* WIN32 */
+#endif /* _WINDOWS */
 
 
 // Include Magic Lantern Digital Workprint header files.
@@ -75,7 +75,7 @@ MlBoolean mlVerifyTargetWorkprint(MleDwpItem * /*root*/,char * /*tags*/)
     return TRUE;
 }
 
-#ifdef WIN32
+#ifdef _WINDOWS
 static char *getCanonicalPath(char *path)
 {
     char *cpath = NULL;
@@ -90,7 +90,7 @@ static char *getCanonicalPath(char *path)
 {
     return strdup(path);
 }
-#endif /* WIN32 */
+#endif /* _WINDOWS */
 
 // Argument structures for parser.
 typedef struct _pattern
@@ -172,11 +172,11 @@ int parseArgs(int argc, char *argv[], ArgStruct *args)
     {
         if (! args->tags)
         {
-#ifdef WIN32
+#ifdef _WINDOWS
             args->tags = _strdup(argv[optind]);
 #else
             args->tags = strdup(argv[optind]);
-#endif /* WIN32 */
+#endif /* _WINDOWS */
         } else if (! args->workprint)
         {
             args->workprint = getCanonicalPath(argv[optind]);

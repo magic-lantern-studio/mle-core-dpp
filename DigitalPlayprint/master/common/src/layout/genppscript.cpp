@@ -13,7 +13,7 @@
 
 // COPYRIGHT_BEGIN
 //
-// Copyright (c) 2015-2021 Wizzer Works
+// Copyright (c) 2015-2025 Wizzer Works
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -43,7 +43,7 @@
 // COPYRIGHT_END
 
 // Include system header files.
-#if defined(WIN32)
+#if defined(_WINDOWS)
 #include <windows.h>
 #endif
 #include <stdio.h>
@@ -54,7 +54,7 @@
 #include <mle/mlMalloc.h>
 #include <mle/mlFileio.h>
 #include <mle/MlePath.h>
-#if defined(WIN32)
+#if defined(_WINDOWS)
 #include <mle/mlGetOpt.h>
 #include <mle/MleWin32Path.h>
 #else
@@ -82,7 +82,7 @@ MlBoolean mlVerifyTargetWorkprint(MleDwpItem * /*root*/,char * /*tags*/)
 	return TRUE;
 }
 
-#if defined(WIN32)
+#if defined(_WINDOWS)
 static char *getCanonicalPath(char *path)
 {
 	char *cpath = NULL;
@@ -97,7 +97,7 @@ static char *getCanonicalPath(char *path)
 {
 	return strdup(path);
 }
-#endif /* WIN32 */
+#endif /* _WINDOWS */
 
 // Argument structures for parser.
 typedef struct _pattern
@@ -163,7 +163,7 @@ int parseArgs(int argc, char *argv[], ArgStruct *args)
 	{
         if (! args->tags)
 		{
-#if defined(WIN32)
+#if defined(_WINDOWS)
 			args->tags = _strdup(argv[optind]);
 #else
 			args->tags = strdup(argv[optind]);
@@ -173,21 +173,21 @@ int parseArgs(int argc, char *argv[], ArgStruct *args)
             args->workprint = getCanonicalPath(argv[optind]);
         } else if (! args->playprint)
 		{
-#if defined(WIN32)
+#if defined(_WINDOWS)
 			args->playprint = _strdup(argv[optind]);
 #else
 			args->playprint = strdup(argv[optind]);
 #endif
         } else if (! args->script)
 		{
-#if defined(WIN32)
+#if defined(_WINDOWS)
 			args->script = _strdup(argv[optind]);
 #else
 			args->script = strdup(argv[optind]);
 #endif
         } else if (! args->chunkIndexFile)
 		{
-#if defined(WIN32)
+#if defined(_WINDOWS)
 			args->chunkIndexFile = _strdup(argv[optind]);
 #else
             args->chunkIndexFile = strdup(argv[optind]);
@@ -240,7 +240,7 @@ static MlBoolean setDiscriminators(MleDwpItem *tree, char *tags)
         return TRUE;
     } else
 	{
-#if defined(WIN32)
+#if defined(_WINDOWS)
 		processTags = _strdup(tags);
 #else
 		processTags = strdup(tags);
@@ -351,11 +351,11 @@ static char *_expandPath(char * path)
 	{
 		tmpPath = (char *)mlMalloc(strlen((char *)dir->getPlatformPath()) + strlen(path) + 2);
 		strcpy(tmpPath,(char *)dir->getPlatformPath());
-#if defined(WIN32)
+#if defined(_WINDOWS)
 		strcat(tmpPath,"\\");
-#else /* ! WIN32 */
+#else /* ! _WINDOWS */
 		strcat(tmpPath,"/");
-#endif /* WIN32 */
+#endif /* _WINDOWS */
 		strcat(tmpPath,path);
 	} else
 		tmpPath = path;
@@ -388,7 +388,7 @@ main(int argc, char **argv)
     }
 	
 	// Redirect generated output.
-#if defined(WIN32)
+#if defined(_WINDOWS)
 	if (args.outputDir != NULL)
 	{
 		g_outputDir = new MleWin32Path((MlChar *)args.outputDir,true);
@@ -398,29 +398,29 @@ main(int argc, char **argv)
 	{
 		g_outputDir = new MleLinuxPath((MlChar *)args.outputDir,true);
 	}
-#endif /* WIN32 */
+#endif /* _WINDOWS */
 
     // Open output file (TCL/Python script).
     if (args.script != NULL)
-	{
-		char * tmpPath;
-		if (g_outputDir != NULL)
-			tmpPath = _expandPath(args.script);
-		else
-			tmpPath = args.script;
+    {
+        char * tmpPath;
+        if (g_outputDir != NULL)
+            tmpPath = _expandPath(args.script);
+        else
+            tmpPath = args.script;
         scriptOut = mlFOpen(tmpPath, "w");
 
-		if (g_outputDir != NULL)
-			mlFree(tmpPath);
+        if (g_outputDir != NULL)
+            mlFree(tmpPath);
 
-	} else
+    } else
     {
         fprintf(stderr,"%s Error: %s, %s, %s, %s\n",
                args.commandName,
                "Could not create script file",
                args.script, 
                "from workprint",
-	       args.workprint);
+           args.workprint);
         exit(1);
     }
 
@@ -451,8 +451,8 @@ main(int argc, char **argv)
     // Begin script.
     fprintf(scriptOut,"%s\n%s\n%s%s.cxx and %s.h.\n%s\n",
         "# codefile declares the name of the file in which to put the Group,",
-		"# Media, Set and Scene chunk indices. The files will be named",
-		"# ",
+        "# Media, Set and Scene chunk indices. The files will be named",
+        "# ",
         args.chunkIndexFile, args.chunkIndexFile,
         "# These files should be linked to your title.");
 
@@ -472,7 +472,7 @@ main(int argc, char **argv)
 
     // Verify digital workprint.
     if (! mlVerifyTargetWorkprint(root,args.tags))
-	{
+    {
         fprintf(stderr,"%s : %s\n",args.commandName,
                 "Unable to verify Digital Workprint");
         exit(1);
@@ -507,12 +507,12 @@ main(int argc, char **argv)
 
     // Output to Playprint script.
     for (i = 0; i < numItems; i++)
-	{
+    {
         name = groupItems[i]->getName();
 #if defined(USE_PYTHON)
         fprintf(scriptOut, "dpp.addgroup(\"%s.chk\", \"%s\")\n", name, name);
 #else
-		fprintf(scriptOut, "addgroup %s.chk %s\n", name, name);
+        fprintf(scriptOut, "addgroup %s.chk %s\n", name, name);
 #endif
     }
 
@@ -528,12 +528,12 @@ main(int argc, char **argv)
 
     // Output to Playprint script.
     for (i = 0; i < numItems; i++)
-	{
+    {
         name = mediaRefItems[i]->getName();
 #if defined(USE_PYTHON)
         fprintf(scriptOut, "dpp.addmedia(\"%s.chk\", \"%s\")\n", name, name);
 #else
-		fprintf(scriptOut, "addmedia %s.chk %s\n", name, name);
+        fprintf(scriptOut, "addmedia %s.chk %s\n", name, name);
 #endif
     }
 
@@ -552,12 +552,12 @@ main(int argc, char **argv)
 
     // Output to Playprint script.
     for (i = 0; i < numItems; i++)
-	{
+    {
         name = sceneItems[i]->getName();
 #if defined(USE_PYTHON)
         fprintf(scriptOut, "dpp.addscene(\"%s.chk\", \"%s\")\n", name, name);
 #else
-		fprintf(scriptOut, "addscene %s.chk %s\n", name, name);
+        fprintf(scriptOut, "addscene %s.chk %s\n", name, name);
 #endif
     }
 
@@ -566,7 +566,7 @@ main(int argc, char **argv)
     fprintf(scriptOut, "dpp.endplayprint()\n");
 #else
     fprintf(scriptOut, "endplayprint\n");
-	fprintf(scriptOut, "exit\n");
+    fprintf(scriptOut, "exit\n");
 #endif
 
     // Close file.

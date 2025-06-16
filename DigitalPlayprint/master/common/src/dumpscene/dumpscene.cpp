@@ -5,9 +5,6 @@
  * @ingroup MleDPPMaster
  *
  * Program to dump Scene chunk files.
- *
- * @author Mark S. Millard
- * @date November 30, 2007
  */
 
 
@@ -43,7 +40,7 @@
 // COPYRIGHT_END
 
 // Include system header files.
-#ifdef WIN32
+#ifdef _WINDOWS
 #include <windows.h>
 #endif
 #include <stdio.h>
@@ -51,7 +48,7 @@
 #include <time.h>
 
 // Include Magic Lantern header files.
-#ifdef WIN32
+#ifdef _WINDOWS
 #include "mle/mlGetOpt.h"
 #endif
 #include "mle/mlMalloc.h"
@@ -77,7 +74,7 @@ typedef struct _pattern
 typedef struct _ArgStruct
 {
     char       *commandName;  /* Name of command. */
-	MlBoolean  byteOrder;     /* TRUE = Little Endian, FALSE = Big Endian. */
+    MlBoolean  byteOrder;     /* TRUE = Little Endian, FALSE = Big Endian. */
     Pattern    *chunkFiles;   /* Chunk files. */
 } ArgStruct;
 
@@ -108,36 +105,36 @@ int parseArgs(int argc, char *argv[], ArgStruct *args)
     
     errflg = 0;
     while ((c = getopt(argc, argv, "bl?")) != -1)
-	{
+    {
         switch (c)
-		{
+        {
           case 'b':
-			/* Use Big Endian byte ordering. */
-			args->byteOrder = FALSE;
-			break;
-		  case 'l':
-			/* Use Little Endian byte ordering. */
-			args->byteOrder = TRUE;
-			break;
+            /* Use Big Endian byte ordering. */
+            args->byteOrder = FALSE;
+            break;
+          case 'l':
+            /* Use Little Endian byte ordering. */
+            args->byteOrder = TRUE;
+            break;
           case '?':
             errflg++;
         }
     }
 
     if (errflg)
-	{
+    {
         (void)fprintf(stderr, "%s\n", usage_str);
         return FALSE;
     }
 
     nextFile = &args->chunkFiles;
     for ( ; optind < argc; optind++)
-	{
+    {
         nextPattern = (Pattern *)mlMalloc(sizeof(Pattern));
-#if defined(WIN32)
+#if defined(_WINDOWS)
         nextPattern->str = _strdup(argv[optind]);
 #else
-		nextPattern->str = strdup(argv[optind]);
+        nextPattern->str = strdup(argv[optind]);
 #endif
         nextPattern->next = NULL;
 
@@ -147,7 +144,7 @@ int parseArgs(int argc, char *argv[], ArgStruct *args)
     
     // If there is no specified chunk file, complain.
     if (args->chunkFiles == NULL)
-	{
+    {
         fprintf(stderr,"%s\n",usage_str);
         return FALSE;
     }
@@ -171,41 +168,41 @@ static unsigned char *readFileToMemory(char *filename, int *size)
     int length, used, allocked;
 
     if ( filename == NULL || strcmp(filename,"-") == 0 )
-	{
-		ifd = stdin;
-		closeMe = 0;
+    {
+        ifd = stdin;
+        closeMe = 0;
     } else
-	{
-		if ( (ifd = fopen(filename, "rb")) == NULL )
-		{
-			return NULL;
-		}
-		closeMe = 1;
+    {
+        if ( (ifd = fopen(filename, "rb")) == NULL )
+        {
+            return NULL;
+        }
+        closeMe = 1;
     }
 
     data = (unsigned char *)mlMalloc(READ_CHUNK_SIZE);
     allocked = READ_CHUNK_SIZE;
     used = 0;
     while((length = mlFRead(data+used,sizeof(char),READ_CHUNK_SIZE,ifd)) > 0)
-	{
-		used += length;
-		allocked += READ_CHUNK_SIZE;
-		data = (unsigned char *)mlRealloc(data, allocked);
+    {
+        used += length;
+        allocked += READ_CHUNK_SIZE;
+        data = (unsigned char *)mlRealloc(data, allocked);
     }
 
     if ( closeMe )
-	{
-		fclose(ifd);
+    {
+        fclose(ifd);
     }
 
     if ( used != allocked )
-	{
-		data = (unsigned char *)mlRealloc(data, used);
+    {
+        data = (unsigned char *)mlRealloc(data, used);
     }
 
     if ( size != NULL )
-	{
-		*size = used;
+    {
+        *size = used;
     }
 
     return data;
@@ -215,7 +212,7 @@ static unsigned char *readFileToMemory(char *filename, int *size)
 // nextStreamByte - Retrieve the next byte from the specified array.
 static unsigned char nextStreamByte(unsigned char*& streamPtrRef)
 {
-	return *streamPtrRef++;
+    return *streamPtrRef++;
 }
 
 
@@ -224,23 +221,23 @@ static int readInt(unsigned char*& streamPtrRef)
 {
     long value = 0;
     if (g_littleEndian)
-	{
-		// Little Endian format.
-		value = nextStreamByte(streamPtrRef);
-		value = value | (nextStreamByte(streamPtrRef) << 8);
-		value = value | (nextStreamByte(streamPtrRef) << 16);
-		value = value | (nextStreamByte(streamPtrRef) << 24);
+    {
+        // Little Endian format.
+        value = nextStreamByte(streamPtrRef);
+        value = value | (nextStreamByte(streamPtrRef) << 8);
+        value = value | (nextStreamByte(streamPtrRef) << 16);
+        value = value | (nextStreamByte(streamPtrRef) << 24);
     } else
-	{
-		// Big Endian format.
-		//value = nextStreamByte(streamPtrRef);
-		//value = (value<<8) | nextStreamByte(streamPtrRef);
-		//value = (value<<8) | nextStreamByte(streamPtrRef);
-		//value = (value<<8) | nextStreamByte(streamPtrRef);
-		value = nextStreamByte(streamPtrRef);
-		value = (value>>8) | nextStreamByte(streamPtrRef);
-		value = (value>>8) | nextStreamByte(streamPtrRef);
-		value = (value>>8) | nextStreamByte(streamPtrRef);
+    {
+        // Big Endian format.
+        //value = nextStreamByte(streamPtrRef);
+        //value = (value<<8) | nextStreamByte(streamPtrRef);
+        //value = (value<<8) | nextStreamByte(streamPtrRef);
+        //value = (value<<8) | nextStreamByte(streamPtrRef);
+        value = nextStreamByte(streamPtrRef);
+        value = (value>>8) | nextStreamByte(streamPtrRef);
+        value = (value>>8) | nextStreamByte(streamPtrRef);
+        value = (value>>8) | nextStreamByte(streamPtrRef);
     }
 
     return value;
@@ -253,20 +250,20 @@ static void parseStream(unsigned char*& contents, int size)
     int index;
     unsigned char *contentsEnd = contents + size;
 
-	int offset = readInt(contents);
-	printf("Group Name Offset (offset=%d)\n", offset);
+    int offset = readInt(contents);
+    printf("Group Name Offset (offset=%d)\n", offset);
 
-	int sceneId = readInt(contents);
-	printf("Scene Id: %d\n", sceneId);
+    int sceneId = readInt(contents);
+    printf("Scene Id: %d\n", sceneId);
 
-	long numGroups = readInt(contents);
-	printf("Number of Groups: %ld\n\n", numGroups);
+    long numGroups = readInt(contents);
+    printf("Number of Groups: %ld\n\n", numGroups);
     
     while ( contents < contentsEnd )
-	{
-		index = readInt(contents);
-		printf("\tGroup %d\n", index);
-	}
+    {
+        index = readInt(contents);
+        printf("\tGroup %d\n", index);
+    }
 }
 
 // The main entry point for dumping the Scene chunk.
@@ -280,25 +277,25 @@ int main(int argc,char *argv[])
    
     // Parse arguments.
     args.commandName = argv[0];
-	args.byteOrder = FALSE;
+    args.byteOrder = FALSE;
     args.chunkFiles = NULL;
     parseArgs(argc,argv,&args);
 
-	if (args.byteOrder == FALSE)
-		g_littleEndian = FALSE;
-	else
-	    g_littleEndian = TRUE;
+    if (args.byteOrder == FALSE)
+        g_littleEndian = FALSE;
+    else
+        g_littleEndian = TRUE;
 
     nextFile = args.chunkFiles;
     while (nextFile)
-	{
-		fprintf(stdout, "Contents of %s\n\n", nextFile->str);
+    {
+        fprintf(stdout, "Contents of %s\n\n", nextFile->str);
 
         // Open the chunk file.
-		contents = readFileToMemory(nextFile->str, &size);
+        contents = readFileToMemory(nextFile->str, &size);
 
-		// Dump the contents.
-		parseStream(contents, size);
+        // Dump the contents.
+        parseStream(contents, size);
 
         // Process next chunk file.
         nextFile = nextFile->next;

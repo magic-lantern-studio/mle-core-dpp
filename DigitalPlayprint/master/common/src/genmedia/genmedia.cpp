@@ -10,7 +10,7 @@
 
 // COPYRIGHT_BEGIN
 //
-// Copyright (c) 2015-2024 Wizzer Works
+// Copyright (c) 2015-2025 Wizzer Works
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -40,7 +40,7 @@
 // COPYRIGHT_END
 
 // Include system header files.
-#ifdef WIN32
+#ifdef _WINDOWS
 #include <windows.h>
 #endif
 #include <stdio.h>
@@ -52,7 +52,7 @@
 #include <mle/mlMalloc.h>
 #include <mle/mlFileio.h>
 #include <mle/MlePath.h>
-#ifdef WIN32
+#ifdef _WINDOWS
 #include <mle/mlGetOpt.h>
 #include <mle/MleWin32Path.h>
 #else
@@ -86,7 +86,7 @@ MlBoolean mlVerifyTargetWorkprint(MleDwpItem * /*root*/,char * /*tags*/)
 }
 
 
-#ifdef WIN32
+#ifdef _WINDOWS
 static char *getCanonicalPath(char *path)
 {
     char *cpath = NULL;
@@ -101,7 +101,7 @@ static char *getCanonicalPath(char *path)
 {
     return strdup(path);
 }
-#endif /* WIN32 */
+#endif /* _WINDOWS */
 
 
 // argument structures for parser.
@@ -184,21 +184,21 @@ int parseArgs(int argc, char *argv[], ArgStruct *args)
     for ( ; optind < argc; optind++)
     {
         if (! args->tags) {
-#ifdef WIN32
+#ifdef _WINDOWS
             args->tags = _strdup(argv[optind]);
 #else
             args->tags = strdup(argv[optind]);
-#endif /* WIN32 */
+#endif /* _WINDOWS */
         } else if (! args->workprint)
         {
             args->workprint = getCanonicalPath(argv[optind]);
         } else if (! args->inventory)
         {
-#ifdef WIN32
+#ifdef _WINDOWS
             args->inventory = _strdup(argv[optind]);
 #else
             args->inventory = strdup(argv[optind]);
-#endif /* WIN32 */
+#endif /* _WINDOWS */
         } else
         {
             fprintf(stderr,"%s\n",usage_str);
@@ -237,11 +237,11 @@ static char *_expandPath(char * path)
     {
         tmpPath = (char *)mlMalloc(strlen((char *)dir->getPlatformPath()) + strlen(path) + 2);
         strcpy(tmpPath,(char *)dir->getPlatformPath());
-#ifdef WIN32
+#ifdef _WINDOWS
         strcat(tmpPath,"\\");
-#else /* ! WIN32 */
+#else /* ! _WINDOWS */
         strcat(tmpPath,"/");
-#endif /* WIN32 */
+#endif /* _WINDOWS */
         strcat(tmpPath,path);
     } else
         tmpPath = path;
@@ -274,7 +274,7 @@ main(int argc,char **argv)
     }
     
     // Redirect generated output.
-#ifdef WIN32
+#ifdef _WINDOWS
     if (args.outputDir != NULL)
     {
         g_outputDir = new MleWin32Path((MlChar *)args.outputDir,true);
@@ -284,7 +284,7 @@ main(int argc,char **argv)
     {
         g_outputDir = new MleLinuxPath((MlChar *)args.outputDir,true);
     }
-#endif /* WIN32 */
+#endif /* _WINDOWS */
 
     // Check for Little Endian  byte ordering.
     if (args.byteOrder)
@@ -343,7 +343,7 @@ main(int argc,char **argv)
     char *processTags;
     char *tag,*nextTag;
     MleDwpTagAllDiscriminator *discriminator = new MleDwpTagAllDiscriminator;
-#if defined(WIN32)
+#if defined(_WINDOWS)
     processTags = _strdup(args.tags);
 #else
     processTags = strdup(args.tags);
@@ -462,7 +462,7 @@ main(int argc,char **argv)
                 //char *targetFilename = (char *)mlMalloc(
                 //    strlen(entries[j].m_filename)+1);
                 //strcpy(targetFilename,entries[j].m_filename);
-#ifdef WIN32
+#ifdef _WINDOWS
                 MleWin32Path *targetPath = new MleWin32Path((MlChar *)entries[j].m_filename,false);
 #else
                 MleLinuxPath *targetPath = new MleLinuxPath((MlChar *)entries[j].m_filename,false);

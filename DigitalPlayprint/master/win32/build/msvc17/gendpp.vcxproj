@@ -140,7 +140,7 @@ xcopy /y ..\..\..\common\src\layout\*.tmpl $(MLE_HOME)\lib
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <AdditionalIncludeDirectories>$(PYTHON_HOME)/include;../../../common/include;../../include;$(MLE_ROOT)/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>USE_PYTHON;MLE_NOT_DWP_DLL;MLE_NOT_UTIL_DLL;MLE_NOT_MATH_DLL;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>USE_PYTHON;MLE_NOT_DWP_DLL;MLE_NOT_UTIL_DLL;MLE_NOT_MATH_DLL;NDEBUG;_WINDOWS;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -235,7 +235,7 @@ xcopy /y ..\..\..\common\src\layout\*.tmpl $(MLE_HOME)\lib
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>$(PYTHON_HOME)/include;../../../common/include;../../include;$(MLE_ROOT)/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>USE_PYTHON;MLE_DEBUG;MLE_NOT_DWP_DLL;MLE_NOT_UTIL_DLL;MLE_NOT_MATH_DLL;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>USE_PYTHON;MLE_DEBUG;MLE_NOT_DWP_DLL;MLE_NOT_UTIL_DLL;MLE_NOT_MATH_DLL;_DEBUG;_WINDOWS;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>

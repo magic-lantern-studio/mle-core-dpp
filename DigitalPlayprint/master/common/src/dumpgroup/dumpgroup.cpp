@@ -5,15 +5,12 @@
  * @ingroup MleDPPMaster
  *
  * Program to dump Group chunk files.
- *
- * @author Mark S. Millard
- * @date September 15, 2004
  */
 
 
 // COPYRIGHT_BEGIN
 //
-// Copyright (c) 2015-2024 Wizzer Works
+// Copyright (c) 2015-2025 Wizzer Works
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -43,7 +40,7 @@
 // COPYRIGHT_END
 
 // Include system header files.
-#ifdef WIN32
+#ifdef _WINDOWS
 #include <windows.h>
 #else
 #ifdef __linux__
@@ -57,7 +54,7 @@
 #include <ctype.h>
 
 // Inclclude Magic Lantern header files.
-#ifdef WIN32
+#ifdef _WINDOWS
 #include "mle/mlGetOpt.h"
 #else
 #include <unistd.h>
