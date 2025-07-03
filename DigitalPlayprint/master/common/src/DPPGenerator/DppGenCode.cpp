@@ -808,3 +808,18 @@ MleDppGenCode::operator delete(void *p)
 {
     mlFree(p);
 }
+
+
+void*
+MleDppGenCode::operator new[](size_t tSize)
+{
+    void* p = mlMalloc(tSize);
+    return p;
+}
+
+
+void
+MleDppGenCode::operator delete[](void* p)
+{
+    mlFree(p);
+}
