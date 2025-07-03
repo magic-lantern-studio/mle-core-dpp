@@ -151,3 +151,16 @@ MleDppChunkTable::operator delete(void *p)
 {
 	mlFree(p);
 }
+
+void*
+MleDppChunkTable::operator new[](size_t tSize)
+{
+	void* p = mlMalloc(tSize);
+	return p;
+}
+
+void
+MleDppChunkTable::operator delete[](void* p)
+{
+	mlFree(p);
+}

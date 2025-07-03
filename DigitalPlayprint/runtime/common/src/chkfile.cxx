@@ -202,6 +202,19 @@ MleChunkFile::operator delete(void *p)
 	mlFree(p);
 }
 
+void*
+MleChunkFile::operator new[](size_t tSize)
+{
+    void* p = mlMalloc(tSize);
+    return p;
+}
+
+void
+MleChunkFile::operator delete[](void* p)
+{
+    mlFree(p);
+}
+
 #ifdef UNIT_TEST
 
 // Include system header files.

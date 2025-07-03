@@ -361,6 +361,19 @@ MleDpp::operator delete(void *p)
 	mlFree(p);
 }
 
+void*
+MleDpp::operator new[](size_t tSize)
+{
+    void* p = mlMalloc(tSize);
+    return p;
+}
+
+void
+MleDpp::operator delete[](void* p)
+{
+    mlFree(p);
+}
+
 #ifdef UNIT_TEST
 
 // Include system header files.

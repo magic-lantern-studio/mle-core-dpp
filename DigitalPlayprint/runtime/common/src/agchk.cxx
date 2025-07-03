@@ -360,3 +360,16 @@ MleDppActorGroupChunk::operator delete(void *p)
 {
 	mlFree(p);
 }
+
+void*
+MleDppActorGroupChunk::operator new[](size_t tSize)
+{
+	void* p = mlMalloc(tSize);
+	return p;
+}
+
+void
+MleDppActorGroupChunk::operator delete[](void* p)
+{
+	mlFree(p);
+}
