@@ -6,14 +6,11 @@
  *
  * This file implements the void * data type used by the Magic Lantern Digital
  * Playprint Library API.
- *
- * @author Mark S. Millard
- * @created September 13, 2004
  */
 
 // COPYRIGHT_BEGIN
 //
-// Copyright (c) 2015 Wizzer Works
+// Copyright (c) 2015-2025 Wizzer Works
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -88,6 +85,19 @@ MleDppVoidStar::operator delete(void *p)
 	mlFree(p);
 }
 
+void*
+MleDppVoidStar::operator new[](size_t tSize)
+{
+	void* p = mlMalloc(tSize);
+	return p;
+}
+
+void
+MleDppVoidStar::operator delete[](void* p)
+{
+	mlFree(p);
+}
+
 void *
 MleDppMediaRef::operator new(size_t tSize)
 {
@@ -97,6 +107,19 @@ MleDppMediaRef::operator new(size_t tSize)
 
 void
 MleDppMediaRef::operator delete(void *p)
+{
+	mlFree(p);
+}
+
+void*
+MleDppMediaRef::operator new[](size_t tSize)
+{
+	void* p = mlMalloc(tSize);
+	return p;
+}
+
+void
+MleDppMediaRef::operator delete[](void* p)
 {
 	mlFree(p);
 }

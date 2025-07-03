@@ -6,14 +6,11 @@
  *
  * This file defines the Matrix34 data type used by the Magic Lantern Digital
  * Playprint Library API.
- *
- * @author Mark S. Millard
- * @date September 13, 2004
  */
 
 // COPYRIGHT_BEGIN
 //
-// Copyright (c) 2015 Wizzer Works
+// Copyright (c) 2015-2025 Wizzer Works
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -57,6 +54,11 @@
 #include "mle/DppActorGroupOutput.h"
 
 
+/**
+ * @brief This is the datatype object for a 3x4 Matrix.
+ *
+ * @see MleDwpMatrix34, MleDppDatatype
+ */
 class MleDppMatrix34 : public MleDwpMatrix34, public MleDppDatatype
 {
 	MLE_DWP_DATATYPE_HEADER(MleDppMatrix34);
@@ -73,12 +75,25 @@ class MleDppMatrix34 : public MleDwpMatrix34, public MleDppDatatype
 	void* operator new(size_t tSize);
 
 	/**
+     * Override operator new.
+     *
+     * @param tSize The size, in bytes, to allocate.
+     */
+	void* operator new[](size_t tSize);
+
+	/**
 	 * Override operator delete.
 	 *
 	 * @param p A pointer to the memory to delete.
 	 */
     void  operator delete(void *p);
 
+	/**
+     * Override operator delete.
+     *
+     * @param p A pointer to the memory to delete.
+     */
+	void  operator delete[](void* p);
 };
 
 #endif /* __MLE_DPP_MATRIX34_H_ */

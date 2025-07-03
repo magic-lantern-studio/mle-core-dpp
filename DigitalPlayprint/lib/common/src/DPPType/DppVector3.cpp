@@ -6,14 +6,11 @@
  *
  * This file implements the 3-element vector data type used by the Magic Lantern Digital
  * Playprint Library API.
- *
- * @author Mark S. Millard
- * @created September 13, 2004
  */
 
 // COPYRIGHT_BEGIN
 //
-// Copyright (c) 2015 Wizzer Works
+// Copyright (c) 2015-2025 Wizzer Works
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -89,7 +86,6 @@ MleDppVector3::write(MleDppActorGroupOutput *out,MleDwpDataUnion *data) const
 	}
 }
 
-
 void *
 MleDppVector3::operator new(size_t tSize)
 {
@@ -99,6 +95,19 @@ MleDppVector3::operator new(size_t tSize)
 
 void
 MleDppVector3::operator delete(void *p)
+{
+	mlFree(p);
+}
+
+void*
+MleDppVector3::operator new[](size_t tSize)
+{
+	void* p = mlMalloc(tSize);
+	return p;
+}
+
+void
+MleDppVector3::operator delete[](void* p)
 {
 	mlFree(p);
 }

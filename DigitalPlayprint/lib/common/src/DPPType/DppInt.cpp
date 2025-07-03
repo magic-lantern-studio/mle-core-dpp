@@ -6,14 +6,11 @@
  *
  * This file implements the int data type used by the Magic Lantern Digital
  * Playprint Library API.
- *
- * @author Mark S. Millard
- * @created July 17, 2004
  */
 
 // COPYRIGHT_BEGIN
 //
-// Copyright (c) 2015 Wizzer Works
+// Copyright (c) 2015-2025 Wizzer Works
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -74,6 +71,19 @@ MleDppInt::operator new(size_t tSize)
 
 void
 MleDppInt::operator delete(void *p)
+{
+	mlFree(p);
+}
+
+void*
+MleDppInt::operator new[](size_t tSize)
+{
+	void* p = mlMalloc(tSize);
+	return p;
+}
+
+void
+MleDppInt::operator delete[](void* p)
 {
 	mlFree(p);
 }

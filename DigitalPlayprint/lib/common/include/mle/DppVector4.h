@@ -6,14 +6,11 @@
  *
  * This file defines the 4-element vector data type used by the Magic Lantern Digital
  * Playprint Library API.
- *
- * @author Mark S. Millard
- * @date September 12, 2004
  */
 
 // COPYRIGHT_BEGIN
 //
-// Copyright (c) 2015 Wizzer Works
+// Copyright (c) 2015-2025 Wizzer Works
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -79,12 +76,25 @@ class MleDppVector4 : public MleDwpVector4, public MleDppDatatype
 	void* operator new(size_t tSize);
 
 	/**
+     * Override operator new.
+     *
+     * @param tSize The size, in bytes, to allocate.
+     */
+	void* operator new[](size_t tSize);
+
+	/**
 	 * Override operator delete.
 	 *
 	 * @param p A pointer to the memory to delete.
 	 */
     void  operator delete(void *p);
 
+	/**
+     * Override operator delete.
+     *
+     * @param p A pointer to the memory to delete.
+     */
+	void  operator delete[](void* p);
 };
 
 #endif /* __MLE_DPP_VECTOR4_H_ */
