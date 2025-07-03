@@ -5,14 +5,11 @@
  * @ingroup MleDPPModel
  *
  * Magic Lantern Digital Playprint Library API.
- *
- * @author Mark S. Millard
- * @date September 14, 2003
  */
 
 // COPYRIGHT_BEGIN
 //
-// Copyright (c) 2015 Wizzer Works
+// Copyright (c) 2015-2025 Wizzer Works
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -93,6 +90,19 @@ MleDppRoleAttachment::operator new(size_t tSize)
 
 void
 MleDppRoleAttachment::operator delete(void *p)
+{
+	mlFree(p);
+}
+
+void*
+MleDppRoleAttachment::operator new[](size_t tSize)
+{
+	void* p = mlMalloc(tSize);
+	return p;
+}
+
+void
+MleDppRoleAttachment::operator delete[](void* p)
 {
 	mlFree(p);
 }

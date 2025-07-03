@@ -430,7 +430,6 @@ void MleDppSceneOutput::setOutputDirectory(const char *path)
         g_outputDir->setPlatformPath((MlChar *)path);
 }
 
-
 inline MlePath *
 MleDppSceneOutput::getOutputDirectory()
 {
@@ -446,6 +445,19 @@ MleDppSceneOutput::operator new(size_t tSize)
 
 void
 MleDppSceneOutput::operator delete(void *p)
+{
+    mlFree(p);
+}
+
+void*
+MleDppSceneOutput::operator new[](size_t tSize)
+{
+    void* p = mlMalloc(tSize);
+    return p;
+}
+
+void
+MleDppSceneOutput::operator delete[](void* p)
 {
     mlFree(p);
 }

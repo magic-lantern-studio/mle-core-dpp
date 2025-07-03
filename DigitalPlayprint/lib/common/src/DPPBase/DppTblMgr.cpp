@@ -1755,3 +1755,16 @@ MleDppTblMgr::operator delete(void *p)
 {
     mlFree(p);
 }
+
+void*
+MleDppTblMgr::operator new[](size_t tSize)
+{
+    void* p = mlMalloc(tSize);
+    return p;
+}
+
+void
+MleDppTblMgr::operator delete[](void* p)
+{
+    mlFree(p);
+}

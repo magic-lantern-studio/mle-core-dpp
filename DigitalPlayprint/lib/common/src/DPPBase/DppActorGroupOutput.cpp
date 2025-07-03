@@ -769,3 +769,16 @@ MleDppActorGroupOutput::operator delete(void *p)
 {
     mlFree(p);
 }
+
+void*
+MleDppActorGroupOutput::operator new[](size_t tSize)
+{
+    void* p = mlMalloc(tSize);
+    return p;
+}
+
+void
+MleDppActorGroupOutput::operator delete[](void* p)
+{
+    mlFree(p);
+}
