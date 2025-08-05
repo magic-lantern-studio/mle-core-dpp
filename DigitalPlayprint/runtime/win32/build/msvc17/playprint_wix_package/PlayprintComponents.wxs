@@ -1,0 +1,24 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+	<Fragment>
+		<DirectoryRef Id="HEADERS_INCLUDE_MLE">
+			<Component Id="HeaderFiles" Guid="{4B298DBA-F1B1-4370-A76B-1C30798006BA}">
+				<File Id="HeaderFile1" Source="..\..\..\..\common\include\mle\agchk.h" />
+				<File Id="HeaderFile2" Source="..\..\..\..\common\include\mle\chkfile.h" />
+				<File Id="HeaderFile3" Source="..\..\..\..\common\include\mle\chktable.h" />
+				<File Id="HeaderFile4" Source="..\..\..\..\common\include\mle\chunk.h" />
+				<File Id="HeaderFile5" Source="..\..\..\..\common\include\mle\mrefchk.h" />
+				<File Id="HeaderFile6" Source="..\..\..\..\common\include\mle\playprnt.h" />
+				<File Id="HeaderFile7" Source="..\..\..\..\common\include\mle\pp.h" />
+				<File Id="HeaderFile8" Source="..\..\..\..\common\include\mle\ppinput.h" />
+				<File Id="HeaderFile9" Source="..\..\..\..\common\include\mle\ppoutput.h" />
+				<File Id="HeaderFile10" Source="..\..\..\..\common\include\mle\scenechk.h" />
+			</Component>
+		</DirectoryRef>
+		<ComponentGroup Id="PlayprintComponents" Directory="MLEROOT">
+			<Component Id="tools" Directory="LIB64_TOOLS">
+				<File Id="playprint_tools" Source="$(var.playprint.TargetPath)"/>
+			</Component>
+			<ComponentRef Id="HeaderFiles" />
+		</ComponentGroup>
+	</Fragment>
+</Wix>

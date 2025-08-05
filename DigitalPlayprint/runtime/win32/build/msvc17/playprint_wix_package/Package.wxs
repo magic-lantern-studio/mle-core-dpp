@@ -1,0 +1,27 @@
+﻿<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+	<?if $(var.Configuration) = Debug ?>
+		<!-- Debug Package -->
+		<Package Id="wizzer.magiclantern.playprintd_wix_package"
+                 Name="playprintd"
+                 Manufacturer="WizzerWorks"
+                 Version="1.0.0.0">
+			<MajorUpgrade DowngradeErrorMessage="!(loc.DowngradeError)" />
+
+			<Feature Id="Main">
+				<ComponentGroupRef Id="PlayprintComponents" />
+			</Feature>
+		</Package>
+	<?else?>
+		<!-- Release Package -->
+		<Package Id="wizzer.magiclantern.playprint_wix_package"
+				 Name="playprint"
+				 Manufacturer="WizzerWorks"
+				 Version="1.0.0.0">
+			<MajorUpgrade DowngradeErrorMessage="!(loc.DowngradeError)" />
+
+			<Feature Id="Main">
+				<ComponentGroupRef Id="PlayprintComponents" />
+			</Feature>
+		</Package>
+	<?endif?>
+</Wix>
