@@ -18,6 +18,9 @@
 			<Component Id="tools" Directory="LIB64_TOOLS">
 				<File Id="playprint_tools" Source="$(var.playprint.TargetPath)"/>
 			</Component>
+			<Component Id="runtime" Directory="LIB64_RUNTIME_CDECL">
+				<File Id="runtime_tools" Source="$(var.runtime.TargetPath)"/>
+			</Component>
 			<ComponentRef Id="HeaderFiles" />
 		</ComponentGroup>
 	</Fragment>
