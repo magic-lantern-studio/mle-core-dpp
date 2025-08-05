@@ -1,0 +1,58 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+	<Fragment>
+		<DirectoryRef Id="HEADERS_INCLUDE_MLE">
+			<Component Id="HeaderFiles" Guid="{CE53CC74-356F-4104-8E62-EDACF06B4AA5}">
+				<File Id="HeaderFile1" Source="..\..\..\..\common\include\mle\Dpp.h" />
+				<File Id="HeaderFile2" Source="..\..\..\..\common\include\mle\agopcode.h" />
+				<File Id="HeaderFile3" Source="..\..\..\..\common\include\mle\DppActorGroupOutput.h" />
+				<File Id="HeaderFile4" Source="..\..\..\..\common\include\mle\DppItem.h" />
+				<File Id="HeaderFile6" Source="..\..\..\..\common\include\mle\DppSceneOutput.h" />
+				<File Id="HeaderFile7" Source="..\..\..\..\common\include\mle\DppTblMgr.h" />
+				<File Id="HeaderFile8" Source="..\..\..\..\common\include\mle\DppActor.h" />
+				<File Id="HeaderFile9" Source="..\..\..\..\common\include\mle\DppActorSet.h" />
+				<File Id="HeaderFile10" Source="..\..\..\..\common\include\mle\DppGroup.h" />
+				<File Id="HeaderFile11" Source="..\..\..\..\common\include\mle\DppGroupRef.h" />
+				<File Id="HeaderFile12" Source="..\..\..\..\common\include\mle\DppProperty.h" />
+				<File Id="HeaderFile13" Source="..\..\..\..\common\include\mle\DppRoleAttachment.h" />
+				<File Id="HeaderFile14" Source="..\..\..\..\common\include\mle\DppRoleBinding.h" />
+				<File Id="HeaderFile15" Source="..\..\..\..\common\include\mle\DppScene.h" />
+				<File Id="HeaderFile16" Source="..\..\..\..\common\include\mle\DppSet.h" />
+				<File Id="HeaderFile57" Source="..\..\..\..\common\include\mle\DppArray.h" />
+				<File Id="HeaderFile61" Source="..\..\..\..\common\include\mle\DppEnum.h" />
+				<File Id="HeaderFile62" Source="..\..\..\..\common\include\mle\DppFloat.h" />
+				<File Id="HeaderFile63" Source="..\..\..\..\common\include\mle\DppFloat3.h" />
+				<File Id="HeaderFile64" Source="..\..\..\..\common\include\mle\DppFloat4.h" />
+				<File Id="HeaderFile65" Source="..\..\..\..\common\include\mle\DppFloatArray.h" />
+				<File Id="HeaderFile66" Source="..\..\..\..\common\include\mle\DppInt.h" />
+				<File Id="HeaderFile67" Source="..\..\..\..\common\include\mle\DppIntArray.h" />
+				<File Id="HeaderFile68" Source="..\..\..\..\common\include\mle\DppMatrix34.h" />
+				<File Id="HeaderFile69" Source="..\..\..\..\common\include\mle\DppRotation.h" />
+				<File Id="HeaderFile70" Source="..\..\..\..\common\include\mle\DppScalar.h" />
+				<File Id="HeaderFile71" Source="..\..\..\..\common\include\mle\DppScalarArray.h" />
+				<File Id="HeaderFile72" Source="..\..\..\..\common\include\mle\DppString.h" />
+				<File Id="HeaderFile73" Source="..\..\..\..\common\include\mle\DppTransform.h" />
+				<File Id="HeaderFile74" Source="..\..\..\..\common\include\mle\DppType.h" />
+				<File Id="HeaderFile75" Source="..\..\..\..\common\include\mle\DppVector2.h" />
+				<File Id="HeaderFile76" Source="..\..\..\..\common\include\mle\DppVector3.h" />
+				<File Id="HeaderFile77" Source="..\..\..\..\common\include\mle\DppVector3Array.h" />
+				<File Id="HeaderFile78" Source="..\..\..\..\common\include\mle\DppVector4.h" />
+				<File Id="HeaderFile79" Source="..\..\..\..\common\include\mle\DppVoidStarType.h" />
+			</Component>
+		</DirectoryRef>
+		<ComponentGroup Id="DppComponents" Directory="MLEROOT">
+			<Component Id="dpp_tools" Directory="LIB64_TOOLS">
+				<File Id="dpp_tools" Source="$(var.DPP.TargetPath)"/>
+			</Component>
+			<Component Id="dppbase_tools" Directory="LIB64_TOOLS">
+				<File Id="dppbase_tools" Source="$(var.DPPBase.TargetPath)"/>
+			</Component>
+			<Component Id="dppmodel_tools" Directory="LIB64_TOOLS">
+				<File Id="dppmodel_tools" Source="$(var.DPPModel.TargetPath)"/>
+			</Component>
+			<Component Id="dpptypes_tools" Directory="LIB64_TOOLS">
+				<File Id="dpptypes_tools" Source="$(var.DPPType.TargetPath)"/>
+			</Component>
+			<ComponentRef Id="HeaderFiles" />
+		</ComponentGroup>
+	</Fragment>
+</Wix>

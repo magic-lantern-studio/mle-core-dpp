@@ -1,0 +1,8 @@
+﻿<Project Sdk="WixToolset.Sdk/6.0.1">
+  <ItemGroup>
+    <ProjectReference Include="..\DPP.vcxproj" />
+    <ProjectReference Include="..\DPPBase.vcxproj" />
+    <ProjectReference Include="..\DPPModel.vcxproj" />
+    <ProjectReference Include="..\DPPType.vcxproj" />
+  </ItemGroup>
+</Project>
