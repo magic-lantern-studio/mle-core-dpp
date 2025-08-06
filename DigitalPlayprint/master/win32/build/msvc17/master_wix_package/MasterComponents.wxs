@@ -1,0 +1,49 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+	<Fragment>
+		<DirectoryRef Id="HEADERS_INCLUDE_MLE">
+			<Component Id="HeaderFiles" Guid="{D14520CB-F913-46B2-8831-716CFDE22DB7}">
+				<File Id="HeaderFile1" Source="..\..\..\..\common\include\mle\DppGenCode.h" />
+				<File Id="HeaderFile2" Source="..\..\..\..\common\include\mle\DppGenMakefile.h" />
+			</Component>
+		</DirectoryRef>
+		<ComponentGroup Id="MasterComponents" Directory="MLEROOT">
+			<Component Id="dppgen_library_loc" Directory="LIB64_TOOLS">
+				<File Id="dppgen_library" Source="$(var.DPPGen.TargetPath)"/>
+			</Component>
+			<Component Id="dumpdpp_tool_loc" Directory="BIN64">
+				<File Id="dumpdpp_tool" Source="$(var.dumpdpp.TargetPath)"/>
+			</Component>
+			<Component Id="dumpgroup_tool_loc" Directory="BIN64">
+				<File Id="dumpgroup_tool" Source="$(var.dumpgroup.TargetPath)"/>
+			</Component>
+			<Component Id="dumpmedia_tool_loc" Directory="BIN64">
+				<File Id="dumpmedia_tool" Source="$(var.dumpmedia.TargetPath)"/>
+			</Component>
+			<Component Id="dumpscene_tool_loc" Directory="BIN64">
+				<File Id="dumpscene_tool" Source="$(var.dumpscene.TargetPath)"/>
+			</Component>
+			<Component Id="gendpp_tool_loc" Directory="BIN64">
+				<File Id="gendpp_tool" Source="$(var.gendpp.TargetPath)"/>
+			</Component>
+			<Component Id="gengroup_tool_loc" Directory="BIN64">
+				<File Id="gengroup_tool" Source="$(var.gengroup.TargetPath)"/>
+			</Component>
+			<Component Id="genmakefile_tool_loc" Directory="BIN64">
+				<File Id="genmakefile_tool" Source="$(var.genmakefile.TargetPath)"/>
+			</Component>
+			<Component Id="genmedia_tool_loc" Directory="BIN64">
+				<File Id="genmedia_tool" Source="$(var.genmedia.TargetPath)"/>
+			</Component>
+			<Component Id="genppscript_tool_loc" Directory="BIN64">
+				<File Id="genppscript_tool" Source="$(var.genppscript.TargetPath)"/>
+			</Component>
+			<Component Id="genscene_tool_loc" Directory="BIN64">
+				<File Id="genscene_tool" Source="$(var.genscene.TargetPath)"/>
+			</Component>
+			<Component Id="gentables_tool_loc" Directory="BIN64">
+				<File Id="gentables_tool" Source="$(var.gentables.TargetPath)"/>
+			</Component>
+			<ComponentRef Id="HeaderFiles" />
+		</ComponentGroup>
+	</Fragment>
+</Wix>

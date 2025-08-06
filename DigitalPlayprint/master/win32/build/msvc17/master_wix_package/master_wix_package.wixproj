@@ -1,0 +1,16 @@
+﻿<Project Sdk="WixToolset.Sdk/6.0.1">
+  <ItemGroup>
+    <ProjectReference Include="..\DPPGen.vcxproj" />
+    <ProjectReference Include="..\dumpdpp.vcxproj" />
+    <ProjectReference Include="..\dumpgroup.vcxproj" />
+    <ProjectReference Include="..\dumpmedia.vcxproj" />
+    <ProjectReference Include="..\dumpscene.vcxproj" />
+    <ProjectReference Include="..\gendpp.vcxproj" />
+    <ProjectReference Include="..\gengroup.vcxproj" />
+    <ProjectReference Include="..\genmakefile.vcxproj" />
+    <ProjectReference Include="..\genmedia.vcxproj" />
+    <ProjectReference Include="..\genppscript.vcxproj" />
+    <ProjectReference Include="..\genscene.vcxproj" />
+    <ProjectReference Include="..\gentables.vcxproj" />
+  </ItemGroup>
+</Project>
