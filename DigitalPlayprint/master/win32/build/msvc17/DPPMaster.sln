@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36202.13 d17.14
+VisualStudioVersion = 17.14.36202.13
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DPPGen", "DPPGen.vcxproj", "{5809878E-7A77-43CD-BF5A-B54BF069E956}"
 EndProject
@@ -55,10 +55,12 @@ Global
 		{38FAE596-F576-4AF6-908D-DA51755B6BF6}.Debug|ARM64.Build.0 = Debug|x64
 		{38FAE596-F576-4AF6-908D-DA51755B6BF6}.Debug|Win32.ActiveCfg = Debug|Win32
 		{38FAE596-F576-4AF6-908D-DA51755B6BF6}.Debug|x64.ActiveCfg = Debug|x64
+		{38FAE596-F576-4AF6-908D-DA51755B6BF6}.Debug|x64.Build.0 = Debug|x64
 		{38FAE596-F576-4AF6-908D-DA51755B6BF6}.Release|ARM64.ActiveCfg = Release|x64
 		{38FAE596-F576-4AF6-908D-DA51755B6BF6}.Release|ARM64.Build.0 = Release|x64
 		{38FAE596-F576-4AF6-908D-DA51755B6BF6}.Release|Win32.ActiveCfg = Release|Win32
 		{38FAE596-F576-4AF6-908D-DA51755B6BF6}.Release|x64.ActiveCfg = Release|x64
+		{38FAE596-F576-4AF6-908D-DA51755B6BF6}.Release|x64.Build.0 = Release|x64
 		{84875068-0E16-49BA-9B20-8397950722D9}.Debug|ARM64.ActiveCfg = Debug|x64
 		{84875068-0E16-49BA-9B20-8397950722D9}.Debug|ARM64.Build.0 = Debug|x64
 		{84875068-0E16-49BA-9B20-8397950722D9}.Debug|Win32.ActiveCfg = Debug|Win32
