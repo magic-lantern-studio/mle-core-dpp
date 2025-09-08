@@ -1,6 +1,6 @@
 // COPYRIGHT_BEGIN
 //
-// Copyright (c) 2024 Wizzer Works
+// Copyright (c) 2024-2025 Wizzer Works
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -34,6 +34,13 @@
 
 #include "pplayout.h"
 
+/**
+ * @class DppLayoutManager
+ * 
+ * @brief The DppLayoutManager class is used to manage the layout state of a
+ * Magic Lantern Digital Playprint (DPP) during construction. The DppLayoutManager
+ * is a Singleton instance.
+ */
 class DppLayoutManager
 {
   private:
@@ -60,6 +67,13 @@ class DppLayoutManager
      * returned.
      */
     LayoutState *getState();
+
+    /**
+     * @brief Set the DPP Layout Manager state.
+     *
+     * @param state A pointer to the DPP Layout Manager state to
+     * set is passed in.
+	 */
     void setState(LayoutState *state);
 
   private:

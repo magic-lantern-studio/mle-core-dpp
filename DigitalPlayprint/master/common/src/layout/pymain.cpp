@@ -70,6 +70,7 @@
 #endif
 #include <mle/mlMalloc.h>
 #include <mle/mlFileio.h>
+#include <mle/mlReadFile.h>
 #include <mle/mlConfig.h>
 #include <mle/MlePath.h>
 
@@ -94,7 +95,7 @@ Syntax:   gendpp  [-b|-l] [-j <package> | -c] [-d <dir>] [-s <dir>]\n\
 Function: Generate Magic Lantern Digital Playprint.\n\
 \n\
 In addition to generating the DPP, gendpp will generate the code\n\
-necessary for locating the location of each chunk in the playprint.\n";
+necessary for finding the location of each chunk in the playprint.\n";
 
 // Declare forward references to local procedures.
 static char *readFileToMemory(char *, int *);
@@ -193,24 +194,32 @@ static int parseArgs(int argc, char *argv[], LayoutState *state)
 //
 int main(int argc, char *argv[])
 {
-    LayoutState *state;
-    char *script;
+    LayoutState *state = nullptr;
+#if USE_PYTHON_SIMPLE_STRING
+    char *script = nullptr;
+    size_t scriptSize = 0;
+#endif /* USE_PYTHON_SIMPLE_STRING */
 
     // Initialize the playprint layout state.
     state = (LayoutState *)mlMalloc(sizeof(LayoutState));
-    state->m_commandName = argv[0];
-    state->m_byteOrder = FALSE;
-    state->m_workprint = nullptr;
-    state->m_playprint = nullptr;
-    state->m_outputDir = nullptr;
-    state->m_inputDir = nullptr;
-    state->m_codefile = nullptr;
-    state->m_chunks = new MleDppChunkTable();
-    state->m_scriptfile = nullptr;
-    state->m_root = nullptr;
-    state->m_tags = nullptr;
-    state->m_language = FALSE;
-    state->m_package = nullptr;
+    if (state == NULL) {
+        fprintf(stderr, "Error: Unable to initialize Digital Playprint layout.\n");
+        exit(1);
+    } else {
+        state->m_commandName = argv[0];
+        state->m_byteOrder = FALSE;
+        state->m_workprint = nullptr;
+        state->m_playprint = nullptr;
+        state->m_outputDir = nullptr;
+        state->m_inputDir = nullptr;
+        state->m_codefile = nullptr;
+        state->m_chunks = new MleDppChunkTable();
+        state->m_scriptfile = nullptr;
+        state->m_root = nullptr;
+        state->m_tags = nullptr;
+        state->m_language = FALSE;
+        state->m_package = nullptr;
+    }
 
     DppLayoutManager *mgr = DppLayoutManager::getInstance();
     mgr->setState(state);
@@ -225,19 +234,28 @@ int main(int argc, char *argv[])
     //__asm int 3h
 
     // Read in the script file...
-    MlePath *scriptFile;
+#if USE_PYTHON_SIMPLE_STRING
+    MlePath *scriptFile = nullptr;
 #if _WINDOWS
     scriptFile = new MleWin32Path((MlChar *)(state->m_scriptfile), true);
 #else /* ! _WINDOWS */
     scriptFile = new MleLinuxPath((MlChar *)state->m_scriptfile, true);;
 #endif
 
-    if ((script = readFileToMemory((char *)scriptFile->getPlatformPath(), NULL)) == NULL ) {
+#if 0
+    if ((script = readFileToMemory((char *)scriptFile->getPlatformPath(), &scriptSize)) == NULL ) {
         perror(state->m_scriptfile);
         exit(2);
     }
+#else
+    if ((script = mlReadFile((char*)scriptFile->getPlatformPath(), TRUE, TRUE, 0, &scriptSize)) == NULL) {
+        perror(state->m_scriptfile);
+        exit(2);
+    }
+#endif /* 0 */
     if (scriptFile != NULL)
         delete scriptFile;
+#endif /* USE_PYTHON_SIMPLE_STRING */
 
     // Setup Python and execute sript...
     // Add the built-in module, before Py_Initialize.
@@ -251,9 +269,26 @@ int main(int argc, char *argv[])
 
     // Call python command script.
     //PyRun_SimpleString("print('Hello World from Embedded Python!!!')");
-    //FILE *fp = _Py_fopen(state->m_scriptfile, "r");
+#if _WINDOWS
+    FILE* fp = mlFOpen(state->m_scriptfile, "r");
+#else
     FILE *fp = mlFOpen(state->m_scriptfile, "r");
+#endif
+    if (fp == NULL) {
+        fprintf(stderr, "Error: could not open script file %s: %s\n",
+                state->m_scriptfile, strerror(errno));
+        exit(1);
+	}
+#if USE_PYTHON_SIMPLE_STRING
+    if (PyRun_SimpleString(script) != 0) {
+        fprintf(stderr, "Error: could not execute script file %s\n",
+                state->m_scriptfile);
+        exit(1);
+	}
+#else /* ! USE_PYTHON_SIMPLE_STRING */
+	// Note: PyRun_SimpleFile() does not work on Windows with a binary file pointer.
     PyRun_SimpleFile(fp, state->m_scriptfile);
+#endif
     
     // Terminate Python interpreter.
     Py_Finalize();
@@ -273,8 +308,12 @@ int main(int argc, char *argv[])
     if (state->m_tags != nullptr) mlFree(state->m_tags);
     if (state->m_workprint != nullptr) mlFree(state->m_workprint);
     if (state->m_scriptfile != nullptr) mlFree(state->m_scriptfile);
+    if (state->m_chunks != NULL) delete state->m_chunks;
     if (state != nullptr) mlFree(state);
+#if USE_PYTHON_SIMPLE_STRING
     mlFree(script);
+#endif /* USE_PYTHON_SIMPLE_STRING */
+	mlFClose(fp);
     
     return 0;
 }
@@ -299,18 +338,25 @@ static char *readFileToMemory(char *filename, int *size)
         ifd = stdin;
         closeMe = 0;
     } else {
+#if _WINDOWS
+        if ((ifd = mlFOpen(filename, "rb")) == NULL) {
+            return NULL;
+        }
+#else
         if ((ifd = mlFOpen(filename, "r")) == NULL ) {
             return NULL;
         }
+#endif
         closeMe = 1;
     }
 
-    data = (char *) mlMalloc(READ_CHUNK_SIZE);
-    allocked = READ_CHUNK_SIZE;
+    size_t chunkSize = READ_CHUNK_SIZE * sizeof(char);
+    data = (char *) mlMalloc(chunkSize);
+    allocked = chunkSize;
     used = 0;
-    while ((length = mlFRead(data+used, sizeof(char), READ_CHUNK_SIZE, ifd)) > 0) {
+    while ((length = mlFRead(data + used, sizeof(char), chunkSize, ifd)) > 0) {
         used += length;
-        allocked += READ_CHUNK_SIZE;
+        allocked += chunkSize;
         data = (char *) mlRealloc(data, allocked);
     }
 
@@ -318,8 +364,9 @@ static char *readFileToMemory(char *filename, int *size)
         mlFClose(ifd);
     }
 
+    memset(data + used, 0, allocked - used);
     if (used != allocked) {
-        data = (char *) mlRealloc(data, used);
+        data = (char *) mlRealloc(data, used * sizeof(char));
     }
 
     if (size != NULL) {
