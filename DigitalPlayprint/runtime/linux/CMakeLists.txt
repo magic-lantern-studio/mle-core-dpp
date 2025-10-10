@@ -51,6 +51,10 @@ set(CMAKE_DEBUG_POSTFIX "d")
 # Fail early if one of the required packages cannot be found
 include(FindMLUTIL)
 find_package(MLUTIL REQUIRED)
+include(FindMLMATH)
+find_package(MLMATH REQUIRED)
+include(FindDWP)
+find_package(DWP REQUIRED)
 find_package(PkgConfig REQUIRED)
 
 # Check for Magic Lantern environment variables
