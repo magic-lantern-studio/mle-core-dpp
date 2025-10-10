@@ -88,7 +88,7 @@ add_compile_definitions(
 
 # Specify the shared library
 add_library(
-  dwpShared SHARED
+  dppShared SHARED
     ../../common/src/DPP/Dpp.cpp
     ../../common/src/DPPBase/DppItem.cpp
     ../../common/src/DPPBase/DppActorGroupOutput.cpp
@@ -126,7 +126,7 @@ add_library(
 
 # Specify the static library
 add_library(
-  dwpStatic STATIC
+  dppStatic STATIC
     ../../common/src/DPP/Dpp.cpp
     ../../common/src/DPPBase/DppItem.cpp
     ../../common/src/DPPBase/DppActorGroupOutput.cpp
@@ -163,32 +163,32 @@ add_library(
     ../../common/src/DPPModel/DppSet.cpp)
 
   # Specify the shared library properties
-  set_target_properties(dwpShared PROPERTIES
-    OUTPUT_NAME dwp
+  set_target_properties(dppShared PROPERTIES
+    OUTPUT_NAME dpp
     VERSION ${PROJECT_VERSION}
     SOVERSION ${PROJECT_VERSION_MAJOR})
 
-  target_compile_options(dwpShared
+  target_compile_options(dppShared
     PRIVATE
       $<$<CONFIG:Debug>:-O0>
       $<$<CONFIG:Release>:>)
 
-  target_compile_definitions(dwpShared
+  target_compile_definitions(dppShared
     PRIVATE
       $<$<CONFIG:Debug>: MLE_DEBUG DEBUG>
       $<$<CONFIG:Release>:>)
 
   # Specify the static library properties
-  set_target_properties(dwpStatic PROPERTIES
-    OUTPUT_NAME dwp
+  set_target_properties(dppStatic PROPERTIES
+    OUTPUT_NAME dpp
     VERSION ${PROJECT_VERSION})
 
-  target_compile_options(dwpStatic
+  target_compile_options(dppStatic
     PRIVATE
       $<$<CONFIG:Debug>:-O0>
       $<$<CONFIG:Release>:>)
 
-  target_compile_definitions(dwpStatic
+  target_compile_definitions(dppStatic
     PRIVATE
       $<$<CONFIG:Debug>: MLE_DEBUG>
       $<$<CONFIG:Release>:>)
@@ -196,8 +196,8 @@ add_library(
   # Install the libraries
   install(
     TARGETS
-      dwpShared
-      dwpStatic
+      dppShared
+      dppStatic
     DESTINATION
       lib)
 
