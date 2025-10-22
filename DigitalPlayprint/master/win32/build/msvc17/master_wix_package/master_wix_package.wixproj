@@ -1,4 +1,7 @@
 ﻿<Project Sdk="WixToolset.Sdk/6.0.1">
+  <PropertyGroup>
+    <Platforms>x86;x64;ARM64</Platforms>
+  </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\DPPGen.vcxproj" />
     <ProjectReference Include="..\dumpdpp.vcxproj" />
