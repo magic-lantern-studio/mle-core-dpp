@@ -58,6 +58,8 @@ include(FindMLUTIL)
 find_package(MLUTIL REQUIRED)
 include(FindMLMATH)
 find_package(MLMATH REQUIRED)
+include(FindDPPGEN)
+find_package(DPPGEN REQUIRED)
 include(FindDWP)
 find_package(DWP REQUIRED)
 find_package(PkgConfig REQUIRED)
@@ -100,7 +102,7 @@ target_compile_definitions(gengroup
     $<$<CONFIG:Release>:>)
 
 set(gengroup_LIBRARIES
-  debug ${gengroup_BINARY_DIR}/../libDPPGen/libDPPGend.so optimized ${gengroup_BINARY_DIR}/../libDPPGen/libDPPGen.so
+  ${DPPGEN_LIBRARIES}
   debug $ENV{MLE_ROOT}/lib/libdppd.so optimized $ENV{MLE_ROOT}/lib/libdpp.so
   debug $ENV{MLE_ROOT}/lib/libdwpd.so optimized $ENV{MLE_ROOT}/lib/libdwp.so
   debug $ENV{MLE_ROOT}/lib/libplayprintd.so optimized $ENV{MLE_ROOT}/lib/libplayprint.so
