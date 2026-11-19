@@ -1,0 +1,76 @@
+name: Continuous Integration Build (Ubuntu 24.04)
+
+on:
+  workflow_dispatch:  # Allow manual triggers
+  push:
+    branches: [ "master" ]
+
+env:
+  MLE_ROOT: ${{ github.workspace }}/MagicLantern
+
+jobs:
+  ubuntu-build:
+    name: Ubuntu 24.04 Build (${{ matrix.build_type }})
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        build_type: [ Release, Debug ]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # python3-dev and zlib1g-dev are needed by gendpp.
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake pkg-config python3-dev zlib1g-dev
+
+      # Download the latest mle-core-dwp artifact into $MLE_ROOT. It contains
+      # the mle-core-dwp, mle-core-math and mle-core-util libraries and headers.
+      - name: Download mle-core-dwp artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh run download \
+            --repo magic-lantern-studio/mle-core-dwp \
+            --name mle-core-dwp-ubuntu-24.04-${{ matrix.build_type }} \
+            --dir "$MLE_ROOT"
+          ls -R "$MLE_ROOT"
+
+      # libdpp, libplayprint and libDPPGen. Each is installed into $MLE_ROOT
+      # for the tools below.
+      - name: Build and install libraries
+        run: |
+          set -e
+          for dir in DigitalPlayprint/lib/linux DigitalPlayprint/runtime/linux DigitalPlayprint/master/linux; do
+            build=build/$(echo "$dir" | tr / _)
+            cmake -S "$dir" -B "$build" -G "Unix Makefiles" \
+              -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
+              -DCMAKE_INSTALL_PREFIX="$MLE_ROOT" \
+              -DCMAKE_PREFIX_PATH="$MLE_ROOT"
+            cmake --build "$build"
+            cmake --install "$build"
+          done
+
+      # Each mastering and dump tool is a standalone CMake project that is
+      # built against the libraries installed in $MLE_ROOT.
+      - name: Build and install tools
+        run: |
+          set -e
+          for tool in gentables gengroup genmedia genscene genmakefile genppscript gendpp dumpgroup dumpmedia dumpscene dumpdpp; do
+            build=build/$tool
+            cmake -S DigitalPlayprint/master/linux/$tool -B "$build" -G "Unix Makefiles" \
+              -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
+              -DCMAKE_INSTALL_PREFIX="$MLE_ROOT" \
+              -DCMAKE_PREFIX_PATH="$MLE_ROOT"
+            cmake --build "$build"
+            cmake --install "$build"
+          done
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: mle-core-dpp-ubuntu-24.04-${{ matrix.build_type }}
+          path: ${{ env.MLE_ROOT }}

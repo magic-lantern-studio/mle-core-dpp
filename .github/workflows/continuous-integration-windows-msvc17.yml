@@ -1,0 +1,64 @@
+name: Continuous Integration Build (Windows, Visual Studio 2022)
+
+on:
+  workflow_dispatch:  # Allow manual triggers
+  push:
+    branches: [ "master" ]
+
+env:
+  MLE_ROOT: C:\opt\MagicLantern
+  # The Visual Studio post-build steps copy headers from $(MLE_HOME)\DigitalPlayprint\...
+  MLE_HOME: ${{ github.workspace }}
+
+jobs:
+  windows-build:
+    name: Windows Build
+    runs-on: windows-2022
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Add msbuild to Path
+        uses: microsoft/setup-msbuild@v2
+        with:
+            msbuild-architecture: x64
+      # gendpp embeds Python; its project uses $(PYTHON_HOME).
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: x64
+      - name: Set PYTHON_HOME
+        shell: pwsh
+        run: '"PYTHON_HOME=$env:pythonLocation" | Out-File -FilePath $env:GITHUB_ENV -Append'
+      # Download the latest mle-core-dwp artifact into %MLE_ROOT%. It contains
+      # the mle-core-dwp, mle-core-math and mle-core-util libraries and headers.
+      - name: Download mle-core-dwp artifacts
+        shell: cmd
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir %MLE_ROOT%
+          gh run download --repo magic-lantern-studio/mle-core-dwp --name mle-core-dwp-windows-Release --dir %MLE_ROOT%
+          dir /s /b %MLE_ROOT%
+      # Built in order: each solution installs into %MLE_ROOT% for the next.
+      - name: Build libdpp with msbuild
+        shell: cmd
+        run: |
+          cd DigitalPlayprint\lib\win32\build\msvc17
+          msbuild DppAccess.sln /p:Configuration=Release /p:Platform=x64
+      - name: Build libplayprint with msbuild
+        shell: cmd
+        run: |
+          cd DigitalPlayprint\runtime\win32\build\msvc17
+          msbuild DppRuntime.sln /p:Configuration=Release /p:Platform=x64
+      - name: Build mastering tools with msbuild
+        shell: cmd
+        run: |
+          cd DigitalPlayprint\master\win32\build\msvc17
+          msbuild DPPMaster.sln /p:Configuration=Release /p:Platform=x64
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: mle-core-dpp-windows-Release
+          path: ${{ env.MLE_ROOT }}
