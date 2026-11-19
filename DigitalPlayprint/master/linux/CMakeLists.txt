@@ -31,15 +31,15 @@
 #
 # COPYRIGHT_END
 
-# Stop if cmake version is below 3.0
-cmake_minimum_required(VERSION 3.0 FATAL_ERROR)
+# Stop if cmake version is below 3.10
+cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
 
 # Project name and enable C++ support
 project(DigitalWorkprint VERSION 1.0.0 LANGUAGES CXX)
 
 # Specify sub directories to build
 add_subdirectory(libDPPGen)
-add_subdirectory(gentables)
+#add_subdirectory(gentables)
 #add_subdirectory(gengroup)
 #add_subdirectory(genscene)
 #add_subdirectory(genmedia)

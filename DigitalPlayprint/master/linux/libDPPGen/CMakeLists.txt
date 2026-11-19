@@ -31,8 +31,8 @@
 #
 # COPYRIGHT_END
 
-# Stop if cmake version is below 3.0
-cmake_minimum_required(VERSION 3.0 FATAL_ERROR)
+# Stop if cmake version is below 3.10
+cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
 
 # Project name and enable C++ support
 project(libdppgen VERSION 1.0.0 LANGUAGES C CXX)
@@ -110,8 +110,8 @@ target_compile_options(dppgenShared
 
 target_compile_definitions(dppgenShared
     PRIVATE
-      $<$<CONFIG:Debug>: MLE_DEBUG DEBUG>
-      $<$<CONFIG:Release>:>)
+      $<$<CONFIG:Debug>: MLE_NOT_UTIL_DLL MLE_NOT_MATH_DLL MLE_NOT_DWP_DLL DEBUG DEBUG>
+      $<$<CONFIG:Release>: MLE_NOT_UTIL_DLL MLE_NOT_MATH_DLL MLE_NOT_DWP_DLL>)
 
 # Specify the static library properties
 set_target_properties(dppgenStatic PROPERTIES
@@ -125,7 +125,7 @@ target_compile_options(dppgenStatic
 
 target_compile_definitions(dppgenStatic
     PRIVATE
-      $<$<CONFIG:Debug>: MLE_DEBUG>
+      $<$<CONFIG:Debug>: MLE_MLE_DEBUG>
       $<$<CONFIG:Release>:>)
 
 # Install the libraries

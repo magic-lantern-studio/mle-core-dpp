@@ -31,8 +31,8 @@
 #
 # COPYRIGHT_END
 
-# Stop if cmake version is below 3.0
-cmake_minimum_required(VERSION 3.0 FATAL_ERROR)
+# Stop if cmake version is below 3.10
+cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
 
 # Project name and enable C++ support
 project(libdpp VERSION 1.0.0 LANGUAGES C CXX)
