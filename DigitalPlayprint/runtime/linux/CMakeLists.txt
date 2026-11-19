@@ -35,7 +35,7 @@
 cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
 
 # Project name and enable C++ support
-project(libplayprint VERSION 1.0.0 LANGUAGES CXX)
+project(libplayprint VERSION 1.0.0 LANGUAGES C CXX)
 
 # Require C++17
 set(CMAKE_CXX_STANDARD 17)
