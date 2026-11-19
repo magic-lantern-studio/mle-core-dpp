@@ -1,3 +1,5 @@
+## Linux autoconf
+
 **/Makefile
 **/Makefile.in
 **/.libs
@@ -20,6 +22,17 @@
 **/ltmain.sh
 **/depcomp
 **/exampleProgram
+**/*~
+
+## Linux CMake
+
+**/master_release
+**/master_debug
+**/playprint_release
+**/playprint_debug
+**/dpp_release
+**/dpp_debug
+
 DigitalPlayprint/master/linux/dumpdpp/src/dumpdpp
 DigitalPlayprint/master/linux/dumpgroup/src/dumpgroup
 DigitalPlayprint/master/linux/dumpmedia/src/dumpmedia
