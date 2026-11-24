@@ -240,6 +240,15 @@ int main(int argc,char *argv[])
         exit(-1);
     }
 
+    // A workprint that was read with errors (an Include that could not be
+    // opened, a syntax error) is not used. Each error has been reported.
+    if (gc->getErrorCount() > 0)
+    {
+        fprintf(stderr,"%s : %s\n",args.commandName,
+                "Digital Workprint has errors");
+        exit(-1);
+    }
+
     // Verify digital workprint.
     if (! mlVerifyTargetWorkprint(gc->getRoot(),args.tags))
     {

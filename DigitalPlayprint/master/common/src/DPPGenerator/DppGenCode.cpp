@@ -100,6 +100,12 @@ MleDppGenCode::MleDppGenCode(char *filename,char language,char *package)
 }
 
 
+int MleDppGenCode::getErrorCount(void)
+{
+    return m_wp ? m_wp->getErrorCount() : 0;
+}
+
+
 MleDppGenCode::~MleDppGenCode()
 {
     // XXX -- should close the DWP here; however, there is no API for this.
