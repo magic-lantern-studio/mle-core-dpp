@@ -113,7 +113,7 @@ static MlBoolean _javaTemplate;
 // This code reads in the mastering code template, wherever it might be.
 //
 
-void MleDppGenCode::readTitleTemplate(MleTemplate &pTemplate)
+MlBoolean MleDppGenCode::readTitleTemplate(MleTemplate &pTemplate)
 {
     char *filename;
 
@@ -137,14 +137,16 @@ void MleDppGenCode::readTitleTemplate(MleTemplate &pTemplate)
         fprintf(stdout, "*** MleDppGenCode: Target language is %s.\n", lang);
     }
 
+    MlBoolean status = TRUE;
     if (pTemplate.read(filename) < 0)
     {
         perror(filename);
+        status = FALSE;
     }
 
     mlFree(filename);
 
-    return;
+    return status;
 }
 
 
@@ -216,7 +218,8 @@ MlBoolean MleDppGenCode::generateTitle(char *tags)
 
     // Read code generation template.
     MleTemplate pTemplate;
-    readTitleTemplate(pTemplate);
+    if (! readTitleTemplate(pTemplate))
+        return(FALSE);
 
     MleTemplateBindings *pGBindings = new MleTemplateBindings();
     pGBindings->defineConstant("ELEMENTS",

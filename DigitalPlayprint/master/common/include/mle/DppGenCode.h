@@ -153,7 +153,7 @@ class MleDppGenCode
         MleDppGenCode(void) {};
 
 		// Read the template for the title.
-        void readTitleTemplate(MleTemplate &pTemplate);
+        MlBoolean readTitleTemplate(MleTemplate &pTemplate);
 
 		// The output directory where generated code will be placed.
 		static MlePath *g_outputDir;

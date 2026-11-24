@@ -143,3 +143,14 @@ install(
 	../../common/include/mle/DppGenMakefile.h
     DESTINATION
       include/mle)
+
+# Install the code generation templates. The tools find them in
+# $MLE_ROOT/lib64 (see mlConfig.h in mle-core-util).
+install(
+    FILES
+      ../../common/src/DPPGenerator/TitleCppCode.tmpl
+      ../../common/src/DPPGenerator/TitleJavaCode.tmpl
+      ../../common/src/layout/TOCCppGlobals.tmpl
+      ../../common/src/layout/TOCJavaGlobals.tmpl
+    DESTINATION
+      lib64)
