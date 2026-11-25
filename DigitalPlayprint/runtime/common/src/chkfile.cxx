@@ -51,18 +51,19 @@
 
 MleChunkFile::MleChunkFile(const char *filename,Mode flags)
     :m_mode(flags),
+     m_fp(NULL),
      m_swapRead(FALSE),
      m_swapWrite(FALSE)
 {
     // Initialize Playprint book keeping structures.
     memset(&m_formInfo,0,sizeof(MleDppChunkInfo));
 
-    // Open file handle.
+    // Open file handle. A file that cannot be opened is not a programming
+    // error: getFp() is NULL and the caller has to check.
     if (flags == READING)
         m_fp = mlFOpen(filename,"rb");
     else if (flags == WRITING)
         m_fp = mlFOpen(filename,"wb+");
-    MLE_VALIDATE_PTR(m_fp);
 }
 
 

@@ -106,25 +106,44 @@ void ChunkBuilder::form(const char *t, const char *f, const std::function<void()
 
 namespace {
 
-void putHostInt(std::vector<uint8_t> &bytes, int32_t v) {
-    uint8_t raw[4];
-    memcpy(raw, &v, 4);
-    bytes.insert(bytes.end(), raw, raw + 4);
+// An int in a chunk file, in the byte order of the file.
+void putInt(std::vector<uint8_t> &bytes, int32_t v, bool big) {
+    for (int i = 0; i < 4; i++)
+        bytes.push_back((static_cast<uint32_t>(v) >> (big ? 24 - 8 * i : 8 * i)) & 0xff);
 }
 
-void setHostInt(std::vector<uint8_t> &bytes, size_t at, int32_t v) {
-    memcpy(&bytes[at], &v, 4);
+void setInt(std::vector<uint8_t> &bytes, size_t at, int32_t v, bool big) {
+    std::vector<uint8_t> raw;
+    putInt(raw, v, big);
+    memcpy(&bytes[at], raw.data(), 4);
+}
+
+// The start of a chunk file: the marker that gives its byte order, and an int
+// (the offset of the names, or the size of the file) that is set at the end.
+void putMarker(std::vector<uint8_t> &bytes, bool big) {
+    const char *marker = big ? MLE_DPP_CHUNKFILE_MARKER_BE : MLE_DPP_CHUNKFILE_MARKER_LE;
+    bytes.insert(bytes.end(), marker, marker + MLE_DPP_CHUNKFILE_MARKER_SIZE);
 }
 
 } // anonymous namespace
 
-std::vector<uint8_t> groupChunkBytes(bool withMediaRef) {
-    // The file is the offset of the media names, the stream of opcodes, and
-    // the media names. The stream is the id of the group, the number of
-    // Actors, and for each Actor its opcodes.
+std::vector<uint8_t> chunkFileStart(bool bigEndian, int32_t value) {
     std::vector<uint8_t> bytes;
-    putHostInt(bytes, 0);                // the offset of the names, set below
-    putHostInt(bytes, 7);                // the id of the group
+    putMarker(bytes, bigEndian);
+    putInt(bytes, value, bigEndian);
+    return bytes;
+}
+
+void setChunkFileInt(std::vector<uint8_t> &bytes, int32_t value, bool bigEndian) {
+    setInt(bytes, MLE_DPP_CHUNKFILE_MARKER_SIZE, value, bigEndian);
+}
+
+std::vector<uint8_t> groupChunkBytes(bool withMediaRef, bool bigEndian) {
+    // The file is the marker, the offset of the media names, the stream of
+    // opcodes, and the media names. The stream is the id of the group, the
+    // number of Actors, and for each Actor its opcodes.
+    std::vector<uint8_t> bytes = chunkFileStart(bigEndian, 0);   // the offset is set below
+    putInt(bytes, 7, bigEndian);         // the id of the group
     bytes.push_back(1);                  // one Actor
     // An index of 0 is not written: it is a number of no digits.
     bytes.push_back(createActorOpcode);  // Actor 0
@@ -137,7 +156,7 @@ std::vector<uint8_t> groupChunkBytes(bool withMediaRef) {
     if (withMediaRef)
         bytes.push_back(copyMediaRefOpcode);    // the first media name, 0
     bytes.push_back(endActorGroupOpcode);
-    setHostInt(bytes, 0, bytes.size());
+    setChunkFileInt(bytes, bytes.size(), bigEndian);
     if (withMediaRef) {
         const char name[] = "image";
         bytes.insert(bytes.end(), name, name + sizeof(name));
@@ -145,25 +164,23 @@ std::vector<uint8_t> groupChunkBytes(bool withMediaRef) {
     return bytes;
 }
 
-std::vector<uint8_t> setChunkBytes() {
-    std::vector<uint8_t> bytes;
-    putHostInt(bytes, 0);                // the size of the file, set below
+std::vector<uint8_t> setChunkBytes(bool bigEndian) {
+    std::vector<uint8_t> bytes = chunkFileStart(bigEndian, 0);   // the size is set below
     for (uint8_t b : { 1, 2, 3, 4, 5, 6, 7, 8 })
         bytes.push_back(b);
-    setHostInt(bytes, 0, bytes.size());
+    setChunkFileInt(bytes, bytes.size(), bigEndian);
     return bytes;
 }
 
-std::vector<uint8_t> sceneChunkBytes() {
+std::vector<uint8_t> sceneChunkBytes(bool bigEndian) {
     // The offset of the group names, and the integers of the Scene: the offset
     // of the media references, the id of the scene, and two group indices.
-    std::vector<uint8_t> bytes;
-    putHostInt(bytes, 0);
-    putHostInt(bytes, 0);
-    putHostInt(bytes, 1);
-    putHostInt(bytes, 0);
-    putHostInt(bytes, 1);
-    setHostInt(bytes, 0, bytes.size());
+    std::vector<uint8_t> bytes = chunkFileStart(bigEndian, 0);
+    putInt(bytes, 0, bigEndian);
+    putInt(bytes, 1, bigEndian);
+    putInt(bytes, 0, bigEndian);
+    putInt(bytes, 1, bigEndian);
+    setChunkFileInt(bytes, bytes.size(), bigEndian);
     return bytes;
 }
 
@@ -191,15 +208,20 @@ bool writeMediaChunkFile(const std::string &path, bool bigEndian, const std::str
 }
 
 bool buildPlayprint(const std::string &dir, bool bigEndian, PlayprintFiles &files) {
+    return buildPlayprint(dir, bigEndian, files, bigEndian);
+}
+
+bool buildPlayprint(const std::string &dir, bool bigEndian, PlayprintFiles &files,
+                    bool chunkFilesBigEndian) {
     files.playprint = dir + "/pp.dpp";
     files.group = dir + "/group1.chk";
     files.set = dir + "/set1.chk";
     files.scene = dir + "/scene1.chk";
     files.media = dir + "/image.chk";
-    if (! writeFile(files.group, groupChunkBytes(true)) ||
-        ! writeFile(files.set, setChunkBytes()) ||
-        ! writeFile(files.scene, sceneChunkBytes()) ||
-        ! writeMediaChunkFile(files.media, bigEndian))
+    if (! writeFile(files.group, groupChunkBytes(true, chunkFilesBigEndian)) ||
+        ! writeFile(files.set, setChunkBytes(chunkFilesBigEndian)) ||
+        ! writeFile(files.scene, sceneChunkBytes(chunkFilesBigEndian)) ||
+        ! writeMediaChunkFile(files.media, chunkFilesBigEndian))
         return false;
 
     // The table of chunk files.

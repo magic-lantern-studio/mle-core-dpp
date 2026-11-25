@@ -103,7 +103,8 @@ enum MleDppErr
     MLE_DPP_ERR_CANNOTWRITE      = 513,
     MLE_DPP_ERR_CANNOTREAD       = 514,
     MLE_DPP_ERR_CANNOTSEEK       = 515,
-    MLE_DPP_ERR_CHUNKNOTFOUND    = 516
+    MLE_DPP_ERR_CHUNKNOTFOUND    = 516,
+    MLE_DPP_ERR_BYTEORDER        = 517   /* chunk file is not in the byte order of the playprint */
 };
 
 

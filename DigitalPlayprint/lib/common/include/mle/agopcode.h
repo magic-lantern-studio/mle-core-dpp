@@ -69,4 +69,49 @@ enum {
 #define valueBits 7
 #define valueMask ((1 << (valueBits)) - 1) 
 
+/*
+ * A Group, Scene or Set chunk file starts with a four byte marker that says
+ * the byte order of the integers in the file. The marker is bytes, so it is
+ * the same in either order. The integer that follows it (the offset of the
+ * names, or the size of the file) is in that byte order, and the offsets
+ * count from the start of the file, marker included.
+ *
+ * Group and Scene: marker, offset of the names, data, names.
+ * Set:             marker, size of the file, data.
+ */
+#define MLE_DPP_CHUNKFILE_MARKER_SIZE   4
+#define MLE_DPP_CHUNKFILE_MARKER_BE     "MLBE"
+#define MLE_DPP_CHUNKFILE_MARKER_LE     "MLLE"
+/* The size of the marker and the integer that follows it. */
+#define MLE_DPP_CHUNKFILE_HEADER_SIZE   8
+
+/*
+ * The byte order that a marker gives: 1 for Big Endian, 2 for Little Endian
+ * and 0 if the bytes are not a marker.
+ */
+static inline int mleDppChunkFileOrder(const unsigned char *bytes)
+{
+    if (bytes[0] == 'M' && bytes[1] == 'L' && bytes[3] == 'E')
+    {
+        if (bytes[2] == 'B')
+            return 1;
+        if (bytes[2] == 'L')
+            return 2;
+    }
+    return 0;
+}
+
+/*
+ * The integer in four bytes of a chunk file, given the byte order of the file.
+ */
+static inline int mleDppChunkFileInt(const unsigned char *b, int littleEndian)
+{
+    unsigned int v;
+    if (littleEndian)
+        v = b[0] | (b[1] << 8) | (b[2] << 16) | ((unsigned int) b[3] << 24);
+    else
+        v = ((unsigned int) b[0] << 24) | (b[1] << 16) | (b[2] << 8) | b[3];
+    return (int) v;
+}
+
 #endif /* __MLE_DPP_ACTORGROUPOPCODE_H_ */

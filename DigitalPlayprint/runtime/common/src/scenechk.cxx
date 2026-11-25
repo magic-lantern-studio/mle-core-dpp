@@ -52,26 +52,33 @@
 
 // Code to resolve group references in an actor group chunk.
 
-
 MleDppSceneChunk::MleDppSceneChunk(const char *filename, MlBoolean isLittle)
  : m_fp(NULL), m_groupNames(NULL), m_nameOffset(0), m_nameLength(0),
-   m_littleEndian(isLittle), m_chunkRef(NULL), m_chunkStart(NULL),
+   m_littleEndian(isLittle), m_fileLittle(FALSE), m_chunkRef(NULL), m_chunkStart(NULL),
    m_chunkEnd(NULL), m_resolvedChunkPtr(NULL), m_valid(FALSE), m_bad(FALSE)
 {
-	// The offset and the names come from the file, so they are checked.
+	// The offset and the names come from the file, so they are checked. The
+	// file starts with a marker that gives its byte order (see agopcode.h),
+	// then the offset of the names, in that byte order.
 	m_fp = fopen(filename, "rb");
 	if (m_fp == NULL)
 		return;
 
-	if (fread(&m_nameOffset, sizeof(MlInt), 1, m_fp) != 1)
+	unsigned char header[MLE_DPP_CHUNKFILE_HEADER_SIZE];
+	if (fread(header, sizeof(header), 1, m_fp) != 1)
 		return;
+	int order = mleDppChunkFileOrder(header);
+	if (order == 0)
+		return;
+	m_fileLittle = (order == 2);
+	m_nameOffset = mleDppChunkFileInt(header + MLE_DPP_CHUNKFILE_MARKER_SIZE, m_fileLittle);
 
 	if (fseek(m_fp, 0, SEEK_END) != 0)
 		return;
 
 	long fileEnd = ftell(m_fp);
-	if (fileEnd < (long) sizeof(MlInt) || m_nameOffset < (MlInt) sizeof(MlInt) ||
-	    m_nameOffset > fileEnd)
+	if (fileEnd < MLE_DPP_CHUNKFILE_HEADER_SIZE ||
+	    m_nameOffset < MLE_DPP_CHUNKFILE_HEADER_SIZE || m_nameOffset > fileEnd)
 		return;
 
 	if (fseek(m_fp, m_nameOffset, SEEK_SET) != 0)
@@ -211,7 +218,7 @@ MlInt MleDppSceneChunk::readIndex(void)
 MlInt MleDppSceneChunk::readInt(void)
 {
     MlInt value = nextChunkByte();
-    if (m_littleEndian)
+    if (m_fileLittle)
 	{
 		value |= (nextChunkByte()<<8);
 		value |= (nextChunkByte()<<16);
@@ -234,9 +241,9 @@ MleDppSceneChunk::loadChunk(MlInt *length)
 
 	// The chunk is a number of ints, from the file: it has to have at least
 	// one, and no part of an int.
-	MlInt chunkLength = m_nameOffset - sizeof(MlInt);
+	MlInt chunkLength = m_nameOffset - MLE_DPP_CHUNKFILE_HEADER_SIZE;
 	if (chunkLength <= 0 || chunkLength % sizeof(MlInt) != 0 ||
-	    fseek(m_fp, sizeof(MlInt), SEEK_SET) != 0)
+	    fseek(m_fp, MLE_DPP_CHUNKFILE_HEADER_SIZE, SEEK_SET) != 0)
 		return NULL;
 
 	m_bad = FALSE;

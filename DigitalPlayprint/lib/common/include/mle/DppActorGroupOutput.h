@@ -168,6 +168,9 @@ class MleDppActorGroupOutput
 
 	int writeInt(int d);
 
+	// Write the marker that starts a chunk file (see agopcode.h).
+	int writeChunkFileMarker(void);
+
 	int writeScalar(float f);
 
 	int writeFloat(float f);

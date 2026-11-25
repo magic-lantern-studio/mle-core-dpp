@@ -85,7 +85,7 @@ typedef struct _pattern
 typedef struct _ArgStruct
 {
     char       *commandName;  /* Name of command. */
-    MlBoolean  byteOrder;     /* TRUE = Little Endian, FALSE = Big Endian. */
+    int        requested;     /* 0 = from the marker, 1 = Big Endian, 2 = Little Endian. */
 	MlBoolean  language;      /* TRUE = Java, FALSE = C++. */
     int        verbose;       /* Be verbose. */
 	char       *chunkFile;    /* Group chunk file to dump. */
@@ -104,12 +104,14 @@ static int g_truncated = 0;
 const char *usage_str = "\
 Syntax:   dumpgroup  [-b|-l] [-v] <group_chunk_file>\n\
 \n\
-          -b                   Use Big Endian byte ordering (default)\n\
-          -l                   Use Little Endian byte ordering\n\
+          -b                   Require Big Endian byte ordering\n\
+          -l                   Require Little Endian byte ordering\n\
           -v                   Be verbose\n\
           <group_chunk_file>   Generated Group chunk file (.chk)\n\
 \n\
-Function: Dump Magic Lantern Actor Group Chunk Files.\n\
+Function: Dump Magic Lantern Actor Group Chunk Files. The byte order is\n\
+          read from the marker at the start of the file; -b or -l makes\n\
+          it an error if the file is in the other byte order.\n\
 \n";
 
 int parseArgs(int argc, char *argv[], ArgStruct *args)
@@ -126,12 +128,12 @@ int parseArgs(int argc, char *argv[], ArgStruct *args)
 		switch (c)
 		{
 		  case 'b':
-			/* Use Big Endian byte ordering. */
-			args->byteOrder = FALSE;
+			/* Require Big Endian byte ordering. */
+			args->requested = 1;
 			break;
 		  case 'l':
-			/* Use Little Endian byte ordering. */
-			args->byteOrder = TRUE;
+			/* Require Little Endian byte ordering. */
+			args->requested = 2;
 			break;
 		  case 'v':
 			args->verbose = TRUE;
@@ -178,18 +180,13 @@ int main(int argc, char **argv)
 
     // Parse arguments.
     args.commandName = argv[0];
-    args.byteOrder = TRUE;
+    args.requested = 0;
     args.verbose = FALSE;
     args.chunkFile = NULL;
     if (! parseArgs(argc, argv, &args))
 	{
       exit(1);
     }
-
-	if (! args.byteOrder)
-		g_bigEndian = TRUE;
-	else
-		g_bigEndian = FALSE;
 
     contents = readFileToMemory(args.chunkFile, &size);
     if (contents == NULL || size == 0)
@@ -198,7 +195,27 @@ int main(int argc, char **argv)
                 args.commandName, args.chunkFile ? args.chunkFile : "(stdin)");
         exit(1);
     }
-    parseStream(contents, size);
+
+    // The file starts with a marker that gives its byte order, then the
+    // offset of the media names, in that byte order.
+    int order = size >= MLE_DPP_CHUNKFILE_HEADER_SIZE ? mleDppChunkFileOrder(contents) : 0;
+    if (order == 0)
+    {
+        fprintf(stderr, "%s : Not an Actor Group chunk file (no byte order marker): %s\n",
+                args.commandName, args.chunkFile ? args.chunkFile : "(stdin)");
+        exit(1);
+    }
+    if (args.requested != 0 && args.requested != order)
+    {
+        fprintf(stderr, "%s : Actor Group chunk file is %s Endian, not %s Endian: %s\n",
+                args.commandName, order == 1 ? "Big" : "Little",
+                order == 1 ? "Little" : "Big", args.chunkFile ? args.chunkFile : "(stdin)");
+        exit(1);
+    }
+    g_bigEndian = (order == 1);
+
+    unsigned char *stream = contents + MLE_DPP_CHUNKFILE_MARKER_SIZE;
+    parseStream(stream, size - MLE_DPP_CHUNKFILE_MARKER_SIZE);
     return g_errors > 0 ? 1 : 0;
 }
 

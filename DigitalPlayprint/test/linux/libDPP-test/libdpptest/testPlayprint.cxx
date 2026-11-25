@@ -59,28 +59,34 @@ uint32_t intIn(const std::vector<uint8_t> &data, size_t at, bool big) {
 }
 
 // What the Group chunk of the fixture playprint holds: the stream of the Group
-// chunk file without the offset of the names, and with the index of the media
-// name written as its index, 1, in the table of chunk files.
-std::vector<uint8_t> resolvedGroup() {
-    return { 7, 0, 0, 0,                        // the id of the group
-             1,                                 // one Actor
-             createActorOpcode,
-             setPropertyLengthOpcode, 4,
-             setPropertyOffsetOpcode,
-             copyPropertyOpcode, 0x11, 0x22, 0x33, 0x44,
-             copyMediaRefOpcode, 1,             // was 0
-             endActorGroupOpcode };
+// chunk file without its marker and the offset of the names, and with the index
+// of the media name written as its index, 1, in the table of chunk files. The
+// ints are in the byte order of the chunk file, which is the playprint's.
+std::vector<uint8_t> resolvedGroup(bool big) {
+    std::vector<uint8_t> stream;
+    if (big)
+        stream = { 0, 0, 0, 7 };                // the id of the group
+    else
+        stream = { 7, 0, 0, 0 };
+    for (int b : std::vector<int>{ 1,           // one Actor
+                   createActorOpcode,
+                   setPropertyLengthOpcode, 4,
+                   setPropertyOffsetOpcode,
+                   copyPropertyOpcode, 0x11, 0x22, 0x33, 0x44,
+                   copyMediaRefOpcode, 1,       // was 0
+                   endActorGroupOpcode })
+        stream.push_back(static_cast<uint8_t>(b));
+    return stream;
 }
 
-std::vector<uint8_t> setData() {
-    std::vector<uint8_t> chunk = setChunkBytes();
-    return std::vector<uint8_t>(chunk.begin() + 4, chunk.end());
+// The data of a chunk file after its marker and its first int.
+std::vector<uint8_t> afterHeader(const std::vector<uint8_t> &chunk) {
+    return std::vector<uint8_t>(chunk.begin() + MLE_DPP_CHUNKFILE_HEADER_SIZE, chunk.end());
 }
 
-std::vector<uint8_t> sceneData() {
-    std::vector<uint8_t> chunk = sceneChunkBytes();
-    return std::vector<uint8_t>(chunk.begin() + 4, chunk.end());
-}
+std::vector<uint8_t> setData(bool big) { return afterHeader(setChunkBytes(big)); }
+
+std::vector<uint8_t> sceneData(bool big) { return afterHeader(sceneChunkBytes(big)); }
 
 // What the callbacks of a MleDppInput collect.
 struct Collected {
@@ -233,7 +239,7 @@ TEST_F(PlayprintTest, WritesTheGroupWithTheResolvedMediaIndex) {
         build(big);
         ChunkFile file;
         ASSERT_TRUE(readChunkFile(m_files.playprint, file)) << file.error;
-        EXPECT_EQ(file.chunks[0].children[2].data, resolvedGroup());
+        EXPECT_EQ(file.chunks[0].children[2].data, resolvedGroup(big));
     }
 }
 
@@ -242,8 +248,8 @@ TEST_F(PlayprintTest, WritesTheSetAndTheScene) {
         build(big);
         ChunkFile file;
         ASSERT_TRUE(readChunkFile(m_files.playprint, file)) << file.error;
-        EXPECT_EQ(file.chunks[0].children[4].data, setData());
-        EXPECT_EQ(file.chunks[0].children[5].data, sceneData());
+        EXPECT_EQ(file.chunks[0].children[4].data, setData(big));
+        EXPECT_EQ(file.chunks[0].children[5].data, sceneData(big));
     }
 }
 
@@ -294,9 +300,9 @@ TEST_F(PlayprintTest, ReadsWhatWasWritten) {
     for (bool big : { true, false }) {
         build(big);
         Collected c;
-        c.groupSize = resolvedGroup().size();
-        c.setSize = setData().size();
-        c.sceneSize = sceneData().size();
+        c.groupSize = resolvedGroup(big).size();
+        c.setSize = setData(big).size();
+        c.sceneSize = sceneData(big).size();
 
         MleDppInput in(m_files.playprint.c_str());
         in.setSwap(needsSwap(big));
@@ -315,7 +321,7 @@ TEST_F(PlayprintTest, ReadsWhatWasWritten) {
 
         EXPECT_TRUE(in.readGroup(onGroup, &c));
         EXPECT_EQ(c.groupCalls, 1);
-        EXPECT_EQ(c.group, resolvedGroup());
+        EXPECT_EQ(c.group, resolvedGroup(big));
 
         EXPECT_TRUE(in.beginMref(onMrefBegin, &c));
         EXPECT_EQ(c.mrefInfo.m_numMrefs, 1u);
@@ -329,10 +335,10 @@ TEST_F(PlayprintTest, ReadsWhatWasWritten) {
         EXPECT_EQ(c.mrefEndCalls, 1);
 
         EXPECT_TRUE(in.readSet(onSet, &c));
-        EXPECT_EQ(c.set, setData());
+        EXPECT_EQ(c.set, setData(big));
 
         EXPECT_TRUE(in.readScene(onScene, &c));
-        EXPECT_EQ(c.scene, sceneData());
+        EXPECT_EQ(c.scene, sceneData(big));
 
         EXPECT_TRUE(in.end());
     }
@@ -346,8 +352,8 @@ TEST_F(PlayprintTest, TableOfContentsFindsEachChunk) {
         const std::vector<Chunk> &kids = tree.chunks[0].children;
 
         Collected c;
-        c.setSize = setData().size();
-        c.sceneSize = sceneData().size();
+        c.setSize = setData(big).size();
+        c.sceneSize = sceneData(big).size();
         MleDppInput in(m_files.playprint.c_str());
         in.setSwap(needsSwap(big));
         ASSERT_TRUE(in.begin(big ? MLE_DPP_FINDPPBE : MLE_DPP_FINDPPLE));
@@ -364,10 +370,10 @@ TEST_F(PlayprintTest, TableOfContentsFindsEachChunk) {
 
         in.goTo(in.getTOCOffset(3));
         EXPECT_TRUE(in.readScene(onScene, &c));
-        EXPECT_EQ(c.scene, sceneData());
+        EXPECT_EQ(c.scene, sceneData(big));
         in.goTo(in.getTOCOffset(2));
         EXPECT_TRUE(in.readSet(onSet, &c));
-        EXPECT_EQ(c.set, setData());
+        EXPECT_EQ(c.set, setData(big));
     }
 }
 

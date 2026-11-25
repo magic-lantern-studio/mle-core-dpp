@@ -341,8 +341,10 @@ int MleDppActorGroupOutput::openFile(const char *filename)
     {
         m_curGroupChunkFile = m_fp;
 
-        int placeHolder = 0;
-        mlFWrite(&placeHolder, sizeof(int), 1, m_fp);
+        // The marker says the byte order of the file; the offset of the
+        // names follows it, and is updated when the file is closed.
+        writeChunkFileMarker();
+        writeInt(0);
 
         status = 0;
     }
@@ -377,8 +379,8 @@ int MleDppActorGroupOutput::closeFile(void)
     }
 
     // Update length.
-    mlFSeek(m_fp, 0, SEEK_SET);
-    mlFWrite(&stringStart, sizeof(int), 1, m_fp);
+    mlFSeek(m_fp, MLE_DPP_CHUNKFILE_MARKER_SIZE, SEEK_SET);
+    writeInt(stringStart);
     mlFSeek(m_fp, 0, SEEK_END);
     mlFClose(m_fp);
     m_fp = NULL;
@@ -420,7 +422,11 @@ MleDppActorGroupOutput::openForumChunkFile(const char *filename)
     if ((m_fp = mlFOpen(tmpPath,"wb")) != NULL )
     {
         m_curSetChunkFile = m_fp;
-        mlFWrite(&placeHolder, sizeof(int), 1, m_fp);
+
+        // The marker says the byte order of the file; the size of the file
+        // follows it, and is updated when the file is closed.
+        writeChunkFileMarker();
+        writeInt(placeHolder);
 
         status = 0;
     }
@@ -456,11 +462,11 @@ int MleDppActorGroupOutput::closeForumChunkFile(void)
     writeOpcode(endSetOpcode);
 
     /*
-     * Write the size of the file into the first word (4 bytes) of the file.
+     * Write the size of the file into the word (4 bytes) after the marker.
      */
     fileSize = mlFTell(m_fp);
-    mlFSeek(m_fp, 0, SEEK_SET);
-    mlFWrite(&fileSize, sizeof(int), 1, m_fp);
+    mlFSeek(m_fp, MLE_DPP_CHUNKFILE_MARKER_SIZE, SEEK_SET);
+    writeInt(fileSize);
     mlFSeek(m_fp, 0, SEEK_END);
     mlFClose(m_fp);
 
@@ -504,6 +510,18 @@ int MleDppActorGroupOutput::writeString(const char *s)
         return 0;
     else
         return 1;
+}
+
+/*
+    This function writes the marker that starts a chunk file: it says whether
+    the integers in the file are in big or little endian order.
+*/
+int MleDppActorGroupOutput::writeChunkFileMarker(void)
+{
+    const char *marker = m_littleEndian ? MLE_DPP_CHUNKFILE_MARKER_LE
+                                        : MLE_DPP_CHUNKFILE_MARKER_BE;
+    return mlFWrite(marker, 1, MLE_DPP_CHUNKFILE_MARKER_SIZE, m_fp) ==
+           MLE_DPP_CHUNKFILE_MARKER_SIZE ? 0 : 1;
 }
 
 /*

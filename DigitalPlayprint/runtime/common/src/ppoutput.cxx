@@ -46,6 +46,7 @@
 
 // Include Magic Lantern header files.
 #include "mle/mlErrno.h"
+#include "mle/agopcode.h"
 #include "mle/mlMalloc.h"
 #include "mle/mlAssert.h"
 
@@ -87,6 +88,18 @@ MlBoolean MleDppOutput::writeHeader()
 }
 
 
+// Whether the playprint that is written is Little Endian, given whether it is
+// swapped from the byte order of this machine.
+static MlBoolean playprintIsLittle(MlBoolean swapWrite)
+{
+#if BYTE_ORDER == LITTLE_ENDIAN
+    return swapWrite ? FALSE : TRUE;
+#else
+    return swapWrite ? TRUE : FALSE;
+#endif
+}
+
+
 MlBoolean MleDppOutput::writeGroup(MleDppChunkTable *table, MlInt groupIndex)
 {
     int i;
@@ -95,19 +108,24 @@ MlBoolean MleDppOutput::writeGroup(MleDppChunkTable *table, MlInt groupIndex)
     MleDppChunkInfo groupInfo;
     memset(&groupInfo,0,sizeof(MleDppChunkInfo));
 
-    // Open group chunk file and resolve media references.
-    MlBoolean isLittle = getSwapWrite();
-#if BYTE_ORDER == LITTLE_ENDIAN
-    isLittle = ML_TRUE;
-#endif
+    // Open group chunk file and resolve media references. The byte order of
+    // the chunk file is in its marker, and has to be that of the playprint.
+    MlBoolean isLittle = playprintIsLittle(getSwapWrite());
     MleDppActorGroupChunk *groupChunk =
          new MleDppActorGroupChunk(table->getFilename(groupIndex),isLittle);
 
-    // A chunk file that is damaged is an error.
+    // A chunk file that is damaged is an error. The bytes of a property
+    // cannot be swapped, so a chunk file in the other byte order is too.
     if (! groupChunk->isValid())
     {
         delete groupChunk;
         mlSetErrno(MLE_DPP_ERR_CANNOTREAD);
+        return(FALSE);
+    }
+    if (! groupChunk->isByteOrderMatch())
+    {
+        delete groupChunk;
+        mlSetErrno(MLE_DPP_ERR_BYTEORDER);
         return(FALSE);
     }
 
@@ -192,7 +210,8 @@ MlBoolean MleDppOutput::writeScene(MleDppChunkTable *table, MlInt sceneIndex)
 
     // Open scene chunk file .
     MleDppSceneChunk *sceneChunk =
-        new MleDppSceneChunk(table->getFilename(sceneIndex),getSwapWrite());
+        new MleDppSceneChunk(table->getFilename(sceneIndex),
+                             playprintIsLittle(getSwapWrite()));
 
     // A chunk file that is damaged is an error.
     if (! sceneChunk->isValid())
@@ -248,55 +267,73 @@ MlBoolean MleDppOutput::writeMedia(char *chunkFilename)
     MleMediaRefInfoChunk inMrefInfoData,outMrefInfoData;
     MleMediaRefChunk mrefData;
 
-    // Prepare the MediaRef Chunk File for reading.
+    // Prepare the MediaRef Chunk File for reading. The file says its byte
+    // order, in its form tag, and it is swapped if that is not the byte order
+    // of this machine. It is swapped again if the playprint is not, below.
     in = new MleMrefChunkFile(chunkFilename,MleMrefChunkFile::READING);
-    if (getSwapRead())
+    MlBoolean ok = FALSE;
+    int format = in->getFp() ? mlDppCheckFormat(in->getFp()) : -1;
+
+    // The read swap flag is global to the library, and this object has added
+    // to it if it swaps. It is for the file that is read, so take it away
+    // while reading, and put it back at the end.
+    MlBoolean outputSwapsReads = getSwapRead();
+    if (outputSwapsReads)
+        mlDppSetSwapRead(FALSE);
+    if (format > 0)
 	{
-        in->setSwap(TRUE);
-    }
-#if BYTE_ORDER == BIG_ENDIAN
-	if (getSwapWrite())
-		in->begin(MLE_DPP_FINDPPLE);
-	else
-	    in->begin(MLE_DPP_FINDPPBE);
+        // Only the read flag: the write flag is global too, and is for the
+        // playprint that is written.
+#if BYTE_ORDER == LITTLE_ENDIAN
+        in->setSwapRead(format == 1);
 #else
-	if (getSwapWrite())
-		in->begin(MLE_DPP_FINDPPBE);
-	else
-		in->begin(MLE_DPP_FINDPPLE);
+        in->setSwapRead(format == 2);
 #endif
-    in->readHeader(&hdrData);
-    in->beginList();
-
-    // Begin IFF 'MRFL' LIST chunk.
-    beginMrefList();
-
-    // Read IFF 'info' chunk.
-    in->readInfo(&inMrefInfoData);
-
-    memcpy(&outMrefInfoData,&inMrefInfoData,sizeof(MleMediaRefInfoChunk));
-
-    // Write IFF 'info' chunk.
-    writeMrefInfo(&outMrefInfoData);
-
-    for (MlUInt i = 0; i < inMrefInfoData.m_numMrefs; i++)
-	{
-        // Read IFF 'mref' chunk.
-        in->readData(&mrefData);
-
-        // Write IFF 'mref' chunk.
-        writeMref(&mrefData);
+        // Every part of the file has to be there: a damaged file is an error,
+        // and the counts in it are not used before they are checked.
+        ok = in->begin(format == 1 ? MLE_DPP_FINDPPBE : MLE_DPP_FINDPPLE) &&
+             in->readHeader(&hdrData) &&
+             in->beginList() &&
+             beginMrefList() &&
+             in->readInfo(&inMrefInfoData);
     }
 
-    // End IFF 'MRFL' LIST chunk.
-    endMrefList();
+    if (ok)
+	{
+        memcpy(&outMrefInfoData,&inMrefInfoData,sizeof(MleMediaRefInfoChunk));
+
+        // Write IFF 'info' chunk.
+        ok = writeMrefInfo(&outMrefInfoData);
+
+        for (MlUInt i = 0; ok && i < inMrefInfoData.m_numMrefs; i++)
+	    {
+            // Read IFF 'mref' chunk, and write it.
+            memset(&mrefData,0,sizeof(mrefData));
+            if (! in->readData(&mrefData))
+                ok = FALSE;
+            else
+                ok = writeMref(&mrefData);
+            if (mrefData.m_data)
+                mlFree(mrefData.m_data);
+        }
+
+        // End IFF 'MRFL' LIST chunk.
+        if (ok)
+            ok = endMrefList();
+    }
 
     // Close MediaRef Chunk File.
-    in->endList();
-    in->end();
+    if (ok)
+    {
+        in->endList();
+        in->end();
+    } else
+        mlSetErrno(format > 0 ? MLE_DPP_ERR_CANNOTREAD : MLE_DPP_ERR_BADTAG);
     delete in;
+    if (outputSwapsReads)
+        mlDppSetSwapRead(TRUE);
 
-    return(TRUE);
+    return(ok);
 }
 
 
@@ -304,7 +341,7 @@ MlBoolean
 MleDppOutput::writeSet(char *chunkFilename)
 {
     MlByte *ppSetChunk;
-    MlInt size, ppSetChunkLength;
+    MlInt ppSetChunkLength;
     struct stat fileStat;
     FILE *setChunkFilePtr;
     MleDppChunkInfo setChunkInfo;
@@ -342,29 +379,53 @@ MleDppOutput::writeSet(char *chunkFilename)
 #endif
 
     /*
-     * Allocate a buffer to store the set chunk that is going
-     * into the playprint.  Note we don't need the first four bytes
-     * which contain the size of this set chunk file.
+     * The file starts with a marker that gives its byte order, and the size
+     * of the file in that byte order. The byte order has to be that of the
+     * playprint: the bytes of the set cannot be swapped.
      */
-    ppSetChunkLength = fileStat.st_size - 4;
-    ppSetChunk = new MlByte[ppSetChunkLength];
+    unsigned char header[MLE_DPP_CHUNKFILE_HEADER_SIZE];
+    if (fileStat.st_size < (off_t) sizeof(header) ||
+        mlFRead(header, sizeof(header), 1, setChunkFilePtr) != 1)
+    {
+        mlFClose(setChunkFilePtr);
+        mlSetErrno(MLE_DPP_ERR_CANNOTREAD);
+        return(FALSE);
+    }
+    int order = mleDppChunkFileOrder(header);
+    if (order == 0 ||
+        mleDppChunkFileInt(header + MLE_DPP_CHUNKFILE_MARKER_SIZE, order == 2) != fileStat.st_size)
+    {
+        mlFClose(setChunkFilePtr);
+        mlSetErrno(MLE_DPP_ERR_CANNOTREAD);
+        return(FALSE);
+    }
+    if ((order == 2) != playprintIsLittle(getSwapWrite()))
+    {
+        mlFClose(setChunkFilePtr);
+        mlSetErrno(MLE_DPP_ERR_BYTEORDER);
+        return(FALSE);
+    }
+
+    /*
+     * Allocate a buffer to store the set chunk that is going
+     * into the playprint. Note we don't need the marker and the size of
+     * this set chunk file.
+     */
+    ppSetChunkLength = fileStat.st_size - sizeof(header);
+    ppSetChunk = new MlByte[ppSetChunkLength ? ppSetChunkLength : 1];
     memset(ppSetChunk, 0, ppSetChunkLength);
 
     /*
-     * Read the first four bytes in the set chunk file (contains the
-     * file the size).  Read in the rest of set chunk file and close it
-     * after finish reading.
+     * Read in the rest of set chunk file and close it after finish reading.
      */
-    size_t nBytes;
-    nBytes = mlFRead(&size, 4, 1, setChunkFilePtr);
-    nBytes = mlFRead(ppSetChunk, ppSetChunkLength, 1, setChunkFilePtr);
+    size_t nBytes = ppSetChunkLength ? mlFRead(ppSetChunk, ppSetChunkLength, 1, setChunkFilePtr) : 1;
     mlFClose(setChunkFilePtr);
-
-    /*
-     * The size from stat should agree with the size read in from the
-     * set chunk file.
-     */
-    MLE_ASSERT(size == fileStat.st_size);
+    if (nBytes != 1)
+    {
+        delete [] ppSetChunk;
+        mlSetErrno(MLE_DPP_ERR_CANNOTREAD);
+        return(FALSE);
+    }
 
     /*
      * Initialize 'frm' (set) chunk structure for the playprint and

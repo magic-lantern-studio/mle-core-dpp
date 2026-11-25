@@ -54,6 +54,7 @@
 #include "mle/mlMalloc.h"
 #include "mle/mlFileio.h"
 #include "mle/mlTypes.h"
+#include "mle/agopcode.h"
 
 // Include Digital Playprint header files.
 
@@ -74,7 +75,7 @@ typedef struct _pattern
 typedef struct _ArgStruct
 {
     char       *commandName;  /* Name of command. */
-    MlBoolean  byteOrder;     /* TRUE = Little Endian, FALSE = Big Endian. */
+    int        requested;     /* 0 = from the marker, 1 = Big Endian, 2 = Little Endian. */
     Pattern    *chunkFiles;   /* Chunk files. */
 } ArgStruct;
 
@@ -82,11 +83,13 @@ typedef struct _ArgStruct
 // Usage string declaration.
 const char *usage_str = "\
 Syntax:   dumpscene [-b|-l] <chunk file> ...\n\
-          -b            Use Big Endian byte ordering (default)\n\
-          -l            Use Little Endian byte ordering\n\
+          -b            Require Big Endian byte ordering\n\
+          -l            Require Little Endian byte ordering\n\
           <chunk file>  Scene Chunk File\n\
 \n\
-Function: Dump Magic Lantern Scene Chunk Files.\n";
+Function: Dump Magic Lantern Scene Chunk Files. The byte order is read\n\
+          from the marker at the start of the file; -b or -l makes it an\n\
+          error if the file is in the other byte order.\n";
 
 
 // The end of the chunk in memory, and whether a read went past it.
@@ -113,12 +116,12 @@ int parseArgs(int argc, char *argv[], ArgStruct *args)
         switch (c)
         {
           case 'b':
-            /* Use Big Endian byte ordering. */
-            args->byteOrder = FALSE;
+            /* Require Big Endian byte ordering. */
+            args->requested = 1;
             break;
           case 'l':
-            /* Use Little Endian byte ordering. */
-            args->byteOrder = TRUE;
+            /* Require Little Endian byte ordering. */
+            args->requested = 2;
             break;
           case '?':
             errflg++;
@@ -244,9 +247,9 @@ static int readInt(unsigned char*& streamPtrRef)
         //value = (value<<8) | nextStreamByte(streamPtrRef);
         //value = (value<<8) | nextStreamByte(streamPtrRef);
         value = nextStreamByte(streamPtrRef);
-        value = (value>>8) | nextStreamByte(streamPtrRef);
-        value = (value>>8) | nextStreamByte(streamPtrRef);
-        value = (value>>8) | nextStreamByte(streamPtrRef);
+        value = (value<<8) | nextStreamByte(streamPtrRef);
+        value = (value<<8) | nextStreamByte(streamPtrRef);
+        value = (value<<8) | nextStreamByte(streamPtrRef);
     }
 
     return value;
@@ -294,16 +297,11 @@ int main(int argc,char *argv[])
    
     // Parse arguments.
     args.commandName = argv[0];
-    args.byteOrder = FALSE;
+    args.requested = 0;
     args.chunkFiles = NULL;
     if (! parseArgs(argc,argv,&args))
         exit(1);
     int errors = 0;     // The number of chunk files that could not be dumped.
-
-    if (args.byteOrder == FALSE)
-        g_littleEndian = FALSE;
-    else
-        g_littleEndian = TRUE;
 
     nextFile = args.chunkFiles;
     while (nextFile)
@@ -313,16 +311,26 @@ int main(int argc,char *argv[])
         // Open the chunk file.
         contents = readFileToMemory(nextFile->str, &size);
 
-        // Dump the contents. A Scene chunk has a header of three integers
-        // followed by integers, so anything else is not a Scene chunk.
-        if (contents == NULL || size < 12 || size % 4 != 0)
+        // Dump the contents. A Scene chunk has a marker that gives its byte
+        // order and a header of three integers, followed by integers, so
+        // anything else is not a Scene chunk.
+        int order = (contents != NULL && size >= 16) ? mleDppChunkFileOrder(contents) : 0;
+        if (contents == NULL || size < 16 || size % 4 != 0 || order == 0)
         {
             fprintf(stderr, "%s : Unable to read Scene chunk file %s\n",
                     args.commandName, nextFile->str);
             errors++;
+        } else if (args.requested != 0 && args.requested != order)
+        {
+            fprintf(stderr, "%s : Scene chunk file is %s Endian, not %s Endian: %s\n",
+                    args.commandName, order == 1 ? "Big" : "Little",
+                    order == 1 ? "Little" : "Big", nextFile->str);
+            errors++;
         } else
         {
-            parseStream(contents, size);
+            g_littleEndian = (order == 2);
+            unsigned char *stream = contents + MLE_DPP_CHUNKFILE_MARKER_SIZE;
+            parseStream(stream, size - MLE_DPP_CHUNKFILE_MARKER_SIZE);
             if (g_truncated)
                 errors++;
         }

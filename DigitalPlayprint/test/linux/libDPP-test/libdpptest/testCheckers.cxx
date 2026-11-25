@@ -37,6 +37,9 @@
 // input is tested to not hang (see testBadInput.cxx for the readers that
 // return an error).
 
+// Include system header files.
+#include <algorithm>
+
 // Include DPP test header files.
 #include "libdpptest.h"
 
@@ -180,7 +183,7 @@ TEST_F(CheckerTest, SceneLoadsItsIntegers) {
     ASSERT_NE(loaded, nullptr);
     // The file without its offset and its names.
     std::vector<uint8_t> expected = sceneChunkBytes();
-    expected.erase(expected.begin(), expected.begin() + 4);
+    expected.erase(expected.begin(), expected.begin() + MLE_DPP_CHUNKFILE_HEADER_SIZE);
     ASSERT_GT(length, 0);
     EXPECT_LE(static_cast<size_t>(length), expected.size() * 2);
     delete[] const_cast<MlByte *>(loaded);
@@ -196,13 +199,24 @@ TEST_F(CheckerTest, SceneLoadsItsIntegers) {
 
 namespace {
 
+// A chunk file with an offset that is not set from its length, in the byte
+// order of this machine: the marker, the offset, and the bytes.
+std::vector<uint8_t> withOffset(int32_t offset, std::initializer_list<uint8_t> rest) {
+    std::vector<uint8_t> bytes = chunkFileStart(! hostIsLittle(), offset);
+    bytes.insert(bytes.end(), rest.begin(), rest.end());
+    return bytes;
+}
+
 // A Group chunk file with the given stream (after the id of the group) and
-// media names, built with a correct offset.
+// media names, built with a correct offset, in the byte order of this machine.
 std::vector<uint8_t> rawGroup(const std::vector<uint8_t> &stream, std::initializer_list<const char *> names) {
-    std::vector<uint8_t> bytes = { 0, 0, 0, 0, 7, 0, 0, 0 };    // offset, id of the group
+    std::vector<uint8_t> bytes = chunkFileStart(! hostIsLittle(), 0);
+    for (uint8_t b : { 7, 0, 0, 0 })            // the id of the group
+        bytes.push_back(b);
+    if (! hostIsLittle())
+        std::reverse(bytes.end() - 4, bytes.end());
     bytes.insert(bytes.end(), stream.begin(), stream.end());
-    uint32_t offset = bytes.size();
-    memcpy(&bytes[0], &offset, 4);
+    setChunkFileInt(bytes, bytes.size(), ! hostIsLittle());
     for (const char *n : names)
         putName(bytes, n);
     return bytes;
@@ -214,12 +228,15 @@ TEST_F(CheckerTest, DamagedGroupFilesAreNotValid) {
     std::vector<uint8_t> good = groupChunkBytes(true);
     std::vector<uint8_t> noNul = good;
     noNul.pop_back();                   // the last name has no NUL
+    std::vector<uint8_t> noMarker = good;
+    noMarker[0] = 'X';                  // not a marker
     struct { const char *name; std::vector<uint8_t> bytes; } cases[] = {
         { "empty", {} },
         { "three bytes", { 1, 2, 3 } },
-        { "offset beyond the file", { 0x7f, 0, 0, 0, 1, 2, 3, 4 } },
-        { "negative offset", { 0xff, 0xff, 0xff, 0xff, 1, 2, 3, 4 } },
-        { "offset inside the offset", { 2, 0, 0, 0, 1, 2, 3, 4 } },
+        { "no marker", noMarker },
+        { "offset beyond the file", withOffset(0x7f, { 1, 2, 3, 4 }) },
+        { "negative offset", withOffset(-1, { 1, 2, 3, 4 }) },
+        { "offset inside the header", withOffset(6, { 1, 2, 3, 4 }) },
         { "truncated", std::vector<uint8_t>(good.begin(), good.begin() + good.size() / 2) },
         { "name without a NUL", noNul },
     };
@@ -304,12 +321,15 @@ TEST_F(CheckerTest, GroupCanBeResolvedAgainAfterAFailure) {
 TEST_F(CheckerTest, DamagedSceneFilesAreNotValid) {
     std::vector<uint8_t> noNul = sceneWithNames({ "groupA" });
     noNul.pop_back();
+    std::vector<uint8_t> noMarker = sceneChunkBytes();
+    noMarker[1] = 'X';                  // not a marker
     struct { const char *name; std::vector<uint8_t> bytes; } cases[] = {
         { "empty", {} },
         { "three bytes", { 1, 2, 3 } },
-        { "offset beyond the file", { 0x7f, 0, 0, 0, 1, 2, 3, 4 } },
-        { "negative offset", { 0xff, 0xff, 0xff, 0xff, 1, 2, 3, 4 } },
-        { "offset inside the offset", { 2, 0, 0, 0, 1, 2, 3, 4 } },
+        { "no marker", noMarker },
+        { "offset beyond the file", withOffset(0x7f, { 1, 2, 3, 4 }) },
+        { "negative offset", withOffset(-1, { 1, 2, 3, 4 }) },
+        { "offset inside the header", withOffset(6, { 1, 2, 3, 4 }) },
         { "name without a NUL", noNul },
     };
     for (auto &c : cases) {
@@ -337,8 +357,8 @@ TEST_F(CheckerTest, MissingSceneFileIsNotValid) {
 
 TEST_F(CheckerTest, SceneWithPartOfAnIntOrNoIntsGivesNoResult) {
     std::vector<std::vector<uint8_t>> cases;
-    cases.push_back({ 7, 0, 0, 0, 1, 2, 3 });       // 3 bytes of ints
-    cases.push_back({ 4, 0, 0, 0 });                // no ints
+    cases.push_back(withOffset(11, { 1, 2, 3 }));   // 3 bytes of ints
+    cases.push_back(withOffset(8, {}));             // no ints
     for (auto &bytes : cases) {
         std::string path = scratchFile("bad.chk");
         ASSERT_TRUE(writeFile(path, bytes));
@@ -347,5 +367,71 @@ TEST_F(CheckerTest, SceneWithPartOfAnIntOrNoIntsGivesNoResult) {
         MlInt length = -1;
         EXPECT_EQ(chunk.loadChunk(&length), nullptr) << bytes.size() << " bytes";
         EXPECT_EQ(length, 0);
+    }
+}
+
+
+/*** Byte order ***/
+
+TEST_F(CheckerTest, FileByteOrderComesFromTheMarker) {
+    for (bool big : { true, false }) {
+        std::string path = scratchFile("g.chk");
+        ASSERT_TRUE(writeFile(path, groupChunkBytes(true, big)));
+        // Whatever the byte order that is asked for, the file says its own.
+        for (bool resultLittle : { true, false }) {
+            MleDppActorGroupChunk chunk(path.c_str(), resultLittle);
+            ASSERT_TRUE(chunk.isValid());
+            EXPECT_EQ(chunk.isFileLittle() ? true : false, ! big);
+            EXPECT_EQ(chunk.isByteOrderMatch() ? true : false, resultLittle == ! big);
+            EXPECT_EQ(chunk.countNames(), 1);
+            EXPECT_STREQ(chunk.getNames(), "image");
+        }
+    }
+}
+
+TEST_F(CheckerTest, GroupInOtherByteOrderIsRefused) {
+    for (bool fileBig : { true, false }) {
+        std::string path = scratchFile("g.chk");
+        ASSERT_TRUE(writeFile(path, groupChunkBytes(true, fileBig)));
+        const MlInt indices[] = { 2 };
+        int length = -1;
+
+        // The same byte order: the stream is copied as it is.
+        MleDppActorGroupChunk same(path.c_str(), ! fileBig);
+        const unsigned char *resolved = same.resolveNames(&length, indices);
+        ASSERT_NE(resolved, nullptr);
+        ASSERT_EQ(length, 17);
+        EXPECT_EQ(resolved[0], fileBig ? 0 : 7);        // the id of the group
+        EXPECT_EQ(resolved[3], fileBig ? 7 : 0);
+        mlFree(const_cast<unsigned char *>(resolved));
+
+        // The other: the bytes of a property cannot be swapped.
+        MleDppActorGroupChunk other(path.c_str(), fileBig);
+        EXPECT_TRUE(other.isValid());
+        length = -1;
+        EXPECT_EQ(other.resolveNames(&length, indices), nullptr);
+        EXPECT_EQ(length, 0);
+    }
+}
+
+TEST_F(CheckerTest, SceneIsSwappedToTheByteOrderOfTheResult) {
+    for (bool fileBig : { true, false }) {
+        std::string path = scratchFile("s.chk");
+        ASSERT_TRUE(writeFile(path, sceneChunkBytes(fileBig)));
+        for (bool resultBig : { true, false }) {
+            MleDppSceneChunk chunk(path.c_str(), ! resultBig);
+            ASSERT_TRUE(chunk.isValid());
+            EXPECT_EQ(chunk.isFileLittle() ? true : false, ! fileBig);
+            MlInt length = 0;
+            const MlByte *loaded = chunk.loadChunk(&length);
+            ASSERT_NE(loaded, nullptr);
+            // The ints are the same in either byte order of the file, and
+            // are in the byte order of the result.
+            std::vector<uint8_t> expected = sceneChunkBytes(resultBig);
+            expected.erase(expected.begin(), expected.begin() + MLE_DPP_CHUNKFILE_HEADER_SIZE);
+            EXPECT_EQ(std::vector<uint8_t>(loaded, loaded + length), expected)
+                << "file " << (fileBig ? "BE" : "LE") << ", result " << (resultBig ? "BE" : "LE");
+            delete[] const_cast<MlByte *>(loaded);
+        }
     }
 }

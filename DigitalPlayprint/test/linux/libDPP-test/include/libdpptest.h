@@ -245,16 +245,21 @@ struct PlayprintFiles
     std::string media;     // MediaRef chunk file, "image"
 };
 
-// The bytes of an Actor Group chunk file, in the byte order of this machine,
-// which is the order that the Group checker reads (see MleDppOutput::writeGroup).
-// It has one Actor with a property and, if withMediaRef, a reference to one
-// media name, "image".
-std::vector<uint8_t> groupChunkBytes(bool withMediaRef);
+// The start of a Group, Scene or Set chunk file: the marker that gives the byte
+// order of the file, and an int in that byte order (the offset of the names,
+// or the size of the file). setChunkFileInt changes that int.
+std::vector<uint8_t> chunkFileStart(bool bigEndian, int32_t value);
+void setChunkFileInt(std::vector<uint8_t> &bytes, int32_t value, bool bigEndian);
+
+// The bytes of an Actor Group chunk file in the given byte order (the default
+// is that of this machine). It has one Actor with a property and, if
+// withMediaRef, a reference to one media name, "image".
+std::vector<uint8_t> groupChunkBytes(bool withMediaRef, bool bigEndian = ! hostIsLittle());
 
 // The bytes of a Set chunk file (its first int is its own size), and of a
-// Scene chunk file with two group indices.
-std::vector<uint8_t> setChunkBytes();
-std::vector<uint8_t> sceneChunkBytes();
+// Scene chunk file with two group indices, in the given byte order.
+std::vector<uint8_t> setChunkBytes(bool bigEndian = ! hostIsLittle());
+std::vector<uint8_t> sceneChunkBytes(bool bigEndian = ! hostIsLittle());
 
 // Write a MediaRef chunk file with one external reference. The file is in the
 // given byte order. Returns false if it cannot be written.
@@ -264,8 +269,11 @@ bool writeMediaChunkFile(const std::string &path, bool bigEndian,
 // Write the chunk files into a directory and make a playprint from them, as
 // gendpp does: header, table of contents, a Group, the MediaRef, a Set and a
 // Scene, in this order. The Group refers to the MediaRef by its index, 1, in
-// the table of chunk files. The playprint and the media chunk file are in the given byte order.
+// the table of chunk files. The playprint and the chunk files are in the given
+// byte order, or the chunk files are in the order of the last argument.
 bool buildPlayprint(const std::string &dir, bool bigEndian, PlayprintFiles &files);
+bool buildPlayprint(const std::string &dir, bool bigEndian, PlayprintFiles &files,
+                    bool chunkFilesBigEndian);
 
 } // namespace dpptest
 
