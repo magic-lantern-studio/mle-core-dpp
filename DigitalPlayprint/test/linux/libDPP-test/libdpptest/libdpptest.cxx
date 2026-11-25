@@ -37,6 +37,7 @@
 #include <signal.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/prctl.h>
 #include <sys/resource.h>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -255,9 +256,13 @@ ChildResult runInChild(const std::function<void()> &code, int timeoutSeconds) {
         return result;
     if (pid == 0) {
         // The child stops with SIGALRM if the code does not finish. A crash
-        // does not leave a core file.
+        // does not leave a core file. The core limit is not enough: where the
+        // core pattern is a pipe to a crash handler (apport), the handler still
+        // runs and a crash takes more than a second to end. A process that is
+        // not dumpable does not reach it.
         struct rlimit noCore = { 0, 0 };
         setrlimit(RLIMIT_CORE, &noCore);
+        prctl(PR_SET_DUMPABLE, 0);
         alarm(timeoutSeconds);
         try {
             code();
