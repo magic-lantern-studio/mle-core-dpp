@@ -43,6 +43,7 @@
 
 
 // Include system header files.#include <stdio.h>
+#include <stdint.h>
 #include <string.h>
 #include <time.h>
 
@@ -345,10 +346,14 @@ int MleDppSceneOutput::writeInt(int d)
 int MleDppSceneOutput::writeScalar(float f)
 {
     unsigned char data[4];
-    unsigned long floatBits;
+    uint32_t floatBits;
     
-    MLE_ASSERT(sizeof(long) == sizeof(float));
-    floatBits = m_convertFloatToFixed ? f * 65536.0 : *(unsigned long *) &f;
+    // The bits of a float are 32 bits, which is not the size of a long on
+    // every machine.
+    if (m_convertFloatToFixed)
+        floatBits = (uint32_t)(int32_t)(f * 65536.0);
+    else
+        memcpy(&floatBits, &f, sizeof(floatBits));
     if (m_littleEndian)
     {
         data[3] = (unsigned char)(floatBits >> 24);
@@ -370,10 +375,9 @@ int MleDppSceneOutput::writeScalar(float f)
 int MleDppSceneOutput::writeFloat(float f)
 {
     unsigned char data[4];
-    unsigned long floatBits;
+    uint32_t floatBits;
     
-    MLE_ASSERT(sizeof(long) == sizeof(float));
-    floatBits = *(unsigned long *) &f;
+    memcpy(&floatBits, &f, sizeof(floatBits));
     if (m_littleEndian)
     {
         data[3] = (unsigned char)(floatBits >> 24);

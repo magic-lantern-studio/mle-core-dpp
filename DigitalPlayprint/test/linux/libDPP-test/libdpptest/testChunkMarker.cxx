@@ -64,21 +64,12 @@ uint32_t intIn(const std::vector<uint8_t> &data, size_t at, bool big) {
 
 class ChunkMarkerTest : public ScratchFixture {
   protected:
-    // Set when the generators cannot run (the test is skipped).
-    bool m_skip = false;
-
     // The tools' chunk files for a workprint, in a directory for each byte order.
     void runGenerators(bool big, std::string &dir) {
         dir = scratchFile(big ? "be" : "le");
         ASSERT_EQ(system(("mkdir " + dir).c_str()), 0);
         std::string workprint = workprintPath("dppImageTest/DppImageTest.dwp");
         ToolResult g = runTool("gengroup", { big ? "-b" : "-l", "none", workprint, "a.h", "g.h" }, dir);
-        // A Debug build stops on an assertion that long is as big as float,
-        // which is not so on a 64 bit machine (see the test plan).
-        if (g.output.find("sizeof(long) == sizeof(float)") != std::string::npos) {
-            m_skip = true;
-            return;
-        }
         ASSERT_EQ(g.status, 0) << g.output;
         ToolResult s = runTool("genscene", { big ? "-b" : "-l", "none", workprint, "s.h" }, dir);
         ASSERT_EQ(s.status, 0) << s.output;
@@ -117,8 +108,6 @@ TEST_F(ChunkMarkerTest, ToolsWriteTheMarkerAndTheSizesInTheByteOrderOfTheFile) {
     for (bool big : { true, false }) {
         std::string dir;
         runGenerators(big, dir);
-        if (m_skip)
-            GTEST_SKIP() << "gengroup does not run in this build";
         const char *marker = big ? "MLBE" : "MLLE";
         for (const char *name : { "g0.chk", "MySet.chk", "Scene1.chk" }) {
             std::vector<uint8_t> bytes;
@@ -142,8 +131,6 @@ TEST_F(ChunkMarkerTest, DumpToolsReadTheByteOrderFromTheMarker) {
     std::string be, le;
     runGenerators(true, be);
     runGenerators(false, le);
-    if (m_skip)
-        GTEST_SKIP() << "gengroup does not run in this build";
     // The same workprint gives the same dump from either byte order, except
     // for the bytes of the properties, which are in the byte order of the file.
     auto withoutData = [](const std::string &text) {
