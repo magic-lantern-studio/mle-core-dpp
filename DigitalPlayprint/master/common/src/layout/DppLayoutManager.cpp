@@ -43,3 +43,16 @@ void
 DppLayoutManager::setState(LayoutState *state) {
     mState = state;
 }
+
+
+void
+DppLayoutManager::addGeneratedFile(const char *path) {
+    mGeneratedFiles.push_back(path);
+}
+
+void
+DppLayoutManager::removeGeneratedFiles() {
+    for (size_t i = 0; i < mGeneratedFiles.size(); i++)
+        remove(mGeneratedFiles[i].c_str());
+    mGeneratedFiles.clear();
+}

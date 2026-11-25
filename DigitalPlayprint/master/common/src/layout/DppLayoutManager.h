@@ -32,6 +32,10 @@
 #ifndef __DPPLAYOUTMANAGER_H_
 #define __DPPLAYOUTMANAGER_H_
 
+#include <stdio.h>
+#include <string>
+#include <vector>
+
 #include "pplayout.h"
 
 /**
@@ -76,6 +80,19 @@ class DppLayoutManager
 	 */
     void setState(LayoutState *state);
 
+    /**
+     * @brief Remember a file that has been generated.
+     *
+     * @param path The path of the file is passed in.
+     */
+    void addGeneratedFile(const char *path);
+
+    /**
+     * @brief Remove every file that has been remembered, because the
+     * layout has failed.
+     */
+    void removeGeneratedFiles();
+
   private:
     // Hide default constructor.
     DppLayoutManager() {};
@@ -83,6 +100,9 @@ class DppLayoutManager
     // The layout state used by the DPP Python commands to construct
     // a Digital Playprint.
     LayoutState *mState;
+
+    // The files that have been generated.
+    std::vector<std::string> mGeneratedFiles;
 };
 
 #endif // __DPPLAYOUTMANAGER_H_

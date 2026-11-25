@@ -210,10 +210,9 @@ static void removeOutputs(LayoutState *state)
     }
     if (state->m_playprint != nullptr)
         remove(state->m_playprint);
-    if (state->m_codepath != nullptr)
-        remove(state->m_codepath);
-    if (state->m_headerpath != nullptr)
-        remove(state->m_headerpath);
+
+    // Every code file that the script has generated, not only the last one.
+    DppLayoutManager::getInstance()->removeGeneratedFiles();
 }
 
 
@@ -242,8 +241,6 @@ int main(int argc, char *argv[])
         state->m_scriptfile = nullptr;
         state->m_codefd = nullptr;
         state->m_headerfd = nullptr;
-        state->m_codepath = nullptr;
-        state->m_headerpath = nullptr;
         state->m_tmplate = nullptr;
         state->m_dpp = nullptr;
         state->m_root = nullptr;

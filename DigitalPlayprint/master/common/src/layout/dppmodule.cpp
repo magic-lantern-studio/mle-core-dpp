@@ -336,10 +336,9 @@ dpp_codeFile(PyObject *self, PyObject *args)
     }
 
     // Remember the paths, so that the files can be removed if the script fails.
-    free(state->m_codepath);
-    free(state->m_headerpath);
-    state->m_codepath = strdup(codefilename);
-    state->m_headerpath = headerfilename != NULL ? strdup(headerfilename) : NULL;
+    mgr->addGeneratedFile(codefilename);
+    if (headerfilename != NULL)
+        mgr->addGeneratedFile(headerfilename);
 
     // Open the file(s) for generation.
     if (state->m_language) {
