@@ -121,8 +121,9 @@ class MleDppGenMakefile
 		// Hide the default constructor.
         MleDppGenMakefile(void) {};
 
-		// Read the Makefile generator template.
-        void readMakefileTemplate(MleTemplate &pTemplate);
+		// Read the Makefile generator template. Returns FALSE if it cannot
+		// be read.
+        MlBoolean readMakefileTemplate(MleTemplate &pTemplate);
 };
 
 

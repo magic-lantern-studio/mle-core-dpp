@@ -99,25 +99,32 @@ MleDppGenMakefile::~MleDppGenMakefile()
 }
 
 /*
- * readTitleTemplate
+ * readMakefileTemplate
  *
  * This code reads in the mastering Makefile template, wherever it might be.
+ * It returns FALSE, after reporting why, if the template cannot be read.
  */
 
-void MleDppGenMakefile::readMakefileTemplate(MleTemplate &pTemplate)
+MlBoolean MleDppGenMakefile::readMakefileTemplate(MleTemplate &pTemplate)
 {
     char *filename;
+    MlBoolean status = TRUE;
 
     filename = mlFilenameExpand(MLE_TITLE_MAKEFILE_TEMPLATE);
+    if (filename == NULL)
+        return FALSE;
 
+    // A template that cannot be read is an error: there is nothing to make
+    // a Makefile from.
     if (pTemplate.read(filename) < 0)
 	{
         perror(filename);
+        status = FALSE;
     }
 
     mlFree(filename);
 
-    return;
+    return status;
 }
 
 
@@ -128,7 +135,8 @@ MlBoolean MleDppGenMakefile::generateMakefile()
 {
     // Read code generation template.
     MleTemplate pTemplate;
-    readMakefileTemplate(pTemplate);
+    if (! readMakefileTemplate(pTemplate))
+        return FALSE;
 
     MleTemplateBindings *pGBindings = new MleTemplateBindings();
     time_t clock = time(0);
