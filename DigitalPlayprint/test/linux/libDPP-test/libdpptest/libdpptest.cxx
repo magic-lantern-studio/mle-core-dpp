@@ -259,7 +259,12 @@ ChildResult runInChild(const std::function<void()> &code, int timeoutSeconds) {
         struct rlimit noCore = { 0, 0 };
         setrlimit(RLIMIT_CORE, &noCore);
         alarm(timeoutSeconds);
-        code();
+        try {
+            code();
+        } catch (...) {
+            // An exception must not leave the child to carry on as the test.
+            _exit(kChildException);
+        }
         _exit(0);
     }
 

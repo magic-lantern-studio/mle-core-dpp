@@ -130,6 +130,9 @@ struct ChildResult
     bool timedOut;   // True if it was stopped by the time limit.
 };
 
+// The exit status of a child whose code threw an exception.
+const int kChildException = 99;
+
 // Run code in a child process, for code that is expected to abort, crash or
 // hang. The child is stopped after the time limit (an alarm), and the result
 // says how it ended. The child ends with exit status 0 if the code returns.
@@ -186,6 +189,83 @@ bool parseChunkBytes(const std::vector<uint8_t> &bytes, ChunkFile &file);
 std::string describeChunks(const ChunkFile &file,
                            const std::vector<std::string> &omitData = {},
                            size_t maxData = 16);
+
+
+/*** Byte order ***/
+
+// True if this machine is little endian.
+bool hostIsLittle();
+
+// Sets the global read and write swap counts of libplayprint for a scope, and
+// restores them. The counts are global, so a test that changes them must put
+// them back (see testSwap.cxx).
+class SwapGuard
+{
+  public:
+    SwapGuard(bool read, bool write);
+    ~SwapGuard();
+  private:
+    bool m_read, m_write;
+};
+
+// True if a file in the given byte order has to be swapped on this machine.
+inline bool needsSwap(bool fileBigEndian) { return fileBigEndian == hostIsLittle(); }
+
+
+/*** Building chunk files ***/
+
+// Builds a chunk file in memory, in either byte order.
+class ChunkBuilder
+{
+  public:
+    explicit ChunkBuilder(bool bigEndian) : m_big(bigEndian) {}
+
+    void tag(const char *t) { putInt((t[0] << 24) | (t[1] << 16) | (t[2] << 8) | t[3]); }
+    void putInt(uint32_t v);
+    // A chunk with data; an odd size is followed by a pad byte.
+    void chunk(const char *t, const std::vector<uint8_t> &data);
+    // A form (PPBE, PPLE or LIST) that holds the chunks that the function adds.
+    void form(const char *t, const char *f, const std::function<void()> &children);
+    const std::vector<uint8_t> &bytes() const { return m_bytes; }
+
+  private:
+    bool m_big;
+    std::vector<uint8_t> m_bytes;
+};
+
+/*** Fixture chunk files ***/
+
+// The files of a playprint and the chunk files that it was made from.
+struct PlayprintFiles
+{
+    std::string playprint; // the playprint
+    std::string group;     // Actor Group chunk file, "group1"
+    std::string set;       // Set chunk file, "set1"
+    std::string scene;     // Scene chunk file, "scene1"
+    std::string media;     // MediaRef chunk file, "image"
+};
+
+// The bytes of an Actor Group chunk file, in the byte order of this machine,
+// which is the order that the Group checker reads (see MleDppOutput::writeGroup).
+// It has one Actor with a property and, if withMediaRef, a reference to one
+// media name, "image".
+std::vector<uint8_t> groupChunkBytes(bool withMediaRef);
+
+// The bytes of a Set chunk file (its first int is its own size), and of a
+// Scene chunk file with two group indices.
+std::vector<uint8_t> setChunkBytes();
+std::vector<uint8_t> sceneChunkBytes();
+
+// Write a MediaRef chunk file with one external reference. The file is in the
+// given byte order. Returns false if it cannot be written.
+bool writeMediaChunkFile(const std::string &path, bool bigEndian,
+                         const std::string &mediaFile = "media/image.png");
+
+// Write the chunk files into a directory and make a playprint from them, as
+// gendpp does: header, table of contents, a Group, the MediaRef, a Set and a
+// Scene, in this order. The Group refers to the MediaRef by its index, 1, in
+// the table of chunk files. The playprint and the media chunk file are in the given byte order.
+bool buildPlayprint(const std::string &dir, bool bigEndian, PlayprintFiles &files);
 
 } // namespace dpptest
 

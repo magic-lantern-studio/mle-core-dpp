@@ -629,14 +629,16 @@ char *mlDppTagToString(MlDppTag tag)
 int mlDppCheckFormat(FILE *fp)
 {
     /* Declare local variables. */
-    MlDppTag chunkFileTag;
+    MlDppTag chunkFileTag = 0;
     long offset;
 
-    /* Read first 4 bytes in file. */
+    /* Read first 4 bytes in file. A file that is too short has no tag. */
     size_t nBytes;
     offset = mlFTell(fp);
     mlFSeek(fp,0L,SEEK_SET);
     nBytes = mlFRead(&chunkFileTag,sizeof(MlDppTag),1,fp);
+    if (nBytes != 1)
+        chunkFileTag = 0;
     mlFSeek(fp,offset,SEEK_SET);
 
 #if BYTE_ORDER == BIG_ENDIAN

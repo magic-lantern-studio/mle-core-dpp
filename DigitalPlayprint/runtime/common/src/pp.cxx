@@ -97,7 +97,8 @@ MlBoolean MleDpp::begin(MlUInt type)
 	{
         // Initialize the Playprint file.
         m_formInfo.m_form = mlDppMakeTag('M','L','R','T');
-        MLE_ERROR(mlDppDescend(getFp(),&m_formInfo,NULL,type));
+        // The form has to be in the file.
+        return(mlDppDescend(getFp(),&m_formInfo,NULL,type));
     } else if (m_mode == WRITING)
 	{
         // Initialize the Playprint file.
@@ -114,7 +115,7 @@ MlBoolean MleDpp::end(void)
     if (m_mode == READING)
 	{
         // Wrap-up Playprint book keeping.
-        MLE_ERROR(mlDppAscend(getFp(),&m_formInfo,0));
+        mlDppAscend(getFp(),&m_formInfo,0);
     } else if (m_mode == WRITING)
 	{
         if (! m_useTOC)
@@ -136,7 +137,7 @@ MlBoolean MleDpp::readHeader(MleDppHeader *chunkData)
 	{
         memset(&hdrInfo,0,sizeof(MleDppChunkInfo));
 
-        MLE_ERROR(mlDppDescend(getFp(),&hdrInfo,NULL,0));
+        mlDppDescend(getFp(),&hdrInfo,NULL,0);
         if (hdrInfo.m_chunk.m_tag == mlDppMakeTag('h','d','r',' ') &&
             hdrInfo.m_chunk.m_size >= sizeof(MleDppHeader))
 		{
@@ -155,7 +156,7 @@ MlBoolean MleDpp::readHeader(MleDppHeader *chunkData)
         } else
             status = FALSE;
 
-        MLE_ERROR(mlDppAscend(getFp(),&hdrInfo,0));
+        mlDppAscend(getFp(),&hdrInfo,0);
     }
 
     return(status);

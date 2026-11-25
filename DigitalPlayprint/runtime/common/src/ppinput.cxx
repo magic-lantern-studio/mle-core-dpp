@@ -69,10 +69,14 @@ int MleDppInput::readHeader(MleDppCallback func,void *clientData)
     int status = FALSE;
     void *callData;
 
-    hdrData = (MleDppHeader *)mlMalloc(sizeof(MleDppHeader));
+    hdrData = (MleDppHeader *)mlCalloc(1,sizeof(MleDppHeader));
 
-    // Read Playprint header.
-    MleDpp::readHeader(hdrData);
+    // Read Playprint header. A damaged header is an error.
+    if (! MleDpp::readHeader(hdrData))
+    {
+        mlFree(hdrData);
+        return(FALSE);
+    }
 
     if (func)
 	{
@@ -96,7 +100,7 @@ int MleDppInput::readTOC(MleDppCallback func,void *clientData)
 
     memset(&tocInfo,0,sizeof(MleDppChunkInfo));
 
-    MLE_ERROR(mlDppDescend(getFp(),&tocInfo,NULL,0));
+    mlDppDescend(getFp(),&tocInfo,NULL,0);
     if (tocInfo.m_chunk.m_tag == mlDppMakeTag('t','o','c',' '))
 	{
         // Read number of TOC entries.
@@ -142,7 +146,7 @@ int MleDppInput::readTOC(MleDppCallback func,void *clientData)
             status = TRUE;
     }
 
-    MLE_ERROR(mlDppAscend(getFp(),&tocInfo,0));
+    mlDppAscend(getFp(),&tocInfo,0);
     return(status);
 }
 
@@ -202,7 +206,7 @@ int MleDppInput::readGroup(MleDppCallback func,void *clientData)
 
     memset(&groupInfo,0,sizeof(MleDppChunkInfo));
 
-    MLE_ERROR(mlDppDescend(getFp(),&groupInfo,NULL,0));
+    mlDppDescend(getFp(),&groupInfo,NULL,0);
     if (groupInfo.m_chunk.m_tag == mlDppMakeTag('g','r','p',' '))
 	{
         if (func)
@@ -226,7 +230,7 @@ int MleDppInput::readGroup(MleDppCallback func,void *clientData)
             status = TRUE;
     }
 
-    MLE_ERROR(mlDppAscend(getFp(),&groupInfo,0));
+    mlDppAscend(getFp(),&groupInfo,0);
     return(status);
 }
 
@@ -240,23 +244,29 @@ int MleDppInput::readScene(MleDppCallback func,void *clientData)
 
     memset(&sceneInfo,0,sizeof(MleDppChunkInfo));
 
-    MLE_ERROR(mlDppDescend(getFp(),&sceneInfo,NULL,0));
+    mlDppDescend(getFp(),&sceneInfo,NULL,0);
     if (sceneInfo.m_chunk.m_tag == mlDppMakeTag('s','c','n',' '))
 	{
         if (func)
 		{
         	size_t nBytes;
-            callData = mlMalloc(sceneInfo.m_chunk.m_size);
+
+            // The size is from the file, so check that it is in the file. The
+            // buffer is zeroed and has at least one byte.
+            if (! mlDppBytesRemain(getFp(),sceneInfo.m_chunk.m_size))
+                return(FALSE);
+            callData = mlCalloc(1,sceneInfo.m_chunk.m_size ? sceneInfo.m_chunk.m_size : 1);
             nBytes = mlFRead(callData,sceneInfo.m_chunk.m_size,1,getFp());
 
-            status = func(clientData,callData);
+            if (sceneInfo.m_chunk.m_size == 0 || nBytes == 1)
+                status = func(clientData,callData);
 
             mlFree(callData);
         } else
             status = TRUE;
     }
 
-    MLE_ERROR(mlDppAscend(getFp(),&sceneInfo,0));
+    mlDppAscend(getFp(),&sceneInfo,0);
     return(status);
 }
 
@@ -270,23 +280,29 @@ int MleDppInput::readSet(MleDppCallback func,void *clientData)
 
     memset(&setInfo,0,sizeof(MleDppChunkInfo));
 
-    MLE_ERROR(mlDppDescend(getFp(),&setInfo,NULL,0));
+    mlDppDescend(getFp(),&setInfo,NULL,0);
     if (setInfo.m_chunk.m_tag == mlDppMakeTag('s','e','t',' '))
 	{
         if (func)
 		{
         	size_t nBytes;
-            callData = mlMalloc(setInfo.m_chunk.m_size);
+
+            // The size is from the file, so check that it is in the file. The
+            // buffer is zeroed and has at least one byte.
+            if (! mlDppBytesRemain(getFp(),setInfo.m_chunk.m_size))
+                return(FALSE);
+            callData = mlCalloc(1,setInfo.m_chunk.m_size ? setInfo.m_chunk.m_size : 1);
             nBytes = mlFRead(callData,setInfo.m_chunk.m_size,1,getFp());
 
-            status = func(clientData,callData);
+            if (setInfo.m_chunk.m_size == 0 || nBytes == 1)
+                status = func(clientData,callData);
 
             mlFree(callData);
         } else
             status = TRUE;
     }
 
-    MLE_ERROR(mlDppAscend(getFp(),&setInfo,0));
+    mlDppAscend(getFp(),&setInfo,0);
     return(status);
 }
 
@@ -298,11 +314,15 @@ int MleDppInput::beginMref(MleDppCallback func,void *clientData)
     void *callData;
     int status = TRUE;;
 
+    memset(&mrefInfoData,0,sizeof(mrefInfoData));
+
     // Begin IFF 'MRFL' LIST chunk.
-    beginMrefList();
+    if (! beginMrefList())
+        return(FALSE);
 
     // Read IFF 'info' chunk.
-    readMrefInfo(&mrefInfoData);
+    if (! readMrefInfo(&mrefInfoData))
+        return(FALSE);
 
     if (func)
 	{
@@ -338,19 +358,20 @@ int MleDppInput::readMedia(MleDppCallback func,void *clientData)
     void *callData;
     int status = TRUE;
 
-    mrefData = (MleMediaRefChunk *)mlMalloc(sizeof(MleMediaRefChunk));
+    mrefData = (MleMediaRefChunk *)mlCalloc(1,sizeof(MleMediaRefChunk));
 
-    // Read IFF 'mref' chunk.
-    readMref(mrefData);
-
-    if (func)
+    // Read IFF 'mref' chunk. A damaged chunk is an error, and has no data.
+    if (! readMref(mrefData))
+        status = FALSE;
+    else if (func)
 	{
         callData = (void *)mrefData;
         status = func(clientData,callData);
     }
 
     // Free chunk buffer.
-    mlFree(mrefData->m_data);
+    if (mrefData->m_data)
+        mlFree(mrefData->m_data);
 
     // Free chunk.
     mlFree(mrefData);
@@ -379,13 +400,20 @@ MlBoolean MleDppInput::readMrefInfo(MleMediaRefInfoChunk *chunkData)
     int status = TRUE;
 
     memset(&mediaInfo,0,sizeof(MleDppChunkInfo));
+    memset(chunkData,0,sizeof(MleMediaRefInfoChunk));
 
-    MLE_ERROR(mlDppDescend(getFp(),&mediaInfo,NULL,0));
-    if (mediaInfo.m_chunk.m_tag == mlDppMakeTag('i','n','f','o'))
+    mlDppDescend(getFp(),&mediaInfo,NULL,0);
+    if (mediaInfo.m_chunk.m_tag != mlDppMakeTag('i','n','f','o') ||
+        mediaInfo.m_chunk.m_size < sizeof(MleMediaRefInfoChunk))
+        status = FALSE;
+    else
 	{
-        // Read the 'info' data.
+        // Read the 'info' data. The size of the chunk is from the file and is
+        // not used for the read, as the data is a fixed size.
     	size_t nBytes;
-        nBytes = mlFRead(chunkData,mediaInfo.m_chunk.m_size,1,getFp());
+        nBytes = mlFRead(chunkData,sizeof(MleMediaRefInfoChunk),1,getFp());
+        if (nBytes != 1)
+            status = FALSE;
 
         if (getSwapRead())
 		{
@@ -395,7 +423,7 @@ MlBoolean MleDppInput::readMrefInfo(MleMediaRefInfoChunk *chunkData)
         }
     }
 
-    MLE_ERROR(mlDppAscend(getFp(),&mediaInfo,0));
+    mlDppAscend(getFp(),&mediaInfo,0);
 
     return(status);
 }
@@ -410,13 +438,19 @@ MlBoolean MleDppInput::readMref(MleMediaRefChunk *chunkData)
     int status = TRUE;
 
     memset(&mediaInfo,0,sizeof(MleDppChunkInfo));
+    memset(chunkData,0,sizeof(MleMediaRefChunk));
 
-    MLE_ERROR(mlDppDescend(getFp(),&mediaInfo,NULL,0));
-    if (mediaInfo.m_chunk.m_tag == mlDppMakeTag('m','r','e','f'))
+    mlDppDescend(getFp(),&mediaInfo,NULL,0);
+    if (mediaInfo.m_chunk.m_tag != mlDppMakeTag('m','r','e','f') ||
+        mediaInfo.m_chunk.m_size < MEDIAREF_CHUNK_SIZE)
+        status = FALSE;
+    else
 	{
         // Read the 'mref' data.
     	size_t nBytes;
         nBytes = mlFRead(chunkData,MEDIAREF_CHUNK_SIZE,1,getFp());
+        if (nBytes != 1)
+            status = FALSE;
 
         if (getSwapRead())
 		{
@@ -425,14 +459,30 @@ MlBoolean MleDppInput::readMref(MleMediaRefChunk *chunkData)
             chunkData->m_size = mlDppSwapInt(chunkData->m_size);
         }
 
-        if (chunkData->m_flags == 0)
-            // External MediaRef; data is a filename.
-            chunkData->m_data = (char *)mlMalloc(chunkData->m_size + 1);
-        else
-            chunkData->m_data = (char *)mlMalloc(chunkData->m_size);
-        nBytes = mlFRead(chunkData->m_data,chunkData->m_size,1,getFp());
+        // The size of the data is from the file, so check that it is in the
+        // chunk and in the file before it is read.
+        if (status &&
+            (chunkData->m_size > mediaInfo.m_chunk.m_size - MEDIAREF_CHUNK_SIZE ||
+             ! mlDppBytesRemain(getFp(),chunkData->m_size)))
+            status = FALSE;
 
-        if (chunkData->m_flags == 0)
+        if (status)
+        {
+            if (chunkData->m_flags == 0)
+                // External MediaRef; data is a filename.
+                chunkData->m_data = (char *)mlMalloc(chunkData->m_size + 1);
+            else
+                chunkData->m_data = (char *)mlMalloc(chunkData->m_size ? chunkData->m_size : 1);
+            if (chunkData->m_size > 0 &&
+                mlFRead(chunkData->m_data,chunkData->m_size,1,getFp()) != 1)
+            {
+                mlFree(chunkData->m_data);
+                chunkData->m_data = NULL;
+                status = FALSE;
+            }
+        }
+
+        if (status && chunkData->m_flags == 0)
 		{
             // terminate filename
             chunkData->m_data[chunkData->m_size] = '\0';
@@ -440,7 +490,7 @@ MlBoolean MleDppInput::readMref(MleMediaRefChunk *chunkData)
         }
     }
 
-    MLE_ERROR(mlDppAscend(getFp(),&mediaInfo,0));
+    mlDppAscend(getFp(),&mediaInfo,0);
 
     return(status);
 }

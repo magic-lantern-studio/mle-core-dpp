@@ -100,7 +100,14 @@ include_directories(
 # which loads it.
 add_library(dpptest SHARED
   libdpptest/libdpptest.cxx
-  libdpptest/testInfrastructure.cxx)
+  libdpptest/fixtures.cxx
+  libdpptest/testInfrastructure.cxx
+  libdpptest/testSwap.cxx
+  libdpptest/testChunk.cxx
+  libdpptest/testPlayprint.cxx
+  libdpptest/testChunkFiles.cxx
+  libdpptest/testCheckers.cxx
+  libdpptest/testBadInput.cxx)
 target_include_directories(dpptest PRIVATE
   $<TARGET_PROPERTY:GTest::gtest,INTERFACE_INCLUDE_DIRECTORIES>)
 

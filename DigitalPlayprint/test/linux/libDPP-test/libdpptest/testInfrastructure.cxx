@@ -245,46 +245,6 @@ TEST(GoldenTest, ReportsTheFirstDifference) {
 
 /*** Helpers: reading chunk files ***/
 
-// Build a chunk file in memory.
-class ChunkBuilder {
-  public:
-    explicit ChunkBuilder(bool bigEndian) : m_big(bigEndian) {}
-
-    void tag(const char *t) { putInt((t[0] << 24) | (t[1] << 16) | (t[2] << 8) | t[3]); }
-    void putInt(uint32_t v) {
-        for (int i = 0; i < 4; i++)
-            m_bytes.push_back((m_big ? v >> (24 - 8 * i) : v >> (8 * i)) & 0xff);
-    }
-    // A chunk with data; an odd size is followed by a pad byte.
-    void chunk(const char *t, const std::vector<uint8_t> &data) {
-        tag(t);
-        putInt(data.size());
-        m_bytes.insert(m_bytes.end(), data.begin(), data.end());
-        if (data.size() & 1)
-            m_bytes.push_back(0);
-    }
-    // A form that holds the chunks that are built by the function.
-    void form(const char *t, const char *f, const std::function<void()> &children) {
-        tag(t);
-        size_t sizeAt = m_bytes.size();
-        putInt(0);
-        tag(f);
-        size_t start = m_bytes.size();
-        children();
-        uint32_t size = m_bytes.size() - start;
-        std::vector<uint8_t> saved(m_bytes.begin() + sizeAt + 8, m_bytes.end());
-        m_bytes.resize(sizeAt);
-        putInt(size);
-        tag(f);
-        m_bytes.insert(m_bytes.end(), saved.begin(), saved.end());
-    }
-    const std::vector<uint8_t> &bytes() const { return m_bytes; }
-
-  private:
-    bool m_big;
-    std::vector<uint8_t> m_bytes;
-};
-
 static std::vector<uint8_t> sampleFile(bool bigEndian) {
     ChunkBuilder b(bigEndian);
     b.form(bigEndian ? "PPBE" : "PPLE", "MLRT", [&] {

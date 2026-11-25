@@ -111,7 +111,7 @@ MleMrefChunkFile::readInfo(MleMediaRefInfoChunk *chunkData)
 	{
         memset(&mediaInfo,0,sizeof(MleDppChunkInfo));
 
-        MLE_ERROR(mlDppDescend(getFp(),&mediaInfo,NULL,0));
+        mlDppDescend(getFp(),&mediaInfo,NULL,0);
         if (mediaInfo.m_chunk.m_tag == mlDppMakeTag('i','n','f','o') &&
             mediaInfo.m_chunk.m_size >= sizeof(MleMediaRefInfoChunk))
 		{
@@ -131,7 +131,7 @@ MleMrefChunkFile::readInfo(MleMediaRefInfoChunk *chunkData)
         } else
             status = FALSE;
 
-        MLE_ERROR(mlDppAscend(getFp(),&mediaInfo,0));
+        mlDppAscend(getFp(),&mediaInfo,0);
     }
 
     return(status);
@@ -186,7 +186,7 @@ MleMrefChunkFile::readData(MleMediaRefChunk *chunkData)
 	{
         memset(&mediaInfo,0,sizeof(MleDppChunkInfo));
 
-        MLE_ERROR(mlDppDescend(getFp(),&mediaInfo,NULL,0));
+        mlDppDescend(getFp(),&mediaInfo,NULL,0);
         if (mediaInfo.m_chunk.m_tag == mlDppMakeTag('m','r','e','f'))
 		{
             // Read the 'mref' data.
@@ -222,7 +222,7 @@ MleMrefChunkFile::readData(MleMediaRefChunk *chunkData)
         } else
             status = FALSE;
 
-        MLE_ERROR(mlDppAscend(getFp(),&mediaInfo,0));
+        mlDppAscend(getFp(),&mediaInfo,0);
     }
 
     return(status);
@@ -327,6 +327,7 @@ MleMrefChunkFile::processMediaRef(MleMediaRefChunk *chunkData)
 #endif
                 mlSetErrno(MLE_DPP_ERR_CANNOTWRITE);
                 mlFree(filename);
+                delete newData;
                 return(NULL);
             } else
                 newData->m_size = file_info.st_size;
@@ -343,6 +344,7 @@ MleMrefChunkFile::processMediaRef(MleMediaRefChunk *chunkData)
 #endif
                 mlSetErrno(MLE_DPP_ERR_CANNOTWRITE);
                 mlFree(filename);
+                delete newData;
                 return(NULL);
             } else {
 #ifdef MLE_DEBUG
@@ -355,12 +357,20 @@ MleMrefChunkFile::processMediaRef(MleMediaRefChunk *chunkData)
             
             // Read media data.
             size_t nBytes;
-            chunkData->m_data = (char *)mlMalloc(file_info.st_size);
-            nBytes = mlFRead(chunkData->m_data,file_info.st_size,1,mediaFp);
+            // The data belongs to the new chunk; the argument is not changed.
+            newData->m_data = (char *)mlMalloc(file_info.st_size ? file_info.st_size : 1);
+            nBytes = file_info.st_size ? mlFRead(newData->m_data,file_info.st_size,1,mediaFp) : 1;
 
             // Close media file and clean up.
             mlFClose(mediaFp);
             mlFree(filename);
+            if (nBytes != 1)
+            {
+                mlSetErrno(MLE_DPP_ERR_CANNOTREAD);
+                mlFree(newData->m_data);
+                delete newData;
+                return(NULL);
+            }
             break;
 
         default:
@@ -372,6 +382,7 @@ MleMrefChunkFile::processMediaRef(MleMediaRefChunk *chunkData)
 #endif
             mlSetErrno(MLE_DPP_ERR_CANNOTWRITE);
             mlFree(filename);
+            delete newData;
             return(NULL);
     }
 

@@ -150,13 +150,19 @@ class MleDpp
     void setSwap(MlBoolean swap);
 
     void setSwapWrite(MlBoolean swap)
-    { m_swapWrite = swap; mlDppSetSwapWrite(swap); };
+    { // The global count changes only when this object's flag does, so that
+      // the destructor can take away what the object added.
+      MlBoolean on = swap ? TRUE : FALSE;
+      if (on != m_swapWrite) { m_swapWrite = on; mlDppSetSwapWrite(on); } };
 
     MlBoolean getSwapWrite(void)
     { return m_swapWrite; };
 
     void setSwapRead(MlBoolean swap)
-    { m_swapRead = swap; mlDppSetSwapRead(swap); };
+    { // The global count changes only when this object's flag does, so that
+      // the destructor can take away what the object added.
+      MlBoolean on = swap ? TRUE : FALSE;
+      if (on != m_swapRead) { m_swapRead = on; mlDppSetSwapRead(on); } };
 
     MlBoolean getSwapRead(void)
     { return m_swapRead; };
