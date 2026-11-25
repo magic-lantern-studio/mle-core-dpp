@@ -36,6 +36,7 @@
 
 // Include system header files.
 #include <string.h>
+#include <algorithm>
 
 // Include DPP test header files.
 #include "libdpptest.h"
@@ -213,6 +214,48 @@ TEST_F(ChunkFileClassTest, MediaRefsRoundTrip) {
         }
         EXPECT_TRUE(in.endList());
         EXPECT_TRUE(in.end());
+    }
+}
+
+// The writers swap what they write, not the structure of the caller: the same
+// structure can be written to files of both byte orders, and used afterwards.
+// (The writers of MleDppOutput are private to writeMedia, which uses its own.)
+TEST_F(ChunkFileClassTest, MediaRefWritersDoNotChangeTheStructures) {
+    for (bool big : { true, false }) {
+        SCOPED_TRACE(big ? "big endian" : "little endian");
+        char name[] = "media/image.png";
+        MleChunkFileHeader header = { 3, MleMrefChunkFile::PLAYPRINT_VERSION, 12345, 0 };
+        MleMediaRefInfoChunk info = { 0x01020304, 0x0a0b0c0d, 1 };
+        MleMediaRefChunk ref;
+        ref.m_flags = MleMrefChunkFile::EXTERNAL;
+        ref.m_type = mlDppMakeTag('l','o','g','o');
+        ref.m_size = sizeof(name) - 1;
+        ref.m_data = name;
+        const MleMediaRefInfoChunk infoBefore = info;
+        const MleMediaRefChunk refBefore = ref;
+
+        {
+            MleMrefChunkFile out(scratchFile("a.chk").c_str(), MleChunkFile::WRITING);
+            out.setSwap(needsSwap(big));
+            out.begin(big ? MLE_DPP_CREATEPPBE : MLE_DPP_CREATEPPLE);
+            out.writeHeader(&header);
+            out.beginList();
+            EXPECT_TRUE(out.writeInfo(&info));
+            EXPECT_TRUE(out.writeData(&ref));
+            out.endList();
+            out.end();
+        }
+        EXPECT_EQ(0, memcmp(&info, &infoBefore, sizeof(info)));
+        EXPECT_EQ(0, memcmp(&ref, &refBefore, sizeof(ref)));
+
+        // The file holds the values in its own byte order.
+        std::vector<uint8_t> a;
+        ASSERT_TRUE(readFile(scratchFile("a.chk"), a));
+        const uint8_t want[4] = { 1, 2, 3, 4 };
+        uint8_t expected[4];
+        for (int i = 0; i < 4; i++)
+            expected[i] = big ? want[i] : want[3 - i];
+        EXPECT_NE(std::search(a.begin(), a.end(), expected, expected + 4), a.end());
     }
 }
 

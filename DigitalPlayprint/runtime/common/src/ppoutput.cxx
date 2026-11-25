@@ -495,15 +495,17 @@ MlBoolean MleDppOutput::writeMrefInfo(MleMediaRefInfoChunk *chunkData)
     mediaInfo.m_chunk.m_size = sizeof(MleMediaRefInfoChunk);
     MLE_WARN(mlDppCreateChunk(getFp(),&mediaInfo,0));
 
+    // Swap a copy: the caller's structure is not changed.
+    MleMediaRefInfoChunk infoData = *chunkData;
     if (getSwapWrite())
 	{
-        chunkData->m_flags = mlDppSwapInt(chunkData->m_flags);
-        chunkData->m_type = mlDppSwapInt(chunkData->m_type);
-        chunkData->m_numMrefs = mlDppSwapInt(chunkData->m_numMrefs);
+        infoData.m_flags = mlDppSwapInt(infoData.m_flags);
+        infoData.m_type = mlDppSwapInt(infoData.m_type);
+        infoData.m_numMrefs = mlDppSwapInt(infoData.m_numMrefs);
     }
 
     // Write out 'mref' data.
-    if (mlFWrite(chunkData,sizeof(MleMediaRefInfoChunk),1,getFp()) != 1)
+    if (mlFWrite(&infoData,sizeof(MleMediaRefInfoChunk),1,getFp()) != 1)
     {
         mlSetErrno(MLE_DPP_ERR_CANNOTWRITE);
         return(FALSE);
@@ -531,15 +533,17 @@ MlBoolean MleDppOutput::writeMref(MleMediaRefChunk *chunkData)
     // Remember actual size to write.
     size = chunkData->m_size;
 
+    // Swap a copy: the caller's structure is not changed.
+    MleMediaRefChunk refData = *chunkData;
     if (getSwapWrite())
 	{
-        chunkData->m_flags = mlDppSwapInt(chunkData->m_flags);
-        chunkData->m_type = mlDppSwapInt(chunkData->m_type);
-        chunkData->m_size = mlDppSwapInt(chunkData->m_size);
+        refData.m_flags = mlDppSwapInt(refData.m_flags);
+        refData.m_type = mlDppSwapInt(refData.m_type);
+        refData.m_size = mlDppSwapInt(refData.m_size);
     }
 
     // Write out 'mref' data.
-    if (mlFWrite(chunkData,MEDIAREF_CHUNK_SIZE,1,getFp()) != 1)
+    if (mlFWrite(&refData,MEDIAREF_CHUNK_SIZE,1,getFp()) != 1)
     {
         mlSetErrno(MLE_DPP_ERR_CANNOTWRITE);
         return(FALSE);

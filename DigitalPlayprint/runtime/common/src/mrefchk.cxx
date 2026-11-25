@@ -153,15 +153,17 @@ MleMrefChunkFile::writeInfo(MleMediaRefInfoChunk *chunkData)
         mediaInfo.m_chunk.m_size = sizeof(MleMediaRefInfoChunk);
         MLE_WARN(mlDppCreateChunk(getFp(),&mediaInfo,0));
 
+        // Swap a copy: the caller's structure is not changed.
+        MleMediaRefInfoChunk infoData = *chunkData;
         if (getSwapWrite())
 		{
-            chunkData->m_flags = mlDppSwapInt(chunkData->m_flags);
-            chunkData->m_type = mlDppSwapInt(chunkData->m_type);
-            chunkData->m_numMrefs = mlDppSwapInt(chunkData->m_numMrefs);
+            infoData.m_flags = mlDppSwapInt(infoData.m_flags);
+            infoData.m_type = mlDppSwapInt(infoData.m_type);
+            infoData.m_numMrefs = mlDppSwapInt(infoData.m_numMrefs);
         }
 
         // Write out 'mref' data.
-        if (mlFWrite(chunkData,sizeof(MleMediaRefInfoChunk),1,getFp()) != 1)
+        if (mlFWrite(&infoData,sizeof(MleMediaRefInfoChunk),1,getFp()) != 1)
         {
             mlSetErrno(MLE_DPP_ERR_CANNOTWRITE);
             return(FALSE);
@@ -248,15 +250,17 @@ MleMrefChunkFile::writeData(MleMediaRefChunk *chunkData)
         //Rremember actual size to write.
         size = chunkData->m_size;
 
+        // Swap a copy: the caller's structure is not changed.
+        MleMediaRefChunk refData = *chunkData;
         if (getSwapWrite())
 		{
-            chunkData->m_flags = mlDppSwapInt(chunkData->m_flags);
-            chunkData->m_type = mlDppSwapInt(chunkData->m_type);
-            chunkData->m_size = mlDppSwapInt(chunkData->m_size);
+            refData.m_flags = mlDppSwapInt(refData.m_flags);
+            refData.m_type = mlDppSwapInt(refData.m_type);
+            refData.m_size = mlDppSwapInt(refData.m_size);
         }
 
         // Write out 'mref' data
-        if (mlFWrite(chunkData,MEDIAREF_CHUNK_SIZE,1,getFp()) != 1)
+        if (mlFWrite(&refData,MEDIAREF_CHUNK_SIZE,1,getFp()) != 1)
         {
             mlSetErrno(MLE_DPP_ERR_CANNOTWRITE);
             return(FALSE);
@@ -468,19 +472,6 @@ void main(int argc,char *argv[])
     out->endList();
     out->end();
     delete out;
-
-	// Note: reset mrefInfoData and mrefData because values in those
-	// strucutres changed due to setting the swap on for the Big
-	// Endian format.
-#if BYTE_ORDER != BIG_ENDIAN
-	mrefInfoData.m_flags = 0;
-    mrefInfoData.m_type = 0;
-    mrefInfoData.m_numMrefs = 1;
-
-    mrefData.m_flags = 0;
-    mrefData.m_size = strlen(TEST_EXTERNAL_MEDIAREF);
-    mrefData.m_data = TEST_EXTERNAL_MEDIAREF;
-#endif
 
     // Create Little Endian chunk file.
     out = new MleMrefChunkFile(TESTLE_FILE,MleChunkFile::WRITING);
