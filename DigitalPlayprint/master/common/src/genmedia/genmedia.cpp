@@ -331,6 +331,21 @@ main(int argc,char **argv)
 
     root = MleDwpItem::readAll(in);
 
+    // A workprint that was read with errors (an Include that could not be
+    // opened, a syntax error) is not used. Each error has been reported.
+    // Do not leave a partial inventory file behind.
+    if (in->getErrorCount() > 0)
+    {
+        fprintf(stderr,"%s : %s\n",args.commandName,
+                "Digital Workprint has errors");
+        fclose(inventoryOut);
+        char *inventoryPath = (g_outputDir != NULL) ? _expandPath(args.inventory) : args.inventory;
+        remove(inventoryPath);
+        if (g_outputDir != NULL)
+            mlFree(inventoryPath);
+        exit(1);
+    }
+
     // Verify digital workprint.
     if (! mlVerifyTargetWorkprint(root,args.tags))
     {
