@@ -104,6 +104,8 @@ int MleDppInput::readTOC(MleDppCallback func,void *clientData)
         nBytes = mlFRead(&numEntries,sizeof(MlUInt),1,getFp());
         if (nBytes != 1)
             return(FALSE);
+        if (getSwapRead())
+            numEntries = mlDppSwapInt(numEntries);
 
         // The number of entries is from the file, so check that they are in
         // the chunk and in the file before they are read.
@@ -121,6 +123,11 @@ int MleDppInput::readTOC(MleDppCallback func,void *clientData)
             nBytes = mlFRead(&entry,sizeof(MleDppTocEntry),1,getFp());
             if (nBytes != 1)
                 break;
+            if (getSwapRead())
+            {
+                entry.m_label = mlDppSwapInt(entry.m_label);
+                entry.m_offset = mlDppSwapInt(entry.m_offset);
+            }
             addTOCEntry(entry.m_label,entry.m_offset);
         }
 

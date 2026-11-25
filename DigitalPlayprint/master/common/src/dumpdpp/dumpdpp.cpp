@@ -75,7 +75,7 @@ static int dumpHeader(void *clientdata, void *calldata);
 static int dumpTOC(void *clientdata, void *calldata);
 static int dumpGroup(void *clientdata, void *calldata);
 static int dumpMref(void *clientdata, void *calldata);
-static int readDpp(char *filename);
+static int readDpp(char *filename, int requested);
 
 static unsigned char *readFileToMemory(char *filename, int *size);
 static void parseStream(unsigned char*& contents, int size);
@@ -96,6 +96,7 @@ typedef struct _ArgStruct
 {
     char       *commandName;  /* Name of command. */
     MlBoolean  byteOrder;     /* TRUE = Little Endian, FALSE = Big Endian. */
+    int        requested;     /* Byte order asked for: 0 = the file's, 1 = Big, 2 = Little Endian. */
     MlBoolean  language;      /* TRUE = Java, FALSE = C++. */
     int        verbose;       /* Be verbose. */
     char       *playprint;    /* Group chunk file to dump. */
@@ -106,8 +107,9 @@ static MlBoolean g_bigEndian;
 const char *usage_str = "\
 Syntax:   dumpdpp  [-b|-l] [-v] <playprint_file>\n\
 \n\
-          -b                   Use Big Endian byte ordering (default)\n\
-          -l                   Use Little Endian byte ordering\n\
+          -b                   The playprint is in Big Endian byte ordering\n\
+          -l                   The playprint is in Little Endian byte ordering\n\
+                               (default: the byte ordering of the file)\n\
           -v                   Be verbose\n\
           <playprint_file>     Generated Digital Playprint file (.dpp)\n\
 \n\
@@ -130,10 +132,12 @@ int parseArgs(int argc, char *argv[], ArgStruct *args)
           case 'b':
             /* Use Big Endian byte ordering. */
             args->byteOrder = FALSE;
+            args->requested = 1;
             break;
           case 'l':
             /* Use Little Endian byte ordering. */
             args->byteOrder = TRUE;
+            args->requested = 2;
             break;
           case 'v':
             args->verbose = TRUE;
@@ -182,6 +186,7 @@ int main(int argc, char **argv)
     // Parse arguments.
     args.commandName = argv[0];
     args.byteOrder = TRUE;
+    args.requested = 0;
     args.verbose = FALSE;
     args.playprint = NULL;
     if (! parseArgs(argc, argv, &args))
@@ -199,7 +204,7 @@ int main(int argc, char **argv)
 
     // Todo: Validate that the args.playprint exists and is readable.
     // Also, expand the filename into an absolute path.
-    retValue = readDpp(args.playprint);
+    retValue = readDpp(args.playprint, args.requested);
 
     return retValue;
 }
@@ -292,7 +297,7 @@ static int dumpMref(void *clientdata, void *calldata)
 	return TRUE;
 }
 
-int readDpp(char *playprint)
+int readDpp(char *playprint, int requested)
 {
     MleDppInput *dpp = new MleDppInput(playprint);
     if (dpp->getFp() == NULL)
@@ -303,18 +308,34 @@ int readDpp(char *playprint)
     }
 
     // A file that is not a Digital Playprint (a damaged, truncated or empty
-    // file) has no playprint tag.
-    if (mlDppCheckFormat(dpp->getFp()) < 0)
+    // file) has no playprint tag. The tag also tells the byte order of the
+    // file: 1 = Big Endian, 2 = Little Endian.
+    int format = mlDppCheckFormat(dpp->getFp());
+    if (format < 0)
     {
         fprintf(stderr, "Not a Digital Playprint: %s\n", playprint);
         delete dpp;
         return 1;
     }
+    if (requested != 0 && requested != format)
+    {
+        fprintf(stderr, "Digital Playprint is %s Endian, not %s Endian: %s\n",
+                format == 1 ? "Big" : "Little",
+                requested == 1 ? "Big" : "Little", playprint);
+        delete dpp;
+        return 1;
+    }
+
+    // The bytes of the file are swapped when its byte order is not the byte
+    // order of this machine.
+    unsigned short one = 1;
+    MlBoolean machineIsLittle = (*(unsigned char *)&one == 1) ? TRUE : FALSE;
+    dpp->setSwap(((format == 2) != machineIsLittle) ? TRUE : FALSE);
 
     // A header, table of contents or group that is missing or damaged is
     // an error.
     int status = 0;
-    dpp->begin(MLE_DPP_FINDPPLE);
+    dpp->begin(format == 1 ? MLE_DPP_FINDPPBE : MLE_DPP_FINDPPLE);
     if (! dpp->readHeader(dumpHeader, NULL))
         status = 1;
     if (! dpp->readTOC(dumpTOC, NULL))
@@ -327,9 +348,7 @@ int readDpp(char *playprint)
     dpp->end();
     delete dpp;
     if (status != 0)
-        fprintf(stderr, "Damaged Digital Playprint, or one that is not in the "
-                "byte order of this machine (dumpdpp does not swap bytes): %s\n",
-                playprint);
+        fprintf(stderr, "Damaged Digital Playprint: %s\n", playprint);
     return status;
 }
 
