@@ -470,6 +470,21 @@ main(int argc, char **argv)
     MleDwpItem *root;
     root = MleDwpItem::readAll(in);
 
+    // A workprint that was read with errors (an Include that could not be
+    // opened, a syntax error) is not used. Each error has been reported.
+    // Do not leave a partial script behind.
+    if (in->getErrorCount() > 0)
+    {
+        fprintf(stderr,"%s : %s\n",args.commandName,
+                "Digital Workprint has errors");
+        fclose(scriptOut);
+        char *scriptPath = (g_outputDir != NULL) ? _expandPath(args.script) : args.script;
+        remove(scriptPath);
+        if (g_outputDir != NULL)
+            mlFree(scriptPath);
+        exit(1);
+    }
+
     // Verify digital workprint.
     if (! mlVerifyTargetWorkprint(root,args.tags))
     {

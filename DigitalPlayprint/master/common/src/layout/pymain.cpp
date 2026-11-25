@@ -279,6 +279,7 @@ int main(int argc, char *argv[])
                 state->m_scriptfile, strerror(errno));
         exit(1);
 	}
+    int scriptStatus = 0;
 #if USE_PYTHON_SIMPLE_STRING
     if (PyRun_SimpleString(script) != 0) {
         fprintf(stderr, "Error: could not execute script file %s\n",
@@ -287,19 +288,22 @@ int main(int argc, char *argv[])
 	}
 #else /* ! USE_PYTHON_SIMPLE_STRING */
 	// Note: PyRun_SimpleFile() does not work on Windows with a binary file pointer.
-    PyRun_SimpleFile(fp, state->m_scriptfile);
+    // The script failed if this is not 0. The error has been reported.
+    scriptStatus = PyRun_SimpleFile(fp, state->m_scriptfile);
+    if (scriptStatus != 0) {
+        fprintf(stderr, "Error: script %s failed\n", state->m_scriptfile);
+    }
 #endif
     
     // Terminate Python interpreter.
     Py_Finalize();
 
-    // Todo: validate python script completion.
-
     // Check for more chunks cached.  This would happen if the script
     // ommitted a final endplayprint command, or simply used the -o
-    // option to specify the output file.
+    // option to specify the output file. A playprint is not written
+    // from a script that failed.
 
-    if (state->m_chunks->getUsed() > 0) {
+    if (scriptStatus == 0 && state->m_chunks->getUsed() > 0) {
         endPlayprint();
     }
 
@@ -315,7 +319,7 @@ int main(int argc, char *argv[])
 #endif /* USE_PYTHON_SIMPLE_STRING */
 	mlFClose(fp);
     
-    return 0;
+    return scriptStatus != 0 ? 1 : 0;
 }
 
 //

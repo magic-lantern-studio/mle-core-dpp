@@ -279,7 +279,9 @@ int main(int argc,char *argv[])
     args.commandName = argv[0];
     args.byteOrder = FALSE;
     args.chunkFiles = NULL;
-    parseArgs(argc,argv,&args);
+    if (! parseArgs(argc,argv,&args))
+        exit(1);
+    int errors = 0;     // The number of chunk files that could not be dumped.
 
     if (args.byteOrder == FALSE)
         g_littleEndian = FALSE;
@@ -294,8 +296,15 @@ int main(int argc,char *argv[])
         // Open the chunk file.
         contents = readFileToMemory(nextFile->str, &size);
 
-        // Dump the contents.
-        parseStream(contents, size);
+        // Dump the contents. A Scene chunk has a header of three integers
+        // followed by integers, so anything else is not a Scene chunk.
+        if (contents == NULL || size < 12 || size % 4 != 0)
+        {
+            fprintf(stderr, "%s : Unable to read Scene chunk file %s\n",
+                    args.commandName, nextFile->str);
+            errors++;
+        } else
+            parseStream(contents, size);
 
         // Process next chunk file.
         nextFile = nextFile->next;
@@ -304,4 +313,6 @@ int main(int argc,char *argv[])
             fprintf(stdout,
                     "\n==================================================\n\n");
     }
+
+    return errors > 0 ? 1 : 0;
 }

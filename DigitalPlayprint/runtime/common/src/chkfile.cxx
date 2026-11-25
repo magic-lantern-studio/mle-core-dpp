@@ -73,8 +73,9 @@ MleChunkFile::~MleChunkFile(void)
 	if (getSwapRead()) setSwapRead(FALSE);
 	if (getSwapWrite()) setSwapWrite(FALSE);
 
-    // close file handle.
-    mlFClose(m_fp);
+    // close file handle (there is none when the file could not be opened).
+    if (m_fp)
+        mlFClose(m_fp);
 }
 
 

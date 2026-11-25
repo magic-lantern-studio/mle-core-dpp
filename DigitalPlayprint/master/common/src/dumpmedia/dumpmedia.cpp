@@ -145,17 +145,21 @@ int main(int argc,char *argv[])
     // Parse arguments.
     args.commandName = argv[0];
     args.chunkFiles = NULL;
-    parseArgs(argc,argv,&args);
+    if (! parseArgs(argc,argv,&args))
+        exit(1);
+    int errors = 0;     // The number of problems found in the chunk files.
 
     nextFile = args.chunkFiles;
     while (nextFile)
     {
         // Open the chunk file.
         in = new MleMrefChunkFile(nextFile->str,MleChunkFile::READING);
-        if (! in)
+        if (! in || in->getFp() == NULL)
         {
             fprintf(stderr,"Unable To Open MediaRef Chunk File: %s\n",
                     nextFile->str);
+            errors++;
+            delete in;
         } else
         {
             // Verify that the file is a valid MediaRef chunk file.
@@ -182,9 +186,14 @@ int main(int argc,char *argv[])
 #endif
                 in->begin(MLE_DPP_FINDPPBE);
             }
-            in->readHeader(&hdrData);
-            in->beginList();
-            in->readInfo(&mrefInfoData);
+            if (! in->readHeader(&hdrData) ||
+                ! in->beginList() ||
+                ! in->readInfo(&mrefInfoData))
+            {
+                fprintf(stderr,"Unable To Read MediaRef Chunk File: %s\n",
+                        nextFile->str);
+                errors++;
+            }
 
             fprintf(stdout,"%s: %d\n",
                     "Chunk File ID",hdrData.m_id);
@@ -207,7 +216,13 @@ int main(int argc,char *argv[])
             {
                 memset(&mrefData,0,sizeof(MleMediaRefChunk));
 
-                in->readData(&mrefData);
+                if (! in->readData(&mrefData))
+                {
+                    fprintf(stderr,"Unable To Read MediaRef Chunk File: %s\n",
+                            nextFile->str);
+                    errors++;
+                    break;
+                }
 
                 fprintf(stdout,"\t%s: %s\n",
                         "Media Type",mlDppTagToString(mrefData.m_type));
@@ -223,6 +238,7 @@ int main(int argc,char *argv[])
                 } else {
                     fprintf(stdout,"\t%s: type %d\n",
                             "Unknown Media Reference",mrefData.m_flags);
+                    errors++;
                 }
             }
 
@@ -239,4 +255,6 @@ int main(int argc,char *argv[])
             fprintf(stdout,
                     "\n==================================================\n\n");
     }
+
+    return errors > 0 ? 1 : 0;
 }

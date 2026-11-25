@@ -122,8 +122,15 @@ int gencodeStart(LayoutState *state, char *headerfilename, char *codefilename)
 
     // Open the workprint.
     int status = wp->openFile(wpFile);
-    // Todo: Log the status so that we know if the wpFile failed because it was invalid.
-    MLE_ASSERT(status == 0);
+    if (status != 0)
+    {
+        fprintf(stderr,"%s : Unable to open Digital Workprint %s\n",
+                state->m_commandName, wpFile);
+        if (state->m_workprint == NULL)
+            delete [] wpFile;
+        delete wp;
+        return 1;
+    }
 
     /*
      * Read in the workprint.
@@ -135,8 +142,21 @@ int gencodeStart(LayoutState *state, char *headerfilename, char *codefilename)
     if (state->m_workprint == NULL)
         delete [] wpFile;
 
+    // A workprint that was read with errors (an Include that could not be
+    // opened, a syntax error) is not used. Each error has been reported.
+    int wpErrors = wp->getErrorCount();
+
     wp->closeFile();
     delete wp;
+
+    if (wpErrors > 0)
+    {
+        fprintf(stderr,"%s : %s\n",state->m_commandName,
+                "Digital Workprint has errors");
+        delete state->m_root;
+        state->m_root = NULL;
+        return 1;
+    }
 
     // Left with a new state->m_root here.
 

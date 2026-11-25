@@ -381,7 +381,7 @@ main(int argc,char **argv)
     if (! tblMgr.buildIndexTables(root)) {
         fprintf(stderr,"%s: Error: %s.\n", args.commandName,
                 "Unable to build table of MediaRef classes.");
-        return(-1);
+        return(1);
     }
     TblMgrItems *mrefTable = tblMgr.getMediaRefTable();
 

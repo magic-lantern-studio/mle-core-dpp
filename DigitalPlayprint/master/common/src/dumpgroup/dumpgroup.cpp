@@ -93,6 +93,9 @@ typedef struct _ArgStruct
 
 static MlBoolean g_bigEndian;
 
+// The number of errors found in the chunk file.
+static int g_errors = 0;
+
 const char *usage_str = "\
 Syntax:   dumpgroup  [-b|-l] [-v] <group_chunk_file>\n\
 \n\
@@ -184,8 +187,14 @@ int main(int argc, char **argv)
 		g_bigEndian = FALSE;
 
     contents = readFileToMemory(args.chunkFile, &size);
+    if (contents == NULL || size == 0)
+    {
+        fprintf(stderr, "%s : Unable to read chunk file %s\n",
+                args.commandName, args.chunkFile ? args.chunkFile : "(stdin)");
+        exit(1);
+    }
     parseStream(contents, size);
-    return 0;
+    return g_errors > 0 ? 1 : 0;
 }
 
 /*
@@ -293,11 +302,13 @@ static void parseStream(unsigned char*& contents, int size)
 			if ( currentActor == -1 )
 			{
 				printf("         # ERROR: currentActor undefined.\n");
+				g_errors++;
 			}
 			if ( currentRole != -1 )
 			{
 				printf("         # ERROR: currentRole already defined (%d)\n",
 				   currentRole);
+				g_errors++;
 			}
 			currentRole = index;
 			break;
@@ -318,6 +329,7 @@ static void parseStream(unsigned char*& contents, int size)
 			if (currentSet == -1)
 			{
 				printf("         # ERROR: currentSet undefined.\n");
+				g_errors++;
 			}
 			currentRole = -1;
 			break;
@@ -436,6 +448,7 @@ static void parseStream(unsigned char*& contents, int size)
 
 		  default:
 			printf("         # ERROR: invalid opcode(%d)\n",opcode);
+			g_errors++;
 		}
     }
 }

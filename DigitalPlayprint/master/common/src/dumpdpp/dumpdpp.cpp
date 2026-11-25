@@ -295,6 +295,22 @@ static int dumpMref(void *clientdata, void *calldata)
 int readDpp(char *playprint)
 {
     MleDppInput *dpp = new MleDppInput(playprint);
+    if (dpp->getFp() == NULL)
+    {
+        fprintf(stderr, "Unable to open Digital Playprint: %s\n", playprint);
+        delete dpp;
+        return 1;
+    }
+
+    // A file that is not a Digital Playprint (a damaged, truncated or empty
+    // file) has no playprint tag.
+    if (mlDppCheckFormat(dpp->getFp()) < 0)
+    {
+        fprintf(stderr, "Not a Digital Playprint: %s\n", playprint);
+        delete dpp;
+        return 1;
+    }
+
     dpp->begin(MLE_DPP_FINDPPLE);
     dpp->readHeader(dumpHeader, NULL);
     dpp->readTOC(dumpTOC, NULL);

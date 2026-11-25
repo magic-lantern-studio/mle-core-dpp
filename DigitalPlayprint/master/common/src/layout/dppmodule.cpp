@@ -354,6 +354,8 @@ dpp_codeFile(PyObject *self, PyObject *args)
 
     // Start the code generation.
     if (gencodeStart(state, headerfilename, codefilename)) {
+         if (! PyErr_Occurred())
+             PyErr_SetString(DppError, "Unable to generate the chunk index code");
          return NULL;
     }
 

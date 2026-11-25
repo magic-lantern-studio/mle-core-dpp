@@ -88,6 +88,11 @@ MleDppGenMakefile::MleDppGenMakefile(char *filename)
     MLE_ASSERT(m_root);
 }
 
+int MleDppGenMakefile::getErrorCount(void)
+{
+    return m_wp ? m_wp->getErrorCount() : 0;
+}
+
 MleDppGenMakefile::~MleDppGenMakefile()
 {
     // XXX -- should close the DWP here; however, there is no API for this.

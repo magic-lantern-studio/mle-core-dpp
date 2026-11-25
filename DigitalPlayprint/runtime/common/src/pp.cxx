@@ -77,8 +77,9 @@ MleDpp::~MleDpp(void)
 	if (getSwapRead()) setSwapRead(FALSE);
 	if (getSwapWrite()) setSwapWrite(FALSE);
 
-    // Close file handle.
-    mlFClose(m_fp);
+    // Close file handle (there is none when the file could not be opened).
+    if (m_fp)
+        mlFClose(m_fp);
 }
 
 

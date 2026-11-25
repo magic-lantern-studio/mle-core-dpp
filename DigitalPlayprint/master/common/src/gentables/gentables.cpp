@@ -218,7 +218,7 @@ int main(int argc,char *argv[])
     args.verbose = FALSE;
     if (! parseArgs(argc, argv, &args))
     {
-        exit(-1);
+        exit(1);
     }
 
     //__asm int 3h
@@ -237,7 +237,7 @@ int main(int argc,char *argv[])
     {
         fprintf(stderr,"%s : %s\n",args.commandName,
                 "Unable to open Digital Workprint");
-        exit(-1);
+        exit(1);
     }
 
     // A workprint that was read with errors (an Include that could not be
@@ -246,7 +246,7 @@ int main(int argc,char *argv[])
     {
         fprintf(stderr,"%s : %s\n",args.commandName,
                 "Digital Workprint has errors");
-        exit(-1);
+        exit(1);
     }
 
     // Verify digital workprint.
@@ -254,12 +254,12 @@ int main(int argc,char *argv[])
     {
         fprintf(stderr,"%s : %s\n",args.commandName,
                 "Unable to process Digital Workprint");
-        exit(-1);
+        exit(1);
     }
 
     // Now employ the code generator object to build some code.
     if (gc->generateTitle(args.tags))
         exit(0);
     else
-        exit(-1);
+        exit(1);
 }

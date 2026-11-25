@@ -89,6 +89,14 @@ int main(int argc,char *argv[])
 		exit(1);
     }
 
+    // A workprint that was read with errors (an Include that could not be
+    // opened, a syntax error) is not used. Each error has been reported.
+    if ( gm->getErrorCount() > 0 )
+	{
+		fprintf(stderr,"%s : %s\n",argv[0],"Digital Workprint has errors");
+		exit(1);
+    }
+
     // Now employ the code generator object to build code.
     if (gm->generateMakefile())
         exit(0);

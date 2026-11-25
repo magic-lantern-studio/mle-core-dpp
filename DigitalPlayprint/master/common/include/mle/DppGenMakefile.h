@@ -78,6 +78,14 @@ class MleDppGenMakefile
         MleDwpItem *getRoot(void)
 		{ return(m_root); };
 
+		/**
+		 * @brief Get the number of errors found while reading the Digital Workprint.
+		 *
+		 * @return The number of errors is returned. Zero means the DWP was read
+		 * without a problem.
+		 */
+        int getErrorCount(void);
+
         MlBoolean generateMakefile(void);
 
 		/**

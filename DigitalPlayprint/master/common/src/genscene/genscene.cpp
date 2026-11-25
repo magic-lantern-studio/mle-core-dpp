@@ -282,6 +282,15 @@ int main(int argc,char *argv[])
     // Build the entire DWP, instantiating each MleDwpItem.
     root = MleDwpItem::readAll(in);
 
+    // A workprint that was read with errors (an Include that could not be
+    // opened, a syntax error) is not used. Each error has been reported.
+    if (in->getErrorCount() > 0)
+    {
+        fprintf(stderr,"%s : %s\n",args.commandName,
+                "Digital Workprint has errors");
+        exit(1);
+    }
+
     // Redirect the generated output.
     if (args.outputDir != NULL)
         MleDppSceneOutput::setOutputDirectory(args.outputDir);
@@ -326,7 +335,7 @@ int main(int argc,char *argv[])
 
         if (out->closeFile() != 0)
         {
-            return -1;
+            return 1;
         }
 
         // Create the scene chunk.
