@@ -46,6 +46,7 @@
 #if defined(_WINDOWS)
 #include <windows.h>
 #endif
+#include <errno.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -410,6 +411,17 @@ main(int argc, char **argv)
             tmpPath = args.script;
         scriptOut = mlFOpen(tmpPath, "w");
 
+        // The script cannot be written if, for example, the directory that
+        // it is to be in does not exist.
+        if (scriptOut == NULL)
+        {
+            fprintf(stderr,"%s : Unable to open %s: %s\n",
+                    args.commandName, tmpPath, strerror(errno));
+            if (g_outputDir != NULL)
+                mlFree(tmpPath);
+            exit(1);
+        }
+
         if (g_outputDir != NULL)
             mlFree(tmpPath);
 
@@ -445,8 +457,18 @@ main(int argc, char **argv)
     mleDwpInit();
     MleDwpInput *in = new MleDwpInput;
 
-    // Open the DWP.
-    in->openFile(args.workprint);
+    // Open the DWP. Do not leave an empty script behind if it cannot be read.
+    if (in->openFile(args.workprint))
+    {
+        fprintf(stderr,"%s : %s\n",args.commandName,
+                "Unable to open Digital Workprint");
+        fclose(scriptOut);
+        char *scriptPath = (g_outputDir != NULL) ? _expandPath(args.script) : args.script;
+        remove(scriptPath);
+        if (g_outputDir != NULL)
+            mlFree(scriptPath);
+        exit(1);
+    }
 
     // Begin script.
     fprintf(scriptOut,"%s\n%s\n%s%s.cxx and %s.h.\n%s\n",
