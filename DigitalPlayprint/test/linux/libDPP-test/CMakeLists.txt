@@ -110,7 +110,8 @@ add_library(dpptest SHARED
   libdpptest/testBadInput.cxx
   libdpptest/testChunkMarker.cxx
   libdpptest/testGenMakefile.cxx
-  libdpptest/testGenPpscript.cxx)
+  libdpptest/testGenPpscript.cxx
+  libdpptest/testTitleAnt.cxx)
 target_include_directories(dpptest PRIVATE
   $<TARGET_PROPERTY:GTest::gtest,INTERFACE_INCLUDE_DIRECTORIES>)
 

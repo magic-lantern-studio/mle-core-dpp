@@ -151,6 +151,7 @@ install(
       ../../common/src/DPPGenerator/TitleCppCode.tmpl
       ../../common/src/DPPGenerator/TitleJavaCode.tmpl
       ../../common/src/DPPGenerator/TitleMakefile.tmpl
+      ../../common/src/DPPGenerator/TitleAnt.tmpl
       ../../common/src/layout/TOCCppGlobals.tmpl
       ../../common/src/layout/TOCJavaGlobals.tmpl
     DESTINATION

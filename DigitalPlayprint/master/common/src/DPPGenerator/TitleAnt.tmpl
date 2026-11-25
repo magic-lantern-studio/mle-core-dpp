@@ -1,0 +1,270 @@
+%# TitleAnt.tmpl
+%#
+%# The Apache Ant counterpart of TitleMakefile.tmpl, for titles and
+%# applications written in Java. It makes a build file that masters a title
+%# into a Digital Playprint with the mastering tools, using their -j option, so
+%# that the tables and the ids are Java classes. The tools read the template
+%# from $MLE_ROOT/lib64/TitleAnt.tmpl (see MLE_TITLE_ANT_TEMPLATE in mlConfig.h).
+%#
+%# Rules of the template language that the build file has to follow:
+%#   - Ant properties look like the values of the template, so the template
+%#     writes an Ant property as a backslash and a dollar sign: \${name} is
+%#     written as ${name}. Only ${NAME} without the backslash is replaced.
+%#   - A backslash at the end of a line is removed with the newline.
+%#   - A line that starts with a percent sign and a hash is not written.
+%#
+%# Values: ${FILENAME}, ${DATE}, and ${DO_ACTORS(section)}, which writes the
+%# section once for each Actor with ${NAME_STRING} set to its name.
+%% MASTERING_ANT
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Magic Lantern Digital Playprint mastering build file, for Java titles.
+
+  Automatically generated code.
+       File: ${FILENAME}
+       Date: ${DATE}
+
+  This build file masters a Digital Workprint into a Digital Playprint, and
+  into the Java classes that go with it. It runs the mastering tools in this
+  order, with their -j option where they write code:
+
+    gentables     the runtime tables of the title (MleRuntimeTables.java)
+    gengroup      the Actor Group and Set chunk files, ActorID.java, GroupID.java
+    genscene      the Scene chunk files and SceneID.java
+    genmedia      the MediaRef chunk files and the media inventory
+    genppscript   the layout script of the playprint
+    gendpp        the playprint, and the class that finds its chunks (DppTOC.java)
+
+  Use it with "ant -Dpackage=com.example.title", or import it into the build
+  file of the title. The mastering tools have to be in the PATH, and MLE_ROOT
+  has to be set, as the tools read their templates from it. Properties can be
+  set on the command line, for example:
+
+    ant -Dpackage=com.example.title -Dworkprint=hello.dwp -Dtags=release -Dendian=l
+
+  The target "compile" compiles the generated classes. It needs the Magic
+  Lantern Java runtime, mlert.jar.
+-->
+<project name="title-mastering" default="all" basedir=".">
+
+  <property environment="env"/>
+
+  <!-- The Digital Workprint, and its tags (a list separated by colons). -->
+  <property name="workprint" value="title.dwp"/>
+  <property name="tags" value="rehearsal"/>
+
+  <!-- The Java package of the generated classes. It has no default. -->
+
+  <!--
+    The byte order of the playprint, b (big endian) or l (little endian). It is
+    the same for all of the tools. A Scene or MediaRef chunk file in the other
+    byte order is converted, but gendpp refuses an Actor Group or Set chunk file
+    in the other byte order.
+  -->
+  <property name="endian" value="b"/>
+
+  <!-- Options for the tools that write the values of the Actors: -f for 16.16 fixed point. -->
+  <property name="fixed" value=""/>
+
+  <!-- The directory of the chunk files, tables and layout script, and the directory of the playprint. -->
+  <property name="gen.dir" value="gen"/>
+  <property name="out.dir" value="out"/>
+
+  <!--
+    The names of the files that the tools write. The names of the Java files
+    are the names of the classes in them, which the tools fix: ActorID,
+    GroupID, SceneID and DppTOC.
+  -->
+  <property name="actor.id" value="ActorID.java"/>
+  <property name="group.id" value="GroupID.java"/>
+  <property name="scene.id" value="SceneID.java"/>
+  <property name="media.bom" value="media.bom"/>
+  <property name="script" value="playprint.py"/>
+  <property name="playprint" value="playprint.dpp"/>
+  <property name="toc" value="DppTOC"/>
+
+  <!-- The mastering tools. -->
+  <property name="gentables" value="gentables"/>
+  <property name="gengroup" value="gengroup"/>
+  <property name="genscene" value="genscene"/>
+  <property name="genmedia" value="genmedia"/>
+  <property name="genppscript" value="genppscript"/>
+  <property name="gendpp" value="gendpp"/>
+
+  <!-- The Magic Lantern Java runtime and the directories of "compile". -->
+  <property name="mlert.jar" value="\${env.MLE_ROOT}/lib/java/runtime/mlert.jar"/>
+  <property name="classes.dir" value="classes"/>
+
+  <!-- Mastering. -->
+
+  <target name="all" depends="tables,playprint"
+          description="Master the tables and the playprint"/>
+
+  <target name="check">
+    <fail unless="package"
+          message="Set the Java package of the title: ant -Dpackage=com.example.title"/>
+    <fail message="The Digital Workprint does not exist: \${workprint}">
+      <condition>
+        <not><available file="\${workprint}"/></not>
+      </condition>
+    </fail>
+  </target>
+
+  <!-- The tools do not make the directory that they write to. -->
+  <target name="init" depends="check">
+    <mkdir dir="\${gen.dir}"/>
+    <mkdir dir="\${out.dir}"/>
+  </target>
+
+  <!-- A tool that fails stops the build, and what it wrote is not used. -->
+
+  <target name="-tables-check" depends="init">
+    <uptodate property="tables.uptodate" srcfile="\${workprint}"
+              targetfile="\${gen.dir}/MleRuntimeTables.java"/>
+  </target>
+  <target name="tables" depends="-tables-check" unless="tables.uptodate"
+          description="Make the runtime tables">
+    <exec executable="\${gentables}" failonerror="true">
+      <arg value="-j"/>
+      <arg value="\${package}"/>
+      <arg value="-d"/>
+      <arg value="\${gen.dir}"/>
+      <arg value="\${tags}"/>
+      <arg value="\${workprint}"/>
+    </exec>
+  </target>
+
+  <target name="-group-check" depends="init">
+    <uptodate property="group.uptodate" srcfile="\${workprint}"
+              targetfile="\${gen.dir}/\${group.id}"/>
+  </target>
+  <target name="group" depends="-group-check" unless="group.uptodate"
+          description="Make the Actor Group and Set chunk files">
+    <exec executable="\${gengroup}" failonerror="true">
+      <arg value="-\${endian}"/>
+      <arg line="\${fixed}"/>
+      <arg value="-j"/>
+      <arg value="\${package}"/>
+      <arg value="-d"/>
+      <arg value="\${gen.dir}"/>
+      <arg value="\${tags}"/>
+      <arg value="\${workprint}"/>
+      <arg value="\${actor.id}"/>
+      <arg value="\${group.id}"/>
+    </exec>
+  </target>
+
+  <target name="-scene-check" depends="init">
+    <uptodate property="scene.uptodate" srcfile="\${workprint}"
+              targetfile="\${gen.dir}/\${scene.id}"/>
+  </target>
+  <target name="scene" depends="-scene-check" unless="scene.uptodate"
+          description="Make the Scene chunk files">
+    <exec executable="\${genscene}" failonerror="true">
+      <arg value="-\${endian}"/>
+      <arg line="\${fixed}"/>
+      <arg value="-j"/>
+      <arg value="\${package}"/>
+      <arg value="-d"/>
+      <arg value="\${gen.dir}"/>
+      <arg value="\${tags}"/>
+      <arg value="\${workprint}"/>
+      <arg value="\${scene.id}"/>
+    </exec>
+  </target>
+
+  <!-- genmedia does not write code, so it has no -j option. -->
+  <target name="-media-check" depends="init">
+    <uptodate property="media.uptodate" srcfile="\${workprint}"
+              targetfile="\${gen.dir}/\${media.bom}"/>
+  </target>
+  <target name="media" depends="-media-check" unless="media.uptodate"
+          description="Make the MediaRef chunk files">
+    <exec executable="\${genmedia}" failonerror="true">
+      <arg value="-\${endian}"/>
+      <arg value="-d"/>
+      <arg value="\${gen.dir}"/>
+      <arg value="\${tags}"/>
+      <arg value="\${workprint}"/>
+      <arg value="\${media.bom}"/>
+    </exec>
+  </target>
+
+  <!--
+    The layout script is made by genppscript, which has no -j option. To lay
+    out the playprint by hand, keep a script of your own and set layout.script
+    to it. It is not made again if it was changed after the workprint.
+  -->
+  <property name="layout.script" value="\${gen.dir}/\${script}"/>
+  <target name="-script-check" depends="init">
+    <uptodate property="script.uptodate" srcfile="\${workprint}"
+              targetfile="\${gen.dir}/\${script}"/>
+  </target>
+  <target name="script" depends="-script-check" unless="script.uptodate"
+          description="Make the layout script">
+    <exec executable="\${genppscript}" failonerror="true">
+      <arg value="-d"/>
+      <arg value="\${gen.dir}"/>
+      <arg value="\${tags}"/>
+      <arg value="\${workprint}"/>
+      <arg value="\${playprint}"/>
+      <arg value="\${script}"/>
+      <arg value="\${toc}"/>
+    </exec>
+  </target>
+
+  <!--
+    The playprint lays out the chunk files that the script names, which are in
+    gen.dir. gendpp also writes the class that finds the chunks, \${toc}.java,
+    which is compiled with the title.
+  -->
+  <target name="-playprint-check" depends="group,scene,media,script">
+    <uptodate property="playprint.uptodate" targetfile="\${out.dir}/\${playprint}">
+      <srcfiles dir="\${gen.dir}"
+                includes="\${group.id},\${scene.id},\${media.bom},\${script}"/>
+    </uptodate>
+  </target>
+  <target name="playprint" depends="-playprint-check" unless="playprint.uptodate"
+          description="Make the playprint">
+    <exec executable="\${gendpp}" failonerror="true">
+      <arg value="-\${endian}"/>
+      <arg value="-j"/>
+      <arg value="\${package}"/>
+      <arg value="-d"/>
+      <arg value="\${out.dir}"/>
+      <arg value="-s"/>
+      <arg value="\${gen.dir}"/>
+      <arg value="\${tags}"/>
+      <arg value="\${workprint}"/>
+      <arg value="\${layout.script}"/>
+    </exec>
+  </target>
+
+  <!-- Compile the generated classes, with the Magic Lantern Java runtime. -->
+  <target name="compile" depends="all"
+          description="Compile the generated Java classes">
+    <mkdir dir="\${classes.dir}"/>
+    <javac destdir="\${classes.dir}" includeantruntime="false">
+      <src path="\${gen.dir}"/>
+      <src path="\${out.dir}"/>
+      <include name="**/*.java"/>
+      <classpath>
+        <pathelement location="\${mlert.jar}"/>
+      </classpath>
+    </javac>
+  </target>
+
+  <!-- The Actors of the Digital Workprint. -->
+  <target name="actors" description="List the Actors of the workprint">
+${DO_ACTORS(ACTOR_ECHO)}\
+  </target>
+
+  <target name="clean" description="Delete what was made">
+    <delete dir="\${gen.dir}"/>
+    <delete dir="\${out.dir}"/>
+    <delete dir="\${classes.dir}"/>
+  </target>
+
+</project>
+%% ACTOR_ECHO
+    <echo message="${NAME_STRING}"/>
