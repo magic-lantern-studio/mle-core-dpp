@@ -1,0 +1,131 @@
+%# TitleMakefile.tmpl
+%#
+%# The template of genmakefile (see MleDppGenMakefile). It makes
+%# Makefile.target, which masters a title into a Digital Playprint with the
+%# mastering tools. The tools read the template from
+%# $MLE_ROOT/lib64/TitleMakefile.tmpl.
+%#
+%# Rules of the template language that the Makefile has to follow:
+%#   - A backslash at the end of a line is removed with the newline, so the
+%#     Makefile does not use line continuations.
+%#   - Only ${NAME} is replaced; "$(NAME)", "$@" and "$<" are left alone.
+%#   - A line that starts with a percent sign and a hash is not written.
+%#
+%# Values: ${FILENAME}, ${DATE}, and ${DO_ACTORS(section)}, which writes the
+%# section once for each Actor with ${NAME_STRING} set to its name.
+%% MASTERING_MAKEFILE
+# Magic Lantern Digital Playprint mastering Makefile.
+#
+# Automatically generated code.
+#      File: ${FILENAME}
+#      Date: ${DATE}
+#
+# This Makefile masters a Digital Workprint into a Digital Playprint. It runs
+# the mastering tools in this order:
+#
+#   gentables     the runtime tables of the title
+#   gengroup      the Actor Group and Set chunk files, the Actor and Group ids
+#   genscene      the Scene chunk files and the Scene ids
+#   genmedia      the MediaRef chunk files and the media inventory
+#   genppscript   the layout script of the playprint
+#   gendpp        the playprint, and the code that finds its chunks
+#
+# Use it with "make -f Makefile.target", or include it in the Makefile of the
+# title. Variables can be set on the command line, for example:
+#
+#   make -f Makefile.target WORKPRINT=hello.dwp TAGS=release ENDIAN=l
+
+# The Digital Workprint, and its tags (a list separated by colons).
+WORKPRINT ?= title.dwp
+TAGS ?= rehearsal
+
+# The byte order of the playprint, b (big endian) or l (little endian). It is
+# the same for all of the tools. A Scene or MediaRef chunk file in the other
+# byte order is converted, but gendpp refuses an Actor Group or Set chunk file
+# in the other byte order.
+ENDIAN ?= b
+
+# Options of the tools that write code: -c for C++, or -j <package> for Java.
+# Add -f to FIXED to master the values of the Actors as 16.16 fixed point.
+CODE ?= -c
+FIXED ?=
+
+# The directory of the chunk files, tables and layout script, and the
+# directory of the playprint.
+GEN_DIR ?= gen
+OUT_DIR ?= out
+
+# The names of the files that the tools write.
+ACTOR_ID ?= actorid.h
+GROUP_ID ?= groupid.h
+SCENE_ID ?= sceneid.h
+MEDIA_BOM ?= media.bom
+SCRIPT ?= playprint.py
+PLAYPRINT ?= playprint.dpp
+TOC ?= toc.idx
+
+# The layout script is made by genppscript. To lay out the playprint by hand,
+# keep a script of your own, and set LAYOUT_SCRIPT to it.
+LAYOUT_SCRIPT ?= $(GEN_DIR)/$(SCRIPT)
+
+# The mastering tools.
+GENTABLES ?= gentables
+GENGROUP ?= gengroup
+GENSCENE ?= genscene
+GENMEDIA ?= genmedia
+GENPPSCRIPT ?= genppscript
+GENDPP ?= gendpp
+
+# A tool that fails can leave a file that is not complete.
+.DELETE_ON_ERROR:
+
+.PHONY: all tables group scene media script playprint actors clean
+
+# The tables and the chunk index code are linked to the title; the playprint is
+# what the title reads.
+all: tables playprint
+
+tables: $(GEN_DIR)/mltables.cxx
+group: $(GEN_DIR)/$(GROUP_ID)
+scene: $(GEN_DIR)/$(SCENE_ID)
+media: $(GEN_DIR)/$(MEDIA_BOM)
+script: $(LAYOUT_SCRIPT)
+playprint: $(OUT_DIR)/$(PLAYPRINT)
+
+# The tools do not make the directory that they write to.
+$(GEN_DIR) $(OUT_DIR):
+	mkdir -p $@
+
+$(GEN_DIR)/mltables.cxx: $(WORKPRINT) | $(GEN_DIR)
+	$(GENTABLES) $(CODE) -d $(GEN_DIR) $(TAGS) $(WORKPRINT)
+
+$(GEN_DIR)/$(GROUP_ID): $(WORKPRINT) | $(GEN_DIR)
+	$(GENGROUP) -$(ENDIAN) $(FIXED) $(CODE) -d $(GEN_DIR) $(TAGS) $(WORKPRINT) $(ACTOR_ID) $(GROUP_ID)
+
+$(GEN_DIR)/$(SCENE_ID): $(WORKPRINT) | $(GEN_DIR)
+	$(GENSCENE) -$(ENDIAN) $(FIXED) $(CODE) -d $(GEN_DIR) $(TAGS) $(WORKPRINT) $(SCENE_ID)
+
+$(GEN_DIR)/$(MEDIA_BOM): $(WORKPRINT) | $(GEN_DIR)
+	$(GENMEDIA) -$(ENDIAN) -d $(GEN_DIR) $(TAGS) $(WORKPRINT) $(MEDIA_BOM)
+
+# Not made again if the script was changed by hand after the workprint.
+$(GEN_DIR)/$(SCRIPT): $(WORKPRINT) | $(GEN_DIR)
+	$(GENPPSCRIPT) -d $(GEN_DIR) $(TAGS) $(WORKPRINT) $(PLAYPRINT) $(SCRIPT) $(TOC)
+
+# The playprint lays out the chunk files that the script names, which are in
+# GEN_DIR. gendpp also writes the code that finds the chunks, $(TOC).cxx and
+# $(TOC).h, which are linked to the title.
+$(OUT_DIR)/$(PLAYPRINT): $(GEN_DIR)/$(GROUP_ID) $(GEN_DIR)/$(SCENE_ID) $(GEN_DIR)/$(MEDIA_BOM) $(LAYOUT_SCRIPT) | $(OUT_DIR)
+	$(GENDPP) -$(ENDIAN) $(CODE) -d $(OUT_DIR) -s $(GEN_DIR) $(TAGS) $(WORKPRINT) $(LAYOUT_SCRIPT)
+
+# The Actors of the Digital Workprint.
+TITLE_ACTORS :=
+${DO_ACTORS(ACTOR_LIST)}\
+
+actors:
+	@for a in $(TITLE_ACTORS); do echo $$a; done
+
+clean:
+	rm -rf $(GEN_DIR) $(OUT_DIR)
+%% ACTOR_LIST
+TITLE_ACTORS += ${NAME_STRING}

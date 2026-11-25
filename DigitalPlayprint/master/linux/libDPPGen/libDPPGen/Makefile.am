@@ -31,5 +31,6 @@ templates_dir = $(prefix)/lib
 templates__DATA = \
 	../../../common/src/DPPGenerator/TitleCppCode.tmpl \
 	../../../common/src/DPPGenerator/TitleJavaCode.tmpl \
+	../../../common/src/DPPGenerator/TitleMakefile.tmpl \
 	../../../common/src/layout/TOCCppGlobals.tmpl \
 	../../../common/src/layout/TOCJavaGlobals.tmpl
