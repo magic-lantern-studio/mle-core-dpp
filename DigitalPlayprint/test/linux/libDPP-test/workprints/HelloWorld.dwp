@@ -1,0 +1,30 @@
+#DWP 1.0 ascii
+( Include $MLE_WORKPRINTS/Parts/sets/qt/workprints/MleQt2dSet.wpf )
+( Stage MyStage Mle2dStage
+  ( Set 2dSet Mle2dSet
+    ( Property position MlVector2 0.0 0.0 )
+    ( Property size MlVector2 640.0 480.0 )
+  )
+)
+( ActorDef LabelWidgetActor
+  ( HeaderFile actors/LabelWidgetActor.h )
+  ( PropertyDef id string )
+  ( PropertyDef position MlVector2 )
+  ( PropertyDef text string )
+  ( RoleSetMapping LabelWidgetRole Mle2dSet )
+)
+( RoleDef LabelWidgetRole
+  ( HeaderFile roles/LabelWidgetRole.h )
+)
+( Scene scene1 MleScene 
+  ( HeaderFile mle/MleScene.h )
+  ( Group group1 MleGroup
+    ( HeaderFile mle/MleGroup.h ) 
+    ( Actor label LabelWidgetActor
+      ( Property id string "LabelWidget" )
+      ( Property position MlVector2 50.0 50.0 )
+      ( Property text string "Hello World!" )
+      ( RoleBinding LabelWidgetRole 2dSet )
+    )
+  ) 
+) 

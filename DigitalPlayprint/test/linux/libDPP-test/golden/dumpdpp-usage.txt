@@ -1,0 +1,11 @@
+Syntax:   dumpdpp  [-b|-l] [-v] <playprint_file>
+
+          -b                   The playprint is in Big Endian byte ordering
+          -l                   The playprint is in Little Endian byte ordering
+                               (default: the byte ordering of the file)
+          -v                   Be verbose
+          <playprint_file>     Generated Digital Playprint file (.dpp)
+
+Function: Dump Magic Lantern Digital Playprint Files.
+
+

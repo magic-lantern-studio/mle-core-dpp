@@ -1,0 +1,30 @@
+#DWP 1.0 ascii 
+( Include Mle2dSet.wpd )
+( Stage MyStage QtStage 
+    ( Set MySet Mle2dSet
+        ( Property position MlVector2 0 0 ) 
+        ( Property size MlVector2 640 480 ) 
+    ) 
+) 
+( Include MleImageActor.wpd ) 
+( Include MleImageRole.wpd )
+( Scene Scene1 MleScene 
+    ( HeaderFile mle/MleScene.h )
+    ( Group g0 MleGroup
+        ( HeaderFile mle/MleGroup.h ) 
+        ( Actor a0 Mle2dImgActor 
+            ( Property position MlVector2 0 0 ) 
+            ( Property image MediaRef logoImage ) 
+            ( Property displayState int 1 ) 
+            ( RoleBinding Mle2dImgRole MySet )
+        ) 
+    ) 
+) 
+( MediaRef logoImage MleImageMediaRef
+    ( MediaRefSource 
+        ( Media 0 logo media/wwlogo.png ) 
+    ) 
+    ( MediaRefTarget 0 
+        ( Media 0 logo media/wwlogo.png ) 
+    ) 
+) 

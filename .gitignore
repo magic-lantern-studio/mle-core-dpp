@@ -22,6 +22,8 @@
 **/ltmain.sh
 **/depcomp
 **/exampleProgram
+# The runner of the unit tests is source.
+!DigitalPlayprint/test/linux/libDPP-test/exampleProgram
 **/*~
 
 ## Linux CMake

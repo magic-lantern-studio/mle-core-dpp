@@ -1,0 +1,66 @@
+name: Unit Tests (Ubuntu 24.04)
+
+# Run the unit tests after the Ubuntu build has completed successfully.
+on:
+  workflow_run:
+    workflows: [ "Continuous Integration Build (Ubuntu 24.04)" ]
+    types: [ completed ]
+    branches: [ main, master ]
+  workflow_dispatch:  # Allow manual triggers
+
+env:
+  MLE_ROOT: ${{ github.workspace }}/MagicLantern
+
+jobs:
+  unit-tests:
+    name: Ubuntu 24.04 Unit Tests (${{ matrix.build_type }})
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        build_type: [ Release, Debug ]
+    # Skip the tests if the build failed or was cancelled.
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+
+    steps:
+      # Test the same commit that was built.
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+
+      # libgtest-dev provides Google Test. python3-dev is for gendpp, which
+      # embeds Python.
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake libgtest-dev python3-dev
+
+      # Download what the Ubuntu build installed into $MLE_ROOT: the libraries
+      # and tools of mle-core-dpp, with mle-core-dwp, mle-core-math and
+      # mle-core-util. The Debug libraries have assertions enabled; the Release
+      # libraries are the ones that ship. When started manually, the latest
+      # successful build is used.
+      - name: Download mle-core-dpp artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_ID: ${{ github.event.workflow_run.id }}
+        run: |
+          gh run download $RUN_ID \
+            --repo ${{ github.repository }} \
+            --name mle-core-dpp-ubuntu-24.04-${{ matrix.build_type }} \
+            --dir "$MLE_ROOT"
+          # An artifact does not keep the permissions of the files in it, and
+          # the tests run the tools.
+          chmod +x "$MLE_ROOT"/bin/* 2>/dev/null || true
+          ls -R "$MLE_ROOT"
+
+      - name: Build unit tests
+        run: |
+          cmake -S DigitalPlayprint/test/linux/libDPP-test -B build/libDPP-test -G "Unix Makefiles" \
+            -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
+            -DCMAKE_PREFIX_PATH="$MLE_ROOT"
+          cmake --build build/libDPP-test --parallel 4
+
+      - name: Run unit tests
+        run: ctest --test-dir build/libDPP-test --output-on-failure --verbose

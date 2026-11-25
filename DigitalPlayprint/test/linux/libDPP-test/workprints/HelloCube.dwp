@@ -1,0 +1,28 @@
+#DWP 1.0 ascii
+#( Include $MLE_WORKPRINTS/MleIv3dSet.wpf )
+( Stage MyStage CubeStage
+  ( Set 3dSet CubeSet
+    ( Property position MlVector2 0.0 0.0 )
+    ( Property size MlVector2 640.0 480.0 )
+  )
+)
+( ActorDef CubeActor
+  ( HeaderFile actors/CubeActor.h )
+  ( PropertyDef position MlVector3 )
+  ( PropertyDef geometry FloatArray )
+  ( RoleSetMapping CubeRole CubeSet )
+)
+( RoleDef CubeRole
+  ( HeaderFile roles/CubeRole.h )
+)
+( Scene scene1 MleScene 
+  ( HeaderFile mle/MleScene.h )
+  ( Group group1 MleGroup
+    ( HeaderFile mle/MleGroup.h ) 
+    ( Actor cube CubeActor
+      ( Property position MlVector3 10.0 10.0 10.0 )
+      ( Property geometry FloatArray [ 1.0, 1.0, 1.0 ] )
+      ( RoleBinding CubeRole 3dSet )
+    )
+  ) 
+) 
