@@ -70,9 +70,21 @@ class MleDppSceneChunk
     virtual ~MleDppSceneChunk()
 	{
 		if (m_groupNames != NULL)
-			delete m_groupNames;
-		fclose(m_fp);
+			delete [] m_groupNames;
+		if (m_fp != NULL)
+			fclose(m_fp);
 	};
+
+    /**
+	 * @brief Tell whether the chunk file was read.
+	 *
+	 * The constructor checks the file: it has to open, its offset of the
+	 * group names has to be in the file, and the names have to end with a
+	 * NUL. When it is not valid there are no names, and loadChunk returns
+	 * <b>NULL</b>.
+	 */
+    MlBoolean isValid(void) const
+	{ return m_valid; };
 
     /**
 	 * @brief Get the name of the groups.
@@ -153,6 +165,9 @@ class MleDppSceneChunk
 	const MlByte * m_chunkEnd;
 
 	MlByte * m_resolvedChunkPtr;
+
+	MlBoolean m_valid;	// the chunk file was read by the constructor
+	MlBoolean m_bad;	// the integers are damaged (set while loading)
 
 	MlByte nextChunkByte(void);
 

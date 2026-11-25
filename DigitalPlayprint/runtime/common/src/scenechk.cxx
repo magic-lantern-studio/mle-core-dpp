@@ -54,29 +54,44 @@
 
 
 MleDppSceneChunk::MleDppSceneChunk(const char *filename, MlBoolean isLittle)
- : m_groupNames(NULL), m_littleEndian(isLittle)
+ : m_fp(NULL), m_groupNames(NULL), m_nameOffset(0), m_nameLength(0),
+   m_littleEndian(isLittle), m_chunkRef(NULL), m_chunkStart(NULL),
+   m_chunkEnd(NULL), m_resolvedChunkPtr(NULL), m_valid(FALSE), m_bad(FALSE)
 {
+	// The offset and the names come from the file, so they are checked.
 	m_fp = fopen(filename, "rb");
-	MLE_ASSERT(m_fp != NULL);
+	if (m_fp == NULL)
+		return;
 
-	int err = fread(&m_nameOffset, sizeof(MlInt), 1, m_fp);
-	MLE_ASSERT(err == 1);
+	if (fread(&m_nameOffset, sizeof(MlInt), 1, m_fp) != 1)
+		return;
 
-	err = fseek(m_fp, 0, SEEK_END);
-	MLE_ASSERT(err == 0);
+	if (fseek(m_fp, 0, SEEK_END) != 0)
+		return;
 
-	int fileEnd = ftell(m_fp);
-	MLE_ASSERT(fileEnd > 0);
+	long fileEnd = ftell(m_fp);
+	if (fileEnd < (long) sizeof(MlInt) || m_nameOffset < (MlInt) sizeof(MlInt) ||
+	    m_nameOffset > fileEnd)
+		return;
 
-	err = fseek(m_fp, m_nameOffset, SEEK_SET);
-	MLE_ASSERT(err == 0);
+	if (fseek(m_fp, m_nameOffset, SEEK_SET) != 0)
+		return;
 
 	if ((m_nameLength = fileEnd - m_nameOffset) > 0)
 	{
 		m_groupNames = new char[m_nameLength];
-		err = fread(m_groupNames, m_nameLength, 1, m_fp);
-		MLE_ASSERT(err == 1);
+		// The names are NUL terminated strings; the last one has to be too.
+		if (fread(m_groupNames, m_nameLength, 1, m_fp) != 1 ||
+		    m_groupNames[m_nameLength - 1] != '\0')
+		{
+			delete [] m_groupNames;
+			m_groupNames = NULL;
+			m_nameLength = 0;
+			return;
+		}
 	}
+
+	m_valid = TRUE;
 }
 
 
@@ -101,7 +116,8 @@ int MleDppSceneChunk::countNames(void)
 
 const char * MleDppSceneChunk::nextName(const char* name)
 {
-	MLE_ASSERT(m_groupNames != NULL);
+	if (m_groupNames == NULL)
+		return NULL;
 
 	char* groupEnd = &m_groupNames[m_nameLength];
 	if (name == NULL || name >= groupEnd)
@@ -121,7 +137,11 @@ int MleDppSceneChunk::writeIndex(MlInt index)
 	int counter = (32 + valueBits - 1) / valueBits;
 	char writeOut = 0;
 	
-	MLE_ASSERT(index >= 0);
+	if (index < 0)
+	{
+		m_bad = TRUE;
+		return 0;
+	}
 	while (--counter >= 0)
 	{
 		if (writeOut || index >= 1 << valueBits * counter)
@@ -153,7 +173,13 @@ MlInt MleDppSceneChunk::writeInt(MlInt index)
 
 MlByte MleDppSceneChunk::nextChunkByte()
 {
-	MLE_ASSERT(m_chunkRef >= m_chunkStart && m_chunkRef < m_chunkEnd);
+	// Reading past the end damages the chunk. The byte that is returned has
+	// the high bit, so that a loop that reads an index ends.
+	if (!(m_chunkRef >= m_chunkStart && m_chunkRef < m_chunkEnd))
+	{
+		m_bad = TRUE;
+		return 0x80;
+	}
 
 	return *m_chunkRef++;
 }
@@ -166,10 +192,16 @@ MlInt MleDppSceneChunk::readIndex(void)
 	
 	while ((byte = nextChunkByte()) >= 0)
 	{
-		MLE_ASSERT((value & (MlInt) 0x80000000 >> (valueBits - 1)) == 0);
+		if ((value & (MlInt) 0x80000000 >> (valueBits - 1)) != 0)
+		{
+			// The index does not fit.
+			m_bad = TRUE;
+			return 0;
+		}
 		value = (value << valueBits) | byte;
 	}
-	MLE_ASSERT(value >= 0);
+	if (m_bad)
+		return 0;
 
 	m_chunkRef--; /* Back up one, since while loop always over-advances by one. */
 
@@ -196,27 +228,40 @@ MlInt MleDppSceneChunk::readInt(void)
 const MlByte *
 MleDppSceneChunk::loadChunk(MlInt *length)
 {
-	
+	*length = 0;
+	if (! m_valid)
+		return NULL;
+
+	// The chunk is a number of ints, from the file: it has to have at least
+	// one, and no part of an int.
+	MlInt chunkLength = m_nameOffset - sizeof(MlInt);
+	if (chunkLength <= 0 || chunkLength % sizeof(MlInt) != 0 ||
+	    fseek(m_fp, sizeof(MlInt), SEEK_SET) != 0)
+		return NULL;
+
+	m_bad = FALSE;
     MlByte *resolvedByteStream = new MlByte[m_nameOffset];
     m_resolvedChunkPtr = resolvedByteStream;
 
-    MlInt chunkLength = m_nameOffset - sizeof(MlInt);
     m_chunkStart = new MlByte[chunkLength];
     m_chunkRef = m_chunkStart;
     m_chunkEnd = &m_chunkStart[chunkLength];
 
-    MlInt err = fseek(m_fp, sizeof(MlInt), SEEK_SET);
-    MLE_ASSERT(err == 0);
+    if (fread((char *) m_chunkStart, chunkLength, 1, m_fp) != 1)
+		m_bad = TRUE;
 
-    err = fread((char *) m_chunkStart, chunkLength, 1, m_fp);
-    MLE_ASSERT(err == 1);
-
-    do {
+    while (! m_bad && m_chunkRef < m_chunkEnd)
 	    writeInt(readInt());
-    } while (m_chunkRef < m_chunkEnd);
 
 	// Clean up.
-    delete (MlByte *) m_chunkStart;
+    delete [] (MlByte *) m_chunkStart;
+	m_chunkStart = NULL;
+
+	if (m_bad)
+	{
+		delete [] resolvedByteStream;
+		return NULL;
+	}
 
 	// Calculate the size of the resolved table.
     *length = m_resolvedChunkPtr - resolvedByteStream;

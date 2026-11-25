@@ -363,6 +363,13 @@ int main(int argc,char *argv[])
             }
 
             MleDppActorGroupChunk chunk(groupChunkFile,args.byteOrder);
+            if (! chunk.isValid())
+            {
+                fprintf(stderr,"%s : Damaged Actor Group chunk file: %s\n",
+                        args.commandName,groupChunkFile);
+                delete out;
+                return 1;
+            }
             int *indices = new int[chunk.countNames()];
             int *indicesPtr = indices;
             const char* names = chunk.getNames();
@@ -377,6 +384,14 @@ int main(int argc,char *argv[])
 
             int resolvedLength;
             const unsigned char* resolved = chunk.resolveNames(&resolvedLength, indices);
+            if (resolved == NULL)
+            {
+                fprintf(stderr,"%s : Damaged Actor Group chunk file: %s\n",
+                        args.commandName,groupChunkFile);
+                delete [] indices;
+                delete out;
+                return 1;
+            }
             for (int counter = 0; counter < resolvedLength; counter++)
             {
                 if ( args.verbose )

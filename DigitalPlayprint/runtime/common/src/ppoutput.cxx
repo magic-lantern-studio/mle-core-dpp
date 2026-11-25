@@ -103,6 +103,14 @@ MlBoolean MleDppOutput::writeGroup(MleDppChunkTable *table, MlInt groupIndex)
     MleDppActorGroupChunk *groupChunk =
          new MleDppActorGroupChunk(table->getFilename(groupIndex),isLittle);
 
+    // A chunk file that is damaged is an error.
+    if (! groupChunk->isValid())
+    {
+        delete groupChunk;
+        mlSetErrno(MLE_DPP_ERR_CANNOTREAD);
+        return(FALSE);
+    }
+
     const char *namesOfMediaRefsInThisChunkFile = groupChunk->getNames();
     MlInt numberOfMediaRefsInCurrentChunkFile = groupChunk->countNames();
     MlInt numberOfChunkFiles = table->getUsed();
@@ -139,6 +147,14 @@ MlBoolean MleDppOutput::writeGroup(MleDppChunkTable *table, MlInt groupIndex)
     const MlByte *resolvedChunk;
     MlInt size;
     resolvedChunk = groupChunk->resolveNames(&size, indices);
+    if (resolvedChunk == NULL)
+    {
+        if (indices)
+            mlFree(indices);
+        delete groupChunk;
+        mlSetErrno(MLE_DPP_ERR_CANNOTREAD);
+        return(FALSE);
+    }
 
     // Create 'grp ' chunk structure.
     groupInfo.m_chunk.m_tag = mlDppMakeTag('g','r','p',' ');
@@ -178,10 +194,24 @@ MlBoolean MleDppOutput::writeScene(MleDppChunkTable *table, MlInt sceneIndex)
     MleDppSceneChunk *sceneChunk =
         new MleDppSceneChunk(table->getFilename(sceneIndex),getSwapWrite());
 
+    // A chunk file that is damaged is an error.
+    if (! sceneChunk->isValid())
+    {
+        delete sceneChunk;
+        mlSetErrno(MLE_DPP_ERR_CANNOTREAD);
+        return(FALSE);
+    }
+
     MlInt numberOfChunkFiles = table->getUsed();
     const unsigned char *resolvedChunk;
     MlInt size;
     resolvedChunk = sceneChunk->loadChunk(&size);
+    if (resolvedChunk == NULL)
+    {
+        delete sceneChunk;
+        mlSetErrno(MLE_DPP_ERR_CANNOTREAD);
+        return(FALSE);
+    }
 
     // Create 'scn ' chunk structure.
     sceneInfo.m_chunk.m_tag = mlDppMakeTag('s','c','n',' ');

@@ -189,48 +189,163 @@ TEST_F(CheckerTest, SceneLoadsItsIntegers) {
 
 /*** Damaged files ***/
 
-// The checkers stop with an assertion in a debug build, and read what is not
-// there in a release build. The test is that neither hangs; the way that
-// they fail is recorded in the test plan.
-TEST_F(CheckerTest, DamagedGroupFilesDoNotHang) {
+// The checkers read files that come from outside, so a damaged file is an
+// error that they report: the constructor says the file is not valid, and
+// resolveNames and loadChunk return NULL. They do not stop, in a debug build
+// either, and do not read what is not there.
+
+namespace {
+
+// A Group chunk file with the given stream (after the id of the group) and
+// media names, built with a correct offset.
+std::vector<uint8_t> rawGroup(const std::vector<uint8_t> &stream, std::initializer_list<const char *> names) {
+    std::vector<uint8_t> bytes = { 0, 0, 0, 0, 7, 0, 0, 0 };    // offset, id of the group
+    bytes.insert(bytes.end(), stream.begin(), stream.end());
+    uint32_t offset = bytes.size();
+    memcpy(&bytes[0], &offset, 4);
+    for (const char *n : names)
+        putName(bytes, n);
+    return bytes;
+}
+
+} // anonymous namespace
+
+TEST_F(CheckerTest, DamagedGroupFilesAreNotValid) {
     std::vector<uint8_t> good = groupChunkBytes(true);
+    std::vector<uint8_t> noNul = good;
+    noNul.pop_back();                   // the last name has no NUL
     struct { const char *name; std::vector<uint8_t> bytes; } cases[] = {
         { "empty", {} },
         { "three bytes", { 1, 2, 3 } },
         { "offset beyond the file", { 0x7f, 0, 0, 0, 1, 2, 3, 4 } },
         { "negative offset", { 0xff, 0xff, 0xff, 0xff, 1, 2, 3, 4 } },
+        { "offset inside the offset", { 2, 0, 0, 0, 1, 2, 3, 4 } },
         { "truncated", std::vector<uint8_t>(good.begin(), good.begin() + good.size() / 2) },
+        { "name without a NUL", noNul },
     };
     for (auto &c : cases) {
         std::string path = scratchFile("bad.chk");
         ASSERT_TRUE(writeFile(path, c.bytes));
         ChildResult r = runInChild([&] {
             MleDppActorGroupChunk chunk(path.c_str(), hostIsLittle());
-            chunk.countNames();
-            int length;
+            bool ok = ! chunk.isValid() && chunk.countNames() == 0 && chunk.getNames() == NULL;
+            int length = -1;
             const MlInt indices[] = { 0 };
-            chunk.resolveNames(&length, indices);
+            ok = ok && chunk.resolveNames(&length, indices) == NULL && length == 0;
+            _exit(ok ? 0 : 1);
         }, 5);
-        EXPECT_FALSE(r.timedOut) << c.name;
+        EXPECT_TRUE(r.exited) << c.name;
+        EXPECT_EQ(r.exitCode, 0) << c.name;
     }
 }
 
-TEST_F(CheckerTest, DamagedSceneFilesDoNotHang) {
+TEST_F(CheckerTest, MissingGroupFileIsNotValid) {
+    MleDppActorGroupChunk chunk(scratchFile("no-such-file").c_str(), hostIsLittle());
+    EXPECT_FALSE(chunk.isValid());
+    int length = -1;
+    EXPECT_EQ(chunk.resolveNames(&length, NULL), nullptr);
+    EXPECT_EQ(length, 0);
+}
+
+TEST_F(CheckerTest, DamagedGroupStreamsGiveNoResult) {
+    struct { const char *name; std::vector<uint8_t> stream; } cases[] = {
+        { "no stream", {} },
+        { "unknown opcode", { 1, 0xf0 } },                 // 0xf0 is not an opcode
+        { "ends in the middle of an int", { 1, createActorOpcode, copyDynamicPropertyOpcode, 0, 0 } },
+        { "no end opcode", { 1, createActorOpcode } },
+        { "property is longer than the stream", { 1, createActorOpcode, setPropertyLengthOpcode, 50,
+                                                  copyPropertyOpcode, 1, 2 } },
+        { "media index not in the names", { 1, createActorOpcode, copyMediaRefOpcode, 9,
+                                            endActorGroupOpcode } },
+        { "media index with no names", { 1, createActorOpcode, copyMediaRefOpcode, 0,
+                                         endActorGroupOpcode } },
+        { "negative dynamic length", { 1, createActorOpcode, copyDynamicPropertyOpcode,
+                                       0xff, 0xff, 0xff, 0xff, endActorGroupOpcode } },
+        { "dynamic length beyond the stream", { 1, createActorOpcode, copyDynamicPropertyOpcode,
+                                                0xff, 0xff, 0xff, 0x7f, endActorGroupOpcode } },
+        { "array larger than the stream", { 1, createActorOpcode, setPropertyLengthOpcode, 100,
+                                            copyArrayPropertyOpcode, 0xff, 0xff, 0xff, 0x7f,
+                                            endActorGroupOpcode } },
+        { "index without an end", { 1, createActorOpcode, setPropertyOffsetOpcode, 5 } },
+    };
+    for (auto &c : cases) {
+        std::string path = scratchFile("bad.chk");
+        // All but the case of the media index with no names have one name.
+        bool named = std::string(c.name) != "media index with no names";
+        ASSERT_TRUE(writeFile(path, named ? rawGroup(c.stream, { "one" }) : rawGroup(c.stream, {})));
+        ChildResult r = runInChild([&] {
+            MleDppActorGroupChunk chunk(path.c_str(), hostIsLittle());
+            if (! chunk.isValid())
+                _exit(2);
+            int length = -1;
+            const MlInt indices[] = { 0 };
+            const unsigned char *resolved = chunk.resolveNames(&length, indices);
+            _exit(resolved == NULL && length == 0 ? 0 : 1);
+        }, 5);
+        EXPECT_TRUE(r.exited) << c.name;
+        EXPECT_EQ(r.exitCode, 0) << c.name;
+    }
+}
+
+TEST_F(CheckerTest, GroupCanBeResolvedAgainAfterAFailure) {
+    std::string path = scratchFile("g.chk");
+    ASSERT_TRUE(writeFile(path, groupChunkBytes(true)));
+    MleDppActorGroupChunk chunk(path.c_str(), hostIsLittle());
+    int length = 0;
+    // No indices for a stream that has a media reference.
+    EXPECT_EQ(chunk.resolveNames(&length, NULL), nullptr);
+    const MlInt indices[] = { 2 };
+    const unsigned char *resolved = chunk.resolveNames(&length, indices);
+    ASSERT_NE(resolved, nullptr);
+    EXPECT_EQ(length, 17);
+    mlFree(const_cast<unsigned char *>(resolved));
+}
+
+TEST_F(CheckerTest, DamagedSceneFilesAreNotValid) {
+    std::vector<uint8_t> noNul = sceneWithNames({ "groupA" });
+    noNul.pop_back();
     struct { const char *name; std::vector<uint8_t> bytes; } cases[] = {
         { "empty", {} },
         { "three bytes", { 1, 2, 3 } },
         { "offset beyond the file", { 0x7f, 0, 0, 0, 1, 2, 3, 4 } },
         { "negative offset", { 0xff, 0xff, 0xff, 0xff, 1, 2, 3, 4 } },
+        { "offset inside the offset", { 2, 0, 0, 0, 1, 2, 3, 4 } },
+        { "name without a NUL", noNul },
     };
     for (auto &c : cases) {
         std::string path = scratchFile("bad.chk");
         ASSERT_TRUE(writeFile(path, c.bytes));
         ChildResult r = runInChild([&] {
             MleDppSceneChunk chunk(path.c_str(), hostIsLittle());
-            chunk.countNames();
-            MlInt length;
-            chunk.loadChunk(&length);
+            bool ok = ! chunk.isValid() && chunk.countNames() == 0 && chunk.getNames() == NULL;
+            MlInt length = -1;
+            ok = ok && chunk.loadChunk(&length) == NULL && length == 0;
+            _exit(ok ? 0 : 1);
         }, 5);
-        EXPECT_FALSE(r.timedOut) << c.name;
+        EXPECT_TRUE(r.exited) << c.name;
+        EXPECT_EQ(r.exitCode, 0) << c.name;
+    }
+}
+
+TEST_F(CheckerTest, MissingSceneFileIsNotValid) {
+    MleDppSceneChunk chunk(scratchFile("no-such-file").c_str(), hostIsLittle());
+    EXPECT_FALSE(chunk.isValid());
+    MlInt length = -1;
+    EXPECT_EQ(chunk.loadChunk(&length), nullptr);
+    EXPECT_EQ(length, 0);
+}
+
+TEST_F(CheckerTest, SceneWithPartOfAnIntOrNoIntsGivesNoResult) {
+    std::vector<std::vector<uint8_t>> cases;
+    cases.push_back({ 7, 0, 0, 0, 1, 2, 3 });       // 3 bytes of ints
+    cases.push_back({ 4, 0, 0, 0 });                // no ints
+    for (auto &bytes : cases) {
+        std::string path = scratchFile("bad.chk");
+        ASSERT_TRUE(writeFile(path, bytes));
+        MleDppSceneChunk chunk(path.c_str(), hostIsLittle());
+        ASSERT_TRUE(chunk.isValid());
+        MlInt length = -1;
+        EXPECT_EQ(chunk.loadChunk(&length), nullptr) << bytes.size() << " bytes";
+        EXPECT_EQ(length, 0);
     }
 }

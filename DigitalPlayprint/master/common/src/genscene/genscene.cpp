@@ -352,6 +352,13 @@ int main(int argc,char *argv[])
             sprintf(sceneChunkFile, "%s.chk", scenes[i]->getName());
         }
         MleDppSceneChunk chunk(sceneChunkFile,args.byteOrder);
+        if (! chunk.isValid())
+        {
+            fprintf(stderr,"%s : Damaged Scene chunk file: %s\n",
+                    args.commandName,sceneChunkFile);
+            delete out;
+            return 1;
+        }
     }
 
     // Clean-up and return.

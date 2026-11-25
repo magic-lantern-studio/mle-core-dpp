@@ -75,9 +75,20 @@ class MleDppActorGroupChunk
 	{
 		if (m_mediaNames != NULL)
 			delete [] m_mediaNames;
-		//if (m_fp != NULL)
-		//	fclose(m_fp);
+		if (m_fp != NULL)
+			fclose(m_fp);
 	};
+
+    /**
+	 * @brief Tell whether the chunk file was read.
+	 *
+	 * The constructor checks the file: it has to open, its offset of the
+	 * media names has to be in the file, and the names have to end with a
+	 * NUL. When it is not valid there are no names, and resolveNames
+	 * returns <b>NULL</b>.
+	 */
+    MlBoolean isValid(void) const
+	{ return m_valid; };
 
     /**
 	 * @brief Get the name of the media references.
@@ -113,6 +124,9 @@ class MleDppActorGroupChunk
 	 * <p>
      * It is the caller's responsibility to call delete on the method result.
 	 * </p>
+	 * <b>NULL</b> is returned, and the length is set to 0, if the chunk file
+	 * is not valid or its stream is damaged: an unknown opcode, a stream that
+	 * ends early, or an index of a media reference that is not in the names.
 	 */
     const unsigned char *resolveNames(int* length, const MlInt* indices);
 
@@ -159,6 +173,9 @@ class MleDppActorGroupChunk
 	int m_resolvedChunkSize;
 	MlByte * m_resolvedChunkBuf;
 	MlByte * m_resolvedChunkPtr;
+
+	MlBoolean m_valid;	// the chunk file was read by the constructor
+	MlBoolean m_bad;	// the stream is damaged (set while resolving)
 
 	MlByte nextChunkByte(void);
 	
