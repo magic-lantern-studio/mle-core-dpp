@@ -192,6 +192,31 @@ static int parseArgs(int argc, char *argv[], LayoutState *state)
 //
 // Application initialization and script interpretation.
 //
+// Remove the files that the script has generated so far.
+static void removeOutputs(LayoutState *state)
+{
+    // Closing the playprint writer closes its file.
+    if (state->m_dpp != nullptr) {
+        delete state->m_dpp;
+        state->m_dpp = nullptr;
+    }
+    if (state->m_codefd != nullptr) {
+        mlFClose(state->m_codefd);
+        state->m_codefd = nullptr;
+    }
+    if (state->m_headerfd != nullptr) {
+        mlFClose(state->m_headerfd);
+        state->m_headerfd = nullptr;
+    }
+    if (state->m_playprint != nullptr)
+        remove(state->m_playprint);
+    if (state->m_codepath != nullptr)
+        remove(state->m_codepath);
+    if (state->m_headerpath != nullptr)
+        remove(state->m_headerpath);
+}
+
+
 int main(int argc, char *argv[])
 {
     LayoutState *state = nullptr;
@@ -215,6 +240,12 @@ int main(int argc, char *argv[])
         state->m_codefile = nullptr;
         state->m_chunks = new MleDppChunkTable();
         state->m_scriptfile = nullptr;
+        state->m_codefd = nullptr;
+        state->m_headerfd = nullptr;
+        state->m_codepath = nullptr;
+        state->m_headerpath = nullptr;
+        state->m_tmplate = nullptr;
+        state->m_dpp = nullptr;
         state->m_root = nullptr;
         state->m_tags = nullptr;
         state->m_language = FALSE;
@@ -284,7 +315,7 @@ int main(int argc, char *argv[])
     if (PyRun_SimpleString(script) != 0) {
         fprintf(stderr, "Error: could not execute script file %s\n",
                 state->m_scriptfile);
-        exit(1);
+        scriptStatus = 1;
 	}
 #else /* ! USE_PYTHON_SIMPLE_STRING */
 	// Note: PyRun_SimpleFile() does not work on Windows with a binary file pointer.
@@ -305,6 +336,12 @@ int main(int argc, char *argv[])
 
     if (scriptStatus == 0 && state->m_chunks->getUsed() > 0) {
         endPlayprint();
+    }
+
+    // A script that failed leaves no output: the playprint and the generated
+    // code files are removed, as they are empty or only partly written.
+    if (scriptStatus != 0) {
+        removeOutputs(state);
     }
 
     // Clean up state.

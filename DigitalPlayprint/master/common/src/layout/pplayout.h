@@ -67,6 +67,8 @@ typedef struct {
     char             *m_codefile;     /* The root name of the files to generate. */
     FILE             *m_codefd;       /* A file pointer to the generated source file. */
     FILE             *m_headerfd;     /* A file pointer to the generated header file. */
+    char             *m_codepath;     /* The path of the generated source file. */
+    char             *m_headerpath;   /* The path of the generated header file. */
     MleTemplate      *m_tmplate;      /* The template to use for code generation. */
 	char             *m_workprint;    /* The name of the workprint file to read. */
 	char             *m_outputDir;    /* The directory for generated output. */

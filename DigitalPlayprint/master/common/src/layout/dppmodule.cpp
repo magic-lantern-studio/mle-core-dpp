@@ -216,9 +216,12 @@ dpp_endPlayprint(PyObject *self, PyObject *args)
     //state.m_playprint = nullptr;
 
     // Close the generated files.
-    mlFClose(state->m_codefd);
-    if (state->m_language != TRUE)
+    if (state->m_codefd != NULL)
+        mlFClose(state->m_codefd);
+    state->m_codefd = NULL;
+    if (state->m_language != TRUE && state->m_headerfd != NULL)
         mlFClose(state->m_headerfd);
+    state->m_headerfd = NULL;
 
     Py_RETURN_NONE;
 }
@@ -243,12 +246,17 @@ dpp_codeFile(PyObject *self, PyObject *args)
     if (state->m_codefile != NULL) {
         if (state->m_language != TRUE) {
             // Closing C/C++ files.
-            mlFClose(state->m_codefd);
-            mlFClose(state->m_headerfd);
+            if (state->m_codefd != NULL)
+                mlFClose(state->m_codefd);
+            if (state->m_headerfd != NULL)
+                mlFClose(state->m_headerfd);
         } else {
             // Closing Java file.
-            mlFClose(state->m_codefd);
+            if (state->m_codefd != NULL)
+                mlFClose(state->m_codefd);
         }
+        state->m_codefd = NULL;
+        state->m_headerfd = NULL;
     }
 
     char *codefilename = nullptr;
@@ -326,6 +334,12 @@ dpp_codeFile(PyObject *self, PyObject *args)
         }
 #endif
     }
+
+    // Remember the paths, so that the files can be removed if the script fails.
+    free(state->m_codepath);
+    free(state->m_headerpath);
+    state->m_codepath = strdup(codefilename);
+    state->m_headerpath = headerfilename != NULL ? strdup(headerfilename) : NULL;
 
     // Open the file(s) for generation.
     if (state->m_language) {

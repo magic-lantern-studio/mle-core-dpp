@@ -47,6 +47,8 @@
 #include <string.h>
 #include <sys/types.h>
 #include <time.h>
+#include <string>
+#include <vector>
 
 // Include Magic Lantern header files.
 #include <mle/mlMalloc.h>
@@ -250,6 +252,28 @@ static char *_expandPath(char * path)
 }
 
 
+// The files that have been created, so that none is left behind if genmedia
+// fails: the media inventory file and the chunk files.
+static FILE *g_inventoryFd = NULL;
+static std::string g_inventoryFile;
+static std::vector<std::string> g_createdFiles;
+
+// Remove what has been generated so far, and return the status for failure.
+static int _failed(void)
+{
+    if (g_inventoryFd != NULL)
+    {
+        mlFClose(g_inventoryFd);
+        g_inventoryFd = NULL;
+    }
+    if (! g_inventoryFile.empty())
+        remove(g_inventoryFile.c_str());
+    for (size_t i = 0; i < g_createdFiles.size(); i++)
+        remove(g_createdFiles[i].c_str());
+    return 1;
+}
+
+
 int
 main(int argc,char **argv)
 {
@@ -299,6 +323,16 @@ main(int argc,char **argv)
         else
             inventoryPath = args.inventory;
         inventoryOut = mlFOpen(inventoryPath, "w");
+        if (inventoryOut == NULL)
+        {
+            fprintf(stderr,"%s : Error : Could not create media inventory file %s.\n",
+                   args.commandName,inventoryPath);
+            if (g_outputDir != NULL)
+                mlFree(inventoryPath);
+            return 1;
+        }
+        g_inventoryFd = inventoryOut;
+        g_inventoryFile = inventoryPath;
 
         if (g_outputDir != NULL)
             mlFree(inventoryPath);
@@ -323,7 +357,7 @@ main(int argc,char **argv)
     {
         fprintf(stderr,"%s : %s\n",args.commandName,
                 "Unable to open Digital Workprint");
-        exit(1);
+        exit(_failed());
     }
 
     // Build the entire DWP, instantiating each MleDwpItem.
@@ -333,17 +367,11 @@ main(int argc,char **argv)
 
     // A workprint that was read with errors (an Include that could not be
     // opened, a syntax error) is not used. Each error has been reported.
-    // Do not leave a partial inventory file behind.
     if (in->getErrorCount() > 0)
     {
         fprintf(stderr,"%s : %s\n",args.commandName,
                 "Digital Workprint has errors");
-        fclose(inventoryOut);
-        char *inventoryPath = (g_outputDir != NULL) ? _expandPath(args.inventory) : args.inventory;
-        remove(inventoryPath);
-        if (g_outputDir != NULL)
-            mlFree(inventoryPath);
-        exit(1);
+        exit(_failed());
     }
 
     // Verify digital workprint.
@@ -351,7 +379,7 @@ main(int argc,char **argv)
     {
         fprintf(stderr,"%s : Error : %s\n",args.commandName,
                 "Unable to verify Digital Workprint.");
-        exit(1);
+        exit(_failed());
     }
 
     // Set discriminators for finding all MediaRefs.
@@ -396,7 +424,7 @@ main(int argc,char **argv)
     if (! tblMgr.buildIndexTables(root)) {
         fprintf(stderr,"%s: Error: %s.\n", args.commandName,
                 "Unable to build table of MediaRef classes.");
-        return(1);
+        return(_failed());
     }
     TblMgrItems *mrefTable = tblMgr.getMediaRefTable();
 
@@ -430,6 +458,7 @@ main(int argc,char **argv)
             filePath = fileName;
 
         // Create chunk file.
+        g_createdFiles.push_back(filePath);
         out = new MleMrefChunkFile(filePath,MleChunkFile::WRITING);
         if (littleEndian)
         {
@@ -502,7 +531,8 @@ main(int argc,char **argv)
                        args.commandName,
                        nextMediaRef->getName(),
                        "internal media referencing is not supported in this release.");
-                return 1;
+                delete out;
+                return _failed();
             }
         }
 
@@ -532,6 +562,7 @@ main(int argc,char **argv)
     // Close the inventory file.
     if (inventoryOut != NULL)
         mlFClose(inventoryOut);
+    g_inventoryFd = NULL;
 
     // Cleanup and exit.
     delete g_outputDir;
