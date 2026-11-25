@@ -112,11 +112,15 @@ MleMrefChunkFile::readInfo(MleMediaRefInfoChunk *chunkData)
         memset(&mediaInfo,0,sizeof(MleDppChunkInfo));
 
         MLE_ERROR(mlDppDescend(getFp(),&mediaInfo,NULL,0));
-        if (mediaInfo.m_chunk.m_tag == mlDppMakeTag('i','n','f','o'))
+        if (mediaInfo.m_chunk.m_tag == mlDppMakeTag('i','n','f','o') &&
+            mediaInfo.m_chunk.m_size >= sizeof(MleMediaRefInfoChunk))
 		{
-            // Read the 'info' data.
+            // Read the 'info' data. The size of the chunk is from the file and
+            // is not used for the read, as the data is a fixed size.
         	size_t nBytes;
-            nBytes = mlFRead(chunkData,mediaInfo.m_chunk.m_size,1,getFp());
+            nBytes = mlFRead(chunkData,sizeof(MleMediaRefInfoChunk),1,getFp());
+            if (nBytes != 1)
+                status = FALSE;
 
             if (getSwapRead())
 			{
@@ -124,7 +128,8 @@ MleMrefChunkFile::readInfo(MleMediaRefInfoChunk *chunkData)
                 chunkData->m_type = mlDppSwapInt(chunkData->m_type);
                 chunkData->m_numMrefs = mlDppSwapInt(chunkData->m_numMrefs);
             }
-        }
+        } else
+            status = FALSE;
 
         MLE_ERROR(mlDppAscend(getFp(),&mediaInfo,0));
     }
@@ -186,7 +191,9 @@ MleMrefChunkFile::readData(MleMediaRefChunk *chunkData)
 		{
             // Read the 'mref' data.
         	size_t nBytes;
-            nBytes = mlFRead(chunkData,MEDIAREF_CHUNK_SIZE,1,getFp());
+            if (mediaInfo.m_chunk.m_size < MEDIAREF_CHUNK_SIZE ||
+                mlFRead(chunkData,MEDIAREF_CHUNK_SIZE,1,getFp()) != 1)
+                return(FALSE);
 
             if (getSwapRead())
 			{
@@ -195,13 +202,25 @@ MleMrefChunkFile::readData(MleMediaRefChunk *chunkData)
                 chunkData->m_size = mlDppSwapInt(chunkData->m_size);
             }
 
+            // The size of the data is from the file. It has to fit in the
+            // chunk and in what is left of the file.
+            if (chunkData->m_size > mediaInfo.m_chunk.m_size - MEDIAREF_CHUNK_SIZE ||
+                ! mlDppBytesRemain(getFp(),chunkData->m_size))
+            {
+                chunkData->m_size = 0;
+                return(FALSE);
+            }
+
 			// The extra byte is for the string terminator. This will only
 			// be required by an EXTERNAL media reference. XXX - fix this
 			// for INTERNAL media references; may be a non-issue.
             chunkData->m_data = (char *)mlMalloc(chunkData->m_size + 1);
-            nBytes = mlFRead(chunkData->m_data,chunkData->m_size,1,getFp());
+            if (chunkData->m_size > 0 &&
+                mlFRead(chunkData->m_data,chunkData->m_size,1,getFp()) != 1)
+                status = FALSE;
 			chunkData->m_data[chunkData->m_size] = '\0';
-        }
+        } else
+            status = FALSE;
 
         MLE_ERROR(mlDppAscend(getFp(),&mediaInfo,0));
     }

@@ -89,6 +89,10 @@ Syntax:   dumpscene [-b|-l] <chunk file> ...\n\
 Function: Dump Magic Lantern Scene Chunk Files.\n";
 
 
+// The end of the chunk in memory, and whether a read went past it.
+static unsigned char *g_end = NULL;
+static int g_truncated = 0;
+
 // Flag indicating whether to process chunks using Big/Little Endian formatting.
 static MlBoolean g_littleEndian = FALSE;
 
@@ -212,6 +216,11 @@ static unsigned char *readFileToMemory(char *filename, int *size)
 // nextStreamByte - Retrieve the next byte from the specified array.
 static unsigned char nextStreamByte(unsigned char*& streamPtrRef)
 {
+    if (streamPtrRef >= g_end)
+    {
+        g_truncated = 1;
+        return 0;
+    }
     return *streamPtrRef++;
 }
 
@@ -250,6 +259,9 @@ static void parseStream(unsigned char*& contents, int size)
     int index;
     unsigned char *contentsEnd = contents + size;
 
+    g_end = contentsEnd;
+    g_truncated = 0;
+
     int offset = readInt(contents);
     printf("Group Name Offset (offset=%d)\n", offset);
 
@@ -259,10 +271,15 @@ static void parseStream(unsigned char*& contents, int size)
     long numGroups = readInt(contents);
     printf("Number of Groups: %ld\n\n", numGroups);
     
-    while ( contents < contentsEnd )
+    while ( contents < contentsEnd && ! g_truncated )
     {
         index = readInt(contents);
         printf("\tGroup %d\n", index);
+    }
+
+    if ( g_truncated )
+    {
+        printf("# ERROR: the chunk ends in the middle of an item\n");
     }
 }
 
@@ -304,7 +321,11 @@ int main(int argc,char *argv[])
                     args.commandName, nextFile->str);
             errors++;
         } else
+        {
             parseStream(contents, size);
+            if (g_truncated)
+                errors++;
+        }
 
         // Process next chunk file.
         nextFile = nextFile->next;

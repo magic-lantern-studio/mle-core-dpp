@@ -128,11 +128,15 @@ MlBoolean MleChunkFile::readHeader(MleChunkFileHeader *chunkData)
         memset(&hdrInfo,0,sizeof(MleDppChunkInfo));
 
         MLE_ERROR(mlDppDescend(getFp(),&hdrInfo,NULL,0));
-        if (hdrInfo.m_chunk.m_tag == mlDppMakeTag('h','d','r',' '))
+        if (hdrInfo.m_chunk.m_tag == mlDppMakeTag('h','d','r',' ') &&
+            hdrInfo.m_chunk.m_size >= sizeof(MleChunkFileHeader))
 		{
-            // Read the chunk file header.
+            // Read the chunk file header. The size of the chunk is from the
+            // file and is not used for the read, as the data is a fixed size.
         	size_t nBytes;
-            nBytes = mlFRead(chunkData,hdrInfo.m_chunk.m_size,1,getFp());
+            nBytes = mlFRead(chunkData,sizeof(MleChunkFileHeader),1,getFp());
+            if (nBytes != 1)
+                status = FALSE;
 
             if (m_swapRead)
 			{
@@ -141,7 +145,8 @@ MlBoolean MleChunkFile::readHeader(MleChunkFileHeader *chunkData)
                 chunkData->m_time = mlDppSwapInt(chunkData->m_time);
                 chunkData->m_crc = mlDppSwapInt(chunkData->m_crc);
             }
-        }
+        } else
+            status = FALSE;
 
         MLE_ERROR(mlDppAscend(getFp(),&hdrInfo,0));
     }

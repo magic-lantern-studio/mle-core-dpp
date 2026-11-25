@@ -781,3 +781,25 @@ main(int argc,char *argv[])
 }
 
 #endif /* UNIT_TEST */
+
+
+/*
+ * Check that "size" bytes can be read from the current position in the file.
+ * A size that was read from a file has to be checked before it is used to
+ * allocate memory or to read, as a damaged file can hold any value.
+ */
+MlBoolean mlDppBytesRemain(FILE *fp,MlUInt size)
+{
+    long here, end;
+
+    MLE_VALIDATE_PTR(fp);
+
+    here = mlFTell(fp);
+    if (here < 0 || mlFSeek(fp,0L,SEEK_END) != 0)
+        return FALSE;
+    end = mlFTell(fp);
+    if (mlFSeek(fp,here,SEEK_SET) != 0)
+        return FALSE;
+
+    return (end >= here && (MlUInt)(end - here) >= size) ? TRUE : FALSE;
+}

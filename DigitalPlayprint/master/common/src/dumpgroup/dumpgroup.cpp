@@ -96,6 +96,11 @@ static MlBoolean g_bigEndian;
 // The number of errors found in the chunk file.
 static int g_errors = 0;
 
+// The end of the chunk in memory, and whether a read went past it. Every byte
+// is read with nextStreamByte(), which does not read past the end.
+static unsigned char *g_end = NULL;
+static int g_truncated = 0;
+
 const char *usage_str = "\
 Syntax:   dumpgroup  [-b|-l] [-v] <group_chunk_file>\n\
 \n\
@@ -260,6 +265,9 @@ static void parseStream(unsigned char*& contents, int size)
     int currentActor, currentRole, currentSet, opcode, index;
     unsigned char *contentsEnd = contents+size;
     
+    g_end = contentsEnd;
+    g_truncated = 0;
+
     currentActor = -1;
     currentRole = -1;
     currentSet = -1;
@@ -273,7 +281,7 @@ static void parseStream(unsigned char*& contents, int size)
 	long numActors = readIndex(contents);
 	printf("Number of Actors: %ld\n\n",numActors);
     
-    while ( contents < contentsEnd )
+    while ( contents < contentsEnd && ! g_truncated )
 	{
 		opcode = (int)*contents++;
 		switch (opcode)
@@ -355,7 +363,9 @@ static void parseStream(unsigned char*& contents, int size)
 		  case copyPropertyOpcode:
 			printf("%04x     CopyProperty", opcode);
 			long bytesToCopy;
-			for ( bytesToCopy=0 ; bytesToCopy<propertyLength ; bytesToCopy++)
+			if ( propertyLength < 0 || propertyLength > contentsEnd - contents )
+				g_truncated = 1;
+			for ( bytesToCopy=0 ; bytesToCopy<propertyLength && ! g_truncated ; bytesToCopy++)
 			{
 				if ( bytesToCopy%8 == 0 )
 				{
@@ -370,8 +380,10 @@ static void parseStream(unsigned char*& contents, int size)
 			{
 				printf("%04x     CopyArrayProperty", opcode);
 				int numElements = copyInt(contents);
-				int arrayLength = propertyLength * numElements;
-				for ( bytesToCopy=0 ; bytesToCopy<arrayLength ; bytesToCopy++)
+				long arrayLength = propertyLength * (long)numElements;
+				if ( numElements < 0 || arrayLength < 0 || arrayLength > contentsEnd - contents )
+					g_truncated = 1;
+				for ( bytesToCopy=0 ; bytesToCopy<arrayLength && ! g_truncated ; bytesToCopy++)
 				{
 					if ( bytesToCopy%8 == 0 )
 					{
@@ -395,7 +407,9 @@ static void parseStream(unsigned char*& contents, int size)
 				int i;
 				int length = copyInt(contents);
 				printf("%04x %03d CopyDynamicProperty\n", opcode, length);
-				for ( i=0 ; i<length ; i++ )
+				if ( length < 0 || length > contentsEnd - contents )
+					g_truncated = 1;
+				for ( i=0 ; i<length && ! g_truncated ; i++ )
 				{
 					if ( i%8 == 0 )
 					{
@@ -403,7 +417,7 @@ static void parseStream(unsigned char*& contents, int size)
 					}
 					nb = nextStreamByte(contents);
 					printf(" %02x", nb);
-					if ( isprint(nb) )
+					if ( isprint((unsigned char)nb) )
 					{
 						charbuf[i%8] = nb;
 					} else {
@@ -451,6 +465,12 @@ static void parseStream(unsigned char*& contents, int size)
 			g_errors++;
 		}
     }
+
+    if ( g_truncated )
+	{
+		printf("         # ERROR: the chunk ends in the middle of an item\n");
+		g_errors++;
+	}
 }
 
 static long readIndex(unsigned char*& contents)
@@ -458,16 +478,22 @@ static long readIndex(unsigned char*& contents)
 	long value = 0;
 	signed char byte;
 	
-	while ((byte = nextStreamByte(contents)) >= 0)
+	while (! g_truncated && (byte = nextStreamByte(contents)) >= 0)
 	{
 		value = (value << valueBits) | byte;
 	}
-	contents--; /* Back up one, since while loop always over-advances by one. */
+	if (! g_truncated)
+		contents--; /* Back up one, since while loop always over-advances by one. */
 	return value;
 }
 
 static unsigned char nextStreamByte(unsigned char*& streamPtrRef)
 {
+	if (streamPtrRef >= g_end)
+	{
+		g_truncated = 1;
+		return 0;
+	}
 	return *streamPtrRef++;
 }
 

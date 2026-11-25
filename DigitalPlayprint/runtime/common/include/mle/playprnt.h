@@ -124,6 +124,7 @@ enum MleDppErr
 EXTERN MlBoolean mlDppAscend(FILE *,MleDppChunkInfo *,MlUInt);
 EXTERN MlBoolean mlDppDescend(FILE *,MleDppChunkInfo *,MleDppChunkInfo *,MlUInt);
 EXTERN int mlDppCheckFormat(FILE *);
+EXTERN MlBoolean mlDppBytesRemain(FILE *,MlUInt);
 #ifndef MLE_RUNTIME
 EXTERN MlBoolean mlDppCreateChunk(FILE *,MleDppChunkInfo *,MlUInt);
 EXTERN MlDppTag mlDppStringToTag(char *,MlUInt);

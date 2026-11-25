@@ -311,16 +311,26 @@ int readDpp(char *playprint)
         return 1;
     }
 
+    // A header, table of contents or group that is missing or damaged is
+    // an error.
+    int status = 0;
     dpp->begin(MLE_DPP_FINDPPLE);
-    dpp->readHeader(dumpHeader, NULL);
-    dpp->readTOC(dumpTOC, NULL);
-    dpp->readGroup(dumpGroup, NULL);
+    if (! dpp->readHeader(dumpHeader, NULL))
+        status = 1;
+    if (! dpp->readTOC(dumpTOC, NULL))
+        status = 1;
+    if (! dpp->readGroup(dumpGroup, NULL))
+        status = 1;
     // How do we know how many groups to read from playprint?
     //dpp->readList(dumpList, NULL);
     //dpp->readMref(dumpMref, NULL);
     dpp->end();
     delete dpp;
-    return 0;
+    if (status != 0)
+        fprintf(stderr, "Damaged Digital Playprint, or one that is not in the "
+                "byte order of this machine (dumpdpp does not swap bytes): %s\n",
+                playprint);
+    return status;
 }
 
 /*

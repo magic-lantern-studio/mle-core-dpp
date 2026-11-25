@@ -39,6 +39,7 @@
 // COPYRIGHT_END
 
 // Declare system header files.
+#include <limits.h>
 #include <string.h>
 
 // Include Magic Lantern header files.
@@ -101,12 +102,25 @@ int MleDppInput::readTOC(MleDppCallback func,void *clientData)
         // Read number of TOC entries.
     	size_t nBytes;
         nBytes = mlFRead(&numEntries,sizeof(MlUInt),1,getFp());
+        if (nBytes != 1)
+            return(FALSE);
+
+        // The number of entries is from the file, so check that they are in
+        // the chunk and in the file before they are read.
+        if (numEntries > (MlUInt)INT_MAX ||
+            (tocInfo.m_chunk.m_size < sizeof(MlUInt) ||
+             numEntries > (tocInfo.m_chunk.m_size - sizeof(MlUInt)) / sizeof(MleDppTocEntry)) ||
+            ! mlDppBytesRemain(getFp(),numEntries * (MlUInt)sizeof(MleDppTocEntry)))
+            return(FALSE);
+
         beginTOC(numEntries);
 
         // Read each TOC entry.
         for (MlUInt i = 0; i < numEntries; i++)
 		{
             nBytes = mlFRead(&entry,sizeof(MleDppTocEntry),1,getFp());
+            if (nBytes != 1)
+                break;
             addTOCEntry(entry.m_label,entry.m_offset);
         }
 
@@ -187,10 +201,18 @@ int MleDppInput::readGroup(MleDppCallback func,void *clientData)
         if (func)
 		{
         	size_t nBytes;
-            callData = mlMalloc(groupInfo.m_chunk.m_size);
+
+            // The size is from the file. The callback may look at the first
+            // 12 bytes (the Actor Group header) whatever the size, so the
+            // buffer is at least that big and is zeroed.
+            if (! mlDppBytesRemain(getFp(),groupInfo.m_chunk.m_size))
+                return(FALSE);
+            MlUInt bufSize = groupInfo.m_chunk.m_size < 12 ? 12 : groupInfo.m_chunk.m_size;
+            callData = mlCalloc(1,bufSize);
             nBytes = mlFRead(callData,groupInfo.m_chunk.m_size,1,getFp());
 
-            status = func(clientData,callData);
+            if (groupInfo.m_chunk.m_size == 0 || nBytes == 1)
+                status = func(clientData,callData);
 
             mlFree(callData);
         } else
